@@ -129,8 +129,6 @@ const { data: productsData, refresh: refreshProducts } = await useAsyncData(
   }
 );
 
-console.log(productsData.value?.items)
-
 const products = computed(() => {
   return productsData.value?.items;
 });

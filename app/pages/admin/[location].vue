@@ -15,22 +15,38 @@
     <TabList v-if="location" active="today" class="tablist">
       <Tab id="today" :title="t('tab_shift')">
         <section>
-          <TodayTab :location="location" @select="handleReservationSelect" />
+          <TodayTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
         </section>
       </Tab>
       <Tab id="ongoing" :title="t('tab_ongoing')">
         <section>
-          <OngoingTab :location="location" @select="handleReservationSelect" />
+          <OngoingTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
         </section>
       </Tab>
       <Tab id="future" :title="t('tab_future')">
         <section>
-          <FutureTab :location="location" @select="handleReservationSelect" />
+          <FutureTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
         </section>
       </Tab>
       <Tab id="past" :title="t('tab_past')">
         <section>
-          <PastTab :location="location" @select="handleReservationSelect" />
+          <PastTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
         </section>
       </Tab>
     </TabList>
@@ -55,6 +71,7 @@ import OngoingTab from "./components/tabs/Ongoing.vue";
 import FutureTab from "./components/tabs/Future.vue";
 import PastTab from "./components/tabs/Past.vue";
 import type { Reservation } from "~/models/reservation";
+import { createEventHook } from "@vueuse/core";
 
 const { pb } = usePocketbase();
 const route = useRoute();
@@ -69,6 +86,8 @@ const selectedReservation = ref<Reservation | null>(null);
 
 const recordPicker = ref(null);
 provide("recordPicker", recordPicker);
+
+const reservationUpdate = createEventHook();
 
 const { data: location } = await useAsyncData("admin_location", async () => {
   const location = await pb
@@ -85,9 +104,7 @@ if (!location.value || !location.value.id) {
 }
 
 function handleReservationUpdate() {
-  // TODO: emit reservation drawer update event
-  // using useEventBus?
-  // useEmitter().emit('reservationDrawer:update')
+  reservationUpdate.trigger();
 }
 
 function handleReservationSelect(reservation: Reservation) {

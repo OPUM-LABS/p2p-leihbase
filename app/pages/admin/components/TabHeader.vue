@@ -1,13 +1,15 @@
 <template>
   <header>
     <slot name="prefix" />
-    <h3 :class="{ 'fixed-width': fixedWidth }">{{ title }}</h3>
+    <slot>
+      <h3>{{ title }}</h3>
+    </slot>
     <slot name="suffix" />
   </header>
 </template>
 
 <script setup lang="ts">
-defineProps<{ title: string; fixedWidth?: boolean }>();
+defineProps<{ title?: string }>();
 </script>
 
 <style scoped>
@@ -19,11 +21,6 @@ header {
 
 header > h3 {
   margin: 0;
-}
-
-header > h3.fixed-width {
-  min-width: 10rem;
-  text-align: center;
 }
 
 header > button {

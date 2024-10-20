@@ -36,8 +36,10 @@ if (plausibleTrackingDomain) {
   });
 }
 
-if (isValid.value && !userStore.hasInitialData) {
-  userStore.fetchInitialData();
+if (isValid.value) {
+  userStore.login();
+} else {
+  userStore.logout();
 }
 </script>
 

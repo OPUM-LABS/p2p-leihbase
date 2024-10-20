@@ -1,7 +1,8 @@
 <template>
   <TabHeader :title="t('ongoing_title')" />
+  <LoadingSpinner v-if="status === 'pending'" />
   <AdminReservationTable
-    v-if="ongoingReservations && ongoingReservations.length > 0"
+    v-else-if="ongoingReservations && ongoingReservations.length > 0"
     :reservations="ongoingReservations"
     highlight-date="end"
     @select="(reservation) => emit('select', reservation)"
@@ -14,8 +15,10 @@
 </template>
 
 <script lang="ts" setup>
+import type { EventHookOn } from "@vueuse/core";
 import type { RecordModel } from "pocketbase";
 import AdminReservationTable from "~/components/admin/AdminReservationsTable.vue";
+import TabHeader from "../TabHeader.vue";
 import type { Reservation } from "~/models/reservation";
 
 const { pb } = usePocketbase();
@@ -25,11 +28,20 @@ const { t } = useI18n({
 
 const props = defineProps<{
   location: RecordModel;
+  reservationUpdateHook: EventHookOn;
 }>();
 
 const emit = defineEmits<{ select: [reservation: Reservation] }>();
 
-const { data: ongoingReservations, refresh } = await useAsyncData(
+props.reservationUpdateHook(() => {
+  refresh();
+});
+
+const {
+  data: ongoingReservations,
+  refresh,
+  status,
+} = await useAsyncData(
   "admin_ongoing_reservations",
   async () => {
     const reservations = await pb.collection("reservations").getFullList({
@@ -44,10 +56,9 @@ const { data: ongoingReservations, refresh } = await useAsyncData(
       requestKey: "admin_ongoing_reservations",
     });
     return structuredClone(reservations) as Reservation[];
-  }
+  },
+  { lazy: true }
 );
-
-// TODO: listen to reservation drawer update event & refresh
 </script>
 
 <i18n lang="json">
