@@ -61,10 +61,12 @@ const {
 <i18n lang="json">
 {
   "en": {
-    "past_title": "Past Reservations (last 50)"
+    "past_title": "Past Reservations (last 50)",
+    "no_past_reservations": "No past reservations"
   },
   "de": {
-    "past_title": "Vergangene Reservierungen (letzte 50)"
+    "past_title": "Vergangene Reservierungen (letzte 50)",
+    "no_past_reservations": "Keine vergangene Reservierungen"
   }
 }
 </i18n>

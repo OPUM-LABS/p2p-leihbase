@@ -13,6 +13,20 @@
     </header>
 
     <TabList v-if="location" active="today" class="tablist">
+      <Tab
+        v-if="overdueReservations.length > 0"
+        id="overdue"
+        :title="t('tab_overdue')"
+        :warning="true"
+      >
+        <section>
+          <OverdueTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
+        </section>
+      </Tab>
       <Tab id="today" :title="t('tab_shift')">
         <section>
           <TodayTab
@@ -70,8 +84,12 @@ import TodayTab from "./components/tabs/Today.vue";
 import OngoingTab from "./components/tabs/Ongoing.vue";
 import FutureTab from "./components/tabs/Future.vue";
 import PastTab from "./components/tabs/Past.vue";
+import OverdueTab from "./components/tabs/Overdue.vue";
+import TabList from "~/components/TabList/TabList.vue";
+import Tab from "~/components/TabList/Tab.vue";
 import type { Reservation } from "~/models/reservation";
 import { createEventHook } from "@vueuse/core";
+import type { RecordModel } from "pocketbase";
 
 const { pb } = usePocketbase();
 const route = useRoute();
@@ -89,6 +107,8 @@ provide("recordPicker", recordPicker);
 
 const reservationUpdate = createEventHook();
 
+const { getOverdueReservations } = useReservations();
+
 const { data: location } = await useAsyncData("admin_location", async () => {
   const location = await pb
     .collection("location")
@@ -102,6 +122,9 @@ if (!location.value || !location.value.id) {
     statusMessage: "Page Not Found",
   });
 }
+
+const overdueReservations = ref<RecordModel[]>([]);
+overdueReservations.value = await getOverdueReservations(location.value?.id);
 
 function handleReservationUpdate() {
   reservationUpdate.trigger();
@@ -122,10 +145,10 @@ function handleNewReservationClick() {
 @import "~/assets/styles/breakpoints.scss";
 
 header {
-  margin-bottom: var(--fluid-spacing-12);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-bottom: var(--fluid-spacing-8);
   h1,
   h2 {
     margin: 0;
@@ -135,6 +158,9 @@ header {
     align-items: center;
     justify-content: space-between;
   }
+}
+.overdue {
+  margin-bottom: var(--fluid-spacing-8);
 }
 section {
   padding-top: 2rem;
@@ -156,7 +182,8 @@ section {
     "tab_past": "Past",
     "tab_shift": "Today",
     "tab_ongoing": "Ongoing",
-    "tab_future": "Future"
+    "tab_future": "Future",
+    "tab_overdue": "Overdue"
   },
   "de": {
     "title": "Reservierungen",
@@ -164,7 +191,8 @@ section {
     "tab_past": "Vergangene",
     "tab_shift": "Heutige",
     "tab_ongoing": "Laufende",
-    "tab_future": "Anstehende"
+    "tab_future": "Anstehende",
+    "tab_overdue": "Überfällige"
   }
 }
 </i18n>

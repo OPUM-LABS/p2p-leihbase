@@ -21,18 +21,16 @@
       </button>
     </template>
   </TabHeader>
+
   <AdminReservationTable
-    v-if="
-      status !== 'pending' &&
-      todaysReservations &&
-      todaysReservations.length > 0
-    "
-    :reservations="todaysReservations"
+    v-if="status !== 'pending' && reservations && reservations.length > 0"
+    :reservations="reservations"
     :date="date"
     highlight-date="date"
     :show-warning="(r) => new Date(r.end) < startOfUTCDate(date)"
     @select="(reservation) => emit('select', reservation)"
   />
+
   <p v-else-if="status !== 'pending'">
     <i>
       {{
@@ -75,7 +73,7 @@ props.reservationUpdateHook(() => {
 const date = ref(new Date(Date.now()));
 
 const {
-  data: todaysReservations,
+  data: reservations,
   refresh,
   status,
 } = await useAsyncData(

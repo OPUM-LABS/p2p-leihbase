@@ -7,6 +7,7 @@
             :class="activeTabId === tab.props?.id ? 'active' : ''"
             @click="handleClick(tab)"
           >
+            <WarningTriangle v-if="tab?.props?.warning" />
             {{ tab?.props?.title }}
           </button>
         </li>
@@ -17,7 +18,9 @@
 </template>
 
 <script setup lang="ts">
+import type { TabProps } from "./Tab.model";
 import type Tab from "./Tab.vue";
+import { WarningTriangle } from "@iconoir/vue";
 
 const props = defineProps<{ active: string }>();
 
@@ -28,11 +31,13 @@ defineSlots<{
 const slots = useSlots();
 const tabs = ref<VNode[]>(slots.default ? slots.default() : []);
 const activeTabId = ref<string | null>(props.active);
+const activeTabProps = ref<TabProps | undefined>();
 
 provide("activeTabId", activeTabId);
 
 function handleClick(tab: VNode) {
   activeTabId.value = tab.props?.id;
+  activeTabProps.value = tab.props as TabProps;
 }
 
 onBeforeMount(() => {
@@ -77,6 +82,8 @@ li:last-child {
   }
 }
 button {
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
   background: transparent;
   border-width: 1px 1px 1px 1px;
@@ -93,6 +100,13 @@ button {
   }
   @media screen and (min-width: $breakpoint-sm) {
     min-width: 6rem;
+  }
+  svg {
+    width: 1em;
+    height: 1em;
+    margin-right: 0.5rem;
+    margin-left: -0.25rem;
+    color: red;
   }
 }
 </style>
