@@ -16,7 +16,10 @@
       <tbody>
         <tr
           v-for="reservation in reservations"
-          :class="{cancelled: reservation.cancelled, warn: showWarning ? showWarning(reservation) : false}"
+          :class="{
+            cancelled: reservation.cancelled,
+            warn: showWarning ? showWarning(reservation) : false,
+          }"
           @click="handleReservationClick(reservation)"
         >
           <td
@@ -25,6 +28,7 @@
               highlight:
                 highlightDate === 'start' ||
                 highlightDate === 'both' ||
+                (highlightDate === 'overdue' && !reservation.started) ||
                 (highlightDate === 'date' &&
                   date &&
                   isSameDate(date, new Date(reservation.start))),
@@ -38,6 +42,9 @@
               highlight:
                 highlightDate === 'end' ||
                 highlightDate === 'both' ||
+                (highlightDate === 'overdue' &&
+                  reservation.started &&
+                  !reservation.ended) ||
                 (highlightDate === 'date' &&
                   date &&
                   isSameDate(date, new Date(reservation.end))),
@@ -92,8 +99,8 @@ const emit = defineEmits<{ select: [reservation: Reservation] }>();
 defineProps<{
   reservations: Reservation[];
   date?: Date;
-  highlightDate: "start" | "end" | "date" | "both";
-  showWarning?: (r: Reservation) => boolean
+  highlightDate: "start" | "end" | "date" | "both" | "overdue";
+  showWarning?: (r: Reservation) => boolean;
 }>();
 
 function handleReservationClick(reservation: Reservation) {
@@ -126,12 +133,12 @@ td {
     }
   }
 }
+tr.warn td.highlight {
+  color: rgb(172, 19, 19);
+}
 tr.cancelled td {
   text-decoration: line-through;
   opacity: 0.5;
-}
-tr.warn td {
-  background-color: #ff00001c;
 }
 
 tbody tr:hover {

@@ -4,7 +4,7 @@
   <AdminReservationTable
     v-else-if="reservations && reservations.length > 0"
     :reservations="reservations"
-    highlight-date="both"
+    highlight-date="overdue"
     :show-warning="() => true"
     @select="(reservation) => emit('select', reservation)"
   />

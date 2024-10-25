@@ -106,7 +106,7 @@ button {
     height: 1em;
     margin-right: 0.5rem;
     margin-left: -0.25rem;
-    color: red;
+    color: rgb(172, 19, 19);
   }
 }
 </style>

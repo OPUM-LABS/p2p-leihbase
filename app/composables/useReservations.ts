@@ -4,7 +4,7 @@ export function useReservations() {
   function getOverdueReservations(location: string) {
     return pb.collection("reservations").getFullList({
       filter: pb.filter(
-        "location = {:location} && end < @todayStart && ended = false",
+        "location = {:location} && (start < @todayStart && started = false) || (end < @todayStart && ended = false)",
         {
           location: location,
         }
