@@ -38,12 +38,6 @@ export default defineNuxtPlugin(async () => {
     pb.authStore.clear();
   }
 
-  if (pb.authStore.isValid) {
-    userStore.login({ name: pb.authStore.model.name });
-  } else {
-    userStore.logout();
-  }
-
   return {
     provide: { pocketbase: pb },
   };

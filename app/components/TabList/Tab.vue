@@ -3,10 +3,9 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  id: string;
-  title: string;
-}>();
+import { type TabProps } from "./Tab.model";
+
+const props = defineProps<TabProps>();
 
 const activeTabId = inject<Ref<string>>("activeTabId");
 
