@@ -17,8 +17,6 @@ export default defineNuxtModule({
     //   nuxt: '^3.0.0'
     // }
   },
-  // Shorthand sugar to register Nuxt hooks
-  hooks: {},
   // The function holding your module logic, it can be asynchronous
   setup() {
     const resolver = createResolver(import.meta.url);

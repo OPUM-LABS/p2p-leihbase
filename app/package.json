@@ -7,26 +7,29 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "taze:major": "taze major -wIr",
+    "taze:minor": "taze minor -wIr"
   },
   "dependencies": {
-    "@iconoir/vue": "^7.8.0",
-    "@nuxtjs/i18n": "^8.3.3",
-    "@shoelace-style/shoelace": "^2.16.0",
+    "@iconoir/vue": "^7.9.0",
+    "@nuxtjs/i18n": "^8.5.6",
+    "@shoelace-style/shoelace": "^2.18.0",
     "@vueup/vue-quill": "^1.2.0",
-    "@vueuse/core": "^11.1.0",
-    "cally": "^0.7.1",
+    "@vueuse/core": "^11.2.0",
+    "cally": "^0.7.2",
     "luxon": "^3.5.0",
-    "nuxt": "^3.12.4",
-    "pocketbase": "^0.21.4",
-    "vue": "^3.4.37",
-    "vue-router": "^4.4.3"
+    "nuxt": "^3.14.159",
+    "pocketbase": "^0.21.5",
+    "vue": "^3.5.12",
+    "vue-router": "^4.4.5"
   },
   "devDependencies": {
-    "@nuxt/kit": "^3.12.4",
-    "@pinia/nuxt": "^0.5.3",
-    "sass": "^1.77.8",
+    "@nuxt/kit": "^3.14.159",
+    "@pinia/nuxt": "^0.5.5",
+    "sass": "^1.80.6",
+    "taze": "^0.18.0",
     "typescript": "^5.6.3",
-    "vue-tsc": "^2.1.6"
+    "vue-tsc": "^2.1.10"
   }
 }
