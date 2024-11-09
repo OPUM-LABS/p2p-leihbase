@@ -1,4 +1,4 @@
-import { defineConfig, devices, selectors } from "@playwright/test";
+import { defineConfig, selectors } from "@playwright/test";
 import type { ConfigOptions } from "@nuxt/test-utils/playwright";
 
 // Selector to query, and unwrap a shadowroot element
@@ -49,8 +49,10 @@ export default defineConfig<ConfigOptions>({
       testMatch: /global\.setup\.ts/,
     },
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "Chromium",
+      use: {
+        channel: "chromium",
+      },
       dependencies: ["setup"],
     },
 
