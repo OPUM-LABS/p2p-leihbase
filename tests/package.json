@@ -13,14 +13,17 @@
     "test": "docker compose build; docker compose up -d; pnpm run playwright:test; docker compose down",
     "test:ui": "docker compose build; docker compose up -d; pnpm run playwright:test --ui; docker compose down",
     "test:headed": "docker compose up -d; pnpm run playwright:test --headed; docker compose down",
-    "playwright:test": "npx playwright test"
+    "playwright:test": "npx playwright test",
+    "taze:major": "taze major -wIr",
+    "taze:minor": "taze minor -wIr"
   },
   "devDependencies": {
-    "@nuxt/test-utils": "^3.13.1",
-    "@playwright/test": "^1.44.1",
-    "@types/node": "^20.14.2"
+    "@nuxt/test-utils": "^3.14.4",
+    "@playwright/test": "^1.48.2",
+    "@types/node": "^20.17.6",
+    "taze": "^0.18.0"
   },
   "dependencies": {
-    "pocketbase": "^0.21.3"
+    "pocketbase": "^0.21.5"
   }
 }
