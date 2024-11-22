@@ -10,7 +10,7 @@
       loading,
     }"
     :href="href"
-    :disabled="disabled"
+    :disabled="disabled || undefined"
     :data-client-mounted="isClientMounted"
   >
     <span v-if="$slots.prefix" class="prefix">
@@ -33,7 +33,13 @@ const props = withDefaults(
     loading?: boolean;
     disabled?: boolean;
   }>(),
-  { variant: "primary", size: "md", type: "button", loading: false }
+  {
+    variant: "primary",
+    size: "md",
+    type: "button",
+    loading: false,
+    disabled: false,
+  }
 );
 
 const { isClientMounted } = useClientMounted();
