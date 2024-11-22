@@ -37,7 +37,7 @@ if (plausibleTrackingDomain) {
 }
 
 if (isValid.value) {
-  userStore.login();
+  await userStore.login();
 } else {
   userStore.logout();
 }

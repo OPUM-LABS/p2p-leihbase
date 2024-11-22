@@ -3,7 +3,7 @@
     <NuxtLink to="/" class="logo">Leihbar<br />Köln</NuxtLink>
     <nav>
       <ul v-if="isValid">
-        <li v-if="userStore.locations.length > 0">
+        <li v-if="userStore.isAdmin">
           <NuxtLink to="/admin">{{ t("admin") }}</NuxtLink>
         </li>
         <li>
