@@ -48,7 +48,7 @@ onBeforeMount(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "~/assets/styles/breakpoints.scss";
+@use "~/assets/styles/breakpoints.scss";
 
 ul {
   --spacing-between: var(--fluid-spacing-4);
@@ -98,7 +98,7 @@ button {
     font-weight: var(--font-weight-semibold);
     border-bottom: 1px solid transparent;
   }
-  @media screen and (min-width: $breakpoint-sm) {
+  @media screen and (min-width: breakpoints.$breakpoint-sm) {
     min-width: 6rem;
   }
   svg {

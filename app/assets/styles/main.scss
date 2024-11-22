@@ -1,5 +1,5 @@
-@import "_reset.scss";
-@import "_breakpoints.scss";
+@use "_reset.scss";
+@use "_breakpoints.scss";
 
 :root {
   font-family: "Inter", sans-serif;
@@ -44,13 +44,13 @@
   --fluid-spacing-8: clamp(1rem, 4.5vw, 2rem);
   --fluid-spacing-12: clamp(1.5rem, 6vw, 4rem);
 
-  --container-sm: #{$breakpoint-sm};
-  --container-md: #{$breakpoint-md};
+  --container-sm: #{breakpoints.$breakpoint-sm};
+  --container-md: #{breakpoints.$breakpoint-md};
 
   --fluid-container-sm: clamp(
-    #{$breakpoint-sm},
-    calc(#{$breakpoint-sm * 0.93} + 7vw),
-    #{$breakpoint-sm * 2}
+    #{breakpoints.$breakpoint-sm},
+    calc(#{breakpoints.$breakpoint-sm * 0.93} + 7vw),
+    #{breakpoints.$breakpoint-sm * 2}
   );
 
   /**
@@ -190,7 +190,7 @@ hr {
   display: none;
 }
 
-@media screen and (min-width: $breakpoint-sm) {
+@media screen and (min-width: breakpoints.$breakpoint-sm) {
   .sm\:hidden {
     display: none;
   }
@@ -198,7 +198,7 @@ hr {
     display: block;
   }
 }
-@media screen and (min-width: $breakpoint-md) {
+@media screen and (min-width: breakpoints.$breakpoint-md) {
   .md\:hidden {
     display: none;
   }

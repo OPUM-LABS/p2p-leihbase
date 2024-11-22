@@ -40,7 +40,7 @@ const userStore = useUserStore();
 </script>
 
 <style lang="scss" scoped>
-@import "~/assets/styles/breakpoints.scss";
+@use "~/assets/styles/breakpoints";
 
 header {
   display: flex;
@@ -52,7 +52,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 10;
-  @media screen and (min-width: $breakpoint-sm) {
+  @media screen and (min-width: breakpoints.$breakpoint-sm) {
     padding: 0 2rem 0 1rem;
   }
 

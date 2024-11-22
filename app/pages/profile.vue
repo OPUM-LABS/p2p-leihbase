@@ -39,9 +39,9 @@ function onLogout() {
 </script>
 
 <style lang="scss" scoped>
-@import "~/assets/styles/_breakpoints.scss";
+@use "~/assets/styles/_breakpoints.scss";
 
-@media (min-width: $breakpoint-md) {
+@media (min-width: breakpoints.$breakpoint-md) {
   .banner {
     margin-top: 3rem;
   }

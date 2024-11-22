@@ -160,9 +160,9 @@ async function onSignup() {
 </script>
 
 <style lang="scss" scoped>
-@import "~/assets/styles/_breakpoints.scss";
+@use "~/assets/styles/_breakpoints.scss";
 
-@media (min-width: $breakpoint-sm) {
+@media (min-width: breakpoints.$breakpoint-sm) {
   .card {
     margin-block: 3rem;
   }

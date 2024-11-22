@@ -36,7 +36,7 @@ function handleDocumentKeyDown(e: KeyboardEvent) {
 </script>
 
 <style lang="scss" scoped>
-@import "~/assets/styles/breakpoints.scss";
+@use "~/assets/styles/breakpoints.scss";
 
 .overlay {
   position: fixed;
@@ -70,13 +70,13 @@ function handleDocumentKeyDown(e: KeyboardEvent) {
   &.inset {
     padding: 2rem;
   }
-  @media screen and (min-width: $breakpoint-sm) {
+  @media screen and (min-width: breakpoints.$breakpoint-sm) {
     width: 80%;
     &.open {
       left: 20%;
     }
   }
-  @media screen and (min-width: $breakpoint-md) {
+  @media screen and (min-width: breakpoints.$breakpoint-md) {
     width: 66.66%;
     &.open {
       left: 33.33%;

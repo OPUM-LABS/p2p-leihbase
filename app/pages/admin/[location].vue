@@ -142,7 +142,7 @@ function handleNewReservationClick() {
 </script>
 
 <style lang="scss" scoped>
-@import "~/assets/styles/breakpoints.scss";
+@use "~/assets/styles/breakpoints.scss";
 
 header {
   display: flex;
@@ -153,7 +153,7 @@ header {
   h2 {
     margin: 0;
   }
-  @media screen and (min-width: $breakpoint-sm) {
+  @media screen and (min-width: breakpoints.$breakpoint-sm) {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -165,7 +165,7 @@ header {
 section {
   padding-top: 2rem;
 }
-@media screen and (max-width: $breakpoint-sm) {
+@media screen and (max-width: breakpoints.$breakpoint-sm) {
   .tablist :deep(ul.tablist) {
     --spacing-start: var(--fluid-spacing-8);
     --spacing-end: var(--fluid-spacing-8);

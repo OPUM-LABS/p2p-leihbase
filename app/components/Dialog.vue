@@ -32,7 +32,7 @@ const open = defineModel("open");
 </script>
 
 <style lang="scss" scoped>
-@import "~/assets/styles/breakpoints.scss";
+@use "~/assets/styles/breakpoints.scss";
 
 .background {
   position: fixed;
@@ -75,7 +75,7 @@ const open = defineModel("open");
   &.inset {
     padding: 2rem;
   }
-  @media screen and (min-width: $breakpoint-sm) {
+  @media screen and (min-width: breakpoints.$breakpoint-sm) {
     height: auto;
     max-height: 90vh;
   }
