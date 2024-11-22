@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { formatDate } from "./date";
+import { formatDate, getStartOfDay } from "./date";
 
 type OpeningHoursRange = {
   from: string;
@@ -67,6 +67,7 @@ export function openingHoursToString(
   const closed = (openingHours?.except?.dates || [])
     .filter(
       (d) =>
+        new Date(d) >= getStartOfDay() &&
         new Date(d) < nextWeek &&
         isInOpeningHoursDay(_openingHours, new Date(d))
     )
