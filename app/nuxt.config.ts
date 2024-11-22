@@ -20,6 +20,16 @@ export default defineNuxtConfig({
     },
   },
 
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern",
+        },
+      },
+    },
+  },
+
   modules: ["@pinia/nuxt", "./modules/pocketbase", "@nuxtjs/i18n"],
 
   devtools: { enabled: true },
