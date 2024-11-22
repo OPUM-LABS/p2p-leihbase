@@ -87,10 +87,6 @@ import { formatDate, isSameDate } from "~/lib/date";
 import type { Reservation } from "~/models/reservation";
 import { Check, Xmark, MessageText } from "@iconoir/vue";
 
-if (import.meta.client) {
-  await import("@shoelace-style/shoelace/dist/components/tooltip/tooltip.js");
-}
-
 const { t, locale } = useI18n({
   useScope: "local",
 });

@@ -142,6 +142,16 @@ h2,
   font-size: 1.5rem;
   font-weight: var(--font-weight-bold);
 }
+h3,
+.h3 {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
+}
+h4,
+.h4 {
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-bold);
+}
 
 a {
   color: var(--text-secondary);
@@ -183,7 +193,7 @@ hr {
 // Hide custom element (shoelace elements) until
 // they have been loaded
 :not(:defined) {
-  visibility: hidden;
+  display: none;
 }
 
 .hidden {

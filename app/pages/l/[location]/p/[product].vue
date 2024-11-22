@@ -65,6 +65,19 @@
           </p>
         </div>
 
+        <div v-if="userStore.isAdmin" class="info-admin">
+          <h2 class="h4">
+            {{ t("admin_notes") }}
+            <Tooltip :html="t('admin_notes_tooltip')">
+              <Lock />
+            </Tooltip>
+          </h2>
+          <span v-if="product?.notes" v-html="product?.notes" />
+          <span v-else>
+            <i>{{ t("admin_notes_none") }}</i>
+          </span>
+        </div>
+
         <hr />
 
         <ReservationsBox
@@ -145,6 +158,7 @@ import {
   startOfDate as getStartOfDate,
   isSameDate,
 } from "~/lib/date";
+import { Lock } from "@iconoir/vue";
 
 if (process.client) {
   await import("@shoelace-style/shoelace/dist/components/dialog/dialog.js");
@@ -189,7 +203,7 @@ const { data: location } = await useAsyncData("location", async () => {
 });
 const { data: product } = await useAsyncData("product", async () => {
   const product = await pb
-    .collection("public_products")
+    .collection(userStore.isAdmin ? "products" : "public_products")
     .getOne(route.params.product, {
       expand: "categories",
     });
@@ -393,6 +407,28 @@ section {
     .info-body {
       margin-bottom: 2rem;
     }
+    .info-admin {
+      background-color: #0d79f212;
+      padding: 1rem;
+      border-radius: 5px;
+      h2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.25rem;
+        margin-bottom: 0.5rem;
+        :deep(svg) {
+          width: 1.2em;
+          height: 1.2em;
+        }
+      }
+      :deep(p) {
+        margin-bottom: 0.5rem;
+      }
+      :deep(p:last-child) {
+        margin: 0;
+      }
+    }
     .upcoming-reservations {
       margin-bottom: 2rem;
     }
@@ -431,6 +467,9 @@ sl-dialog form {
 {
   "en": {
     "deposit": "Deposit",
+    "admin_notes": "Admin notes",
+    "admin_notes_none": "None",
+    "admin_notes_tooltip": "Only visible for admin users",
     "reservations": "Reservations",
     "reserve_button": "Reserve",
     "opening_hours_of": "Opening hours of",
@@ -448,6 +487,9 @@ sl-dialog form {
   },
   "de": {
     "deposit": "Pfand",
+    "admin_notes": "Admin Notiz",
+    "admin_notes_none": "Keine",
+    "admin_notes_tooltip": "Nur sichtbar für Admin-Benutzer",
     "reservations": "Reservierungen",
     "reserve_button": "Reservieren",
     "opening_hours_of": "Öffnungszeiten von",

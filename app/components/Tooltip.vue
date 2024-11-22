@@ -13,6 +13,10 @@
 </template>
 
 <script setup lang="ts">
+if (import.meta.client) {
+  await import("@shoelace-style/shoelace/dist/components/tooltip/tooltip.js");
+}
+
 defineProps<{ html: string }>();
 const open = ref(false);
 function handleClick() {
