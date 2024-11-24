@@ -67,6 +67,22 @@
         :label="t('cancelled')"
         v-model="cancelled"
       />
+      <div class="sent-emails">
+        <strong>{{ t("sent_emails") }}</strong>
+        <ul
+          v-if="
+            props.reservation?.sent_emails &&
+            props.reservation.sent_emails.length > 0
+          "
+        >
+          <li v-for="email in props.reservation?.sent_emails">
+            <Mail /> {{ t("email_" + email) }}
+          </li>
+        </ul>
+        <p v-else>
+          {{ t("sent_emails_none") }}
+        </p>
+      </div>
       <Alert v-if="error" variant="error">{{ error }}</Alert>
       <footer>
         <Button :loading="isSubmitting" type="submit">{{ t("save") }}</Button>
@@ -95,7 +111,7 @@
 
 <script lang="ts" setup>
 import RecordPickerInput from "~/components/admin/RecordPickerInput.vue";
-import { Trash } from "@iconoir/vue";
+import { Mail, Trash } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
 import type { Reservation } from "~/models/reservation";
 
@@ -250,6 +266,29 @@ footer {
 .remove-dialog-text {
   margin-bottom: 1.666rem;
 }
+.sent-emails {
+  width: 100%;
+  background-color: var(--background-neutral);
+  padding: 1rem;
+  border-radius: 5px;
+}
+.sent-emails ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sent-emails p {
+  margin: 0;
+}
+.sent-emails li {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.sent-emails li svg {
+  height: 1.2em;
+  width: 1.2em;
+}
 </style>
 
 <i18n lang="json">
@@ -269,6 +308,11 @@ footer {
     "note": "Note",
     "save": "Save",
     "cancel": "Cancel",
+    "sent_emails": "Sent E-mails",
+    "sent_emails_none": "None",
+    "email_confirmation": "Reservation confirmation",
+    "email_start_reminder": "Reservation start reminder",
+    "email_end_reminder": "Reservation end reminder",
     "remove_dialog": {
       "title": "Remove reservieration",
       "text": "Are you sure you want to remove this reservation? There is no way to undo this.",
@@ -297,6 +341,11 @@ footer {
     "note": "Notiz  ",
     "save": "Speichern",
     "cancel": "Abbrechen",
+    "sent_emails": "Gesendete E-Mails",
+    "sent_emails_none": "Keine",
+    "email_confirmation": "Reservierungsbestätigung",
+    "email_start_reminder": "Erinnerung: Abholung",
+    "email_end_reminder": "Erinnerung: Zurückbringen",
     "remove_dialog": {
       "title": "Reservierung entfernen",
       "text": "Bist du sicher, dass du diese Reservierung endgültig entfernen möchtest?",
