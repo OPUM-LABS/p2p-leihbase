@@ -28,6 +28,12 @@ setup.describe("setup", () => {
         address: "Example Street 1, Example City",
         slug: "test-store",
         opening_hours: {
+          tuesday: [
+            {
+              from: "18:00",
+              to: "19:00",
+            },
+          ],
           friday: [
             {
               from: "17:00",
