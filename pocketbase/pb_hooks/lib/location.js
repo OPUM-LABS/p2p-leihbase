@@ -30,6 +30,7 @@ function sendReminders(location, type) {
   const { getReminderEmail } = require(`${__hooks}/lib/reservation`);
 
   // Get reservations starting or ending tomorrow
+  const startOfToday = startOfDate(new Date());
   const startOfTomorrow = startOfDate(addDays(new Date(), 1));
   const endOfTomorrow = endOfDate(addDays(new Date(), 1));
   const reservations = $app
@@ -37,7 +38,7 @@ function sendReminders(location, type) {
     .findRecordsByFilter(
       "reservations",
       type === "start"
-        ? `location = {:location} && cancelled != true && user != "" && sent_reminders !~ "start" && start >= {:startOfTomorrow} && start <= {:endOfTomorrow}`
+        ? `location = {:location} && cancelled != true && user != "" && created < {:startOfToday} && sent_reminders !~ "start" && start >= {:startOfTomorrow} && start <= {:endOfTomorrow}`
         : `location = {:location} && cancelled != true && user != "" && started = true && ended = false && sent_reminders !~ "end" && end >= {:startOfTomorrow} && end <= {:endOfTomorrow}`,
       null,
       100,
@@ -45,6 +46,7 @@ function sendReminders(location, type) {
       {
         type,
         location: location.get("id"),
+        startOfToday,
         startOfTomorrow,
         endOfTomorrow,
       }
