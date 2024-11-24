@@ -1,7 +1,9 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 onRecordBeforeCreateRequest((e) => {
+  /** @type {typeof import('./lib/reservation')} */
   const { hasOverlappingReservations } = require(`${__hooks}/lib/reservation`);
+
   const { record, httpContext } = e;
   var startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
@@ -47,8 +49,11 @@ onRecordBeforeCreateRequest((e) => {
 
   // Make sure there is no overlapping reservation for the same product in the
   // same timespan
-  const locationConfig = location.getString("config") ? JSON.parse(location.getString("config")) : {};
-  const allowSameDayReservations = isLocationUser || !!locationConfig['allow_same_day_reservations'];
+  const locationConfig = location.getString("config")
+    ? JSON.parse(location.getString("config")) || {}
+    : {};
+  const allowSameDayReservations =
+    isLocationUser || !!locationConfig["allow_same_day_reservations"];
   if (hasOverlappingReservations(record, allowSameDayReservations)) {
     throw new BadRequestError("Overlapping_reservation.");
   }
@@ -62,17 +67,25 @@ onRecordBeforeCreateRequest((e) => {
 }, "reservations");
 
 onRecordBeforeUpdateRequest((e) => {
+  /** @type {typeof import('./lib/reservation')} */
   const { hasOverlappingReservations } = require(`${__hooks}/lib/reservation`);
+
   const { record, httpContext } = e;
   const requestUser = httpContext.get("authRecord");
+  const isAdmin = httpContext.get("admin");
   $app.dao().expandRecord(record, ["location"], null);
   const location = record.expandedOne("location");
-  const isLocationUser = location.get("users").includes(requestUser.get("id"));
+  const isLocationUser = requestUser
+    ? location.get("users").includes(requestUser.get("id"))
+    : false;
 
   // Make sure there is no overlapping reservation for the same product in the
   // same timespan
-  const locationConfig = JSON.parse(location.get("config"));
-  const allowSameDayReservations = isLocationUser || !!locationConfig.allow_same_day_reservations;
+  const locationConfig = location.getString("config")
+    ? JSON.parse(location.getString("config")) || {}
+    : {};
+  const allowSameDayReservations =
+    isAdmin || isLocationUser || !!locationConfig.allow_same_day_reservations;
   if (hasOverlappingReservations(record, allowSameDayReservations)) {
     throw new BadRequestError("Overlapping_reservation.");
   }
@@ -80,7 +93,12 @@ onRecordBeforeUpdateRequest((e) => {
 
 onRecordAfterCreateRequest((e) => {
   const locale = $os.getenv("CONFIG_LOCALE") || "en";
+
+  /** @type {typeof import('./lib/reservation')} */
+  const { saveSentEmail } = require(`${__hooks}/lib/reservation`);
+  /** @type {typeof import('./lib/location')} */
   const { getNotificationEmailAddresses } = require(`${__hooks}/lib/location`);
+  /** @type {typeof import('./lib/emails.en')} */
   const {
     reservationConfirmationEmail,
     reservationConfirmationLocationEmail,
@@ -165,5 +183,7 @@ onRecordAfterCreateRequest((e) => {
       }),
     });
     $app.newMailClient().send(email);
+    // Store that email has been sent
+    saveSentEmail(record, "confirmation");
   }
 }, "reservations");
