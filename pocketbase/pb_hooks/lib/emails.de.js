@@ -81,8 +81,60 @@ ${
 }`,
   });
 
+  const reservationStartReminderEmail = ({
+    locationName,
+    productName,
+    start,
+    startHour,
+    endHour,
+  }) => ({
+    subject: `Abhollen von '${productName}'`,
+    html: `Hi,<br>
+<br>
+du hast bei ${locationName} den Gegenstand ${productName} reserviert. Der Gegenstand liegt
+morgen (${formatDate(start)}) ${
+      startHour && endHour ? `zwischen ${startHour} und ${endHour}` : ""
+    }
+bereit. Bitte denke daran, deinen Gegenstand abzuholen. Falls du ihn nicht mehr benötigst,
+antworte auf diese Mail, um deine Reservierung zu stornieren.<br>
+<br>
+Danke, dass du dich für Leihen statt Kaufen entscheidest!<br>
+<br>
+Liebe Grüße<br>
+Dein LeihBar-Team<br>`,
+  });
+
+  const reservationEndReminderEmail = ({
+    locationName,
+    productName,
+    end,
+    startHour,
+    endHour,
+  }) => ({
+    subject: `Züruckbringen von '${productName}'`,
+    html: `Hi,<br>
+<br>
+wir hoffen, mit dem Gegenstand ${productName} hat alles gut funktioniert!
+<br>
+Deine Leihfrist endet morgen (${formatDate(end)}), also bring uns den
+Gegenstand bitte zurück zur ${locationName}.<br>
+<br>
+${
+  startHour && endHour
+    ? `${locationName} ist geöffnet von ${startHour} bis ${endHour}.<br>
+<br>`
+    : ""
+}
+Danke, und bis morgen!<br>
+<br>
+Liebe Grüße<br>
+dein LeihBar-Team`,
+  });
+
   return {
     reservationConfirmationEmail,
     reservationConfirmationLocationEmail,
+    reservationStartReminderEmail,
+    reservationEndReminderEmail,
   };
 })();

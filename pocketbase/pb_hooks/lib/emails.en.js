@@ -77,8 +77,56 @@ ${
 }`,
   });
 
+  const reservationStartReminderEmail = ({
+    locationName,
+    productName,
+    start,
+    startHour,
+    endHour,
+  }) => ({
+    subject: `Pick-up of '${productName}'`,
+    html: `Hi,<br>
+<br>
+you reserved a ${productName} at ${locationName}. The item can be picked up tomorrow
+(${formatDate(start)}) ${
+      startHour && endHour ? `between ${startHour} and ${endHour}` : ""
+    }. Please answer on this e-mail, in case you want to cancel the reservation.<br>
+<br>
+Thank you that you choose for borrowing instead of buying!<br>
+<br>
+See you soon<br>
+Your LeihBar<br>`,
+  });
+
+  const reservationEndReminderEmail = ({
+    locationName,
+    productName,
+    end,
+    startHour,
+    endHour,
+  }) => ({
+    subject: `Return of '${productName}'`,
+    html: `Hi,<br>
+<br>
+we hope everything worked out well with the item '${productName}'!
+<br>
+The borrow-period ends tomorrow (${formatDate(end)}), so we would like to
+remind you of returning it to ${locationName}.<br>
+<br>
+${
+  startHour && endHour
+    ? `${locationName} is tomorrow open from ${startHour} to ${endHour}.<br>
+<br>`
+    : ""
+}
+Thank you, and see you tomorrow!<br>
+Your LeihBar-Team`,
+  });
+
   return {
     reservationConfirmationEmail,
     reservationConfirmationLocationEmail,
+    reservationStartReminderEmail,
+    reservationEndReminderEmail,
   };
 })();
