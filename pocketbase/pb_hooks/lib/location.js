@@ -1,7 +1,12 @@
+/**
+ * @param {models.Record} locationRecord
+ * @returns
+ */
 function getNotificationEmailAddresses(locationRecord) {
   if (!locationRecord.getString("notifications")) {
     return [];
   }
+  /** @type {string[]} */
   const notifications = JSON.parse(locationRecord.getString("notifications"));
   if (
     !notifications ||
@@ -19,7 +24,9 @@ function getNotificationEmailAddresses(locationRecord) {
  * @param {'start'|'end'} type
  */
 function sendReminders(location, type) {
+  /** @type {typeof import('./date')} */
   const { addDays, startOfDate, endOfDate } = require(`${__hooks}/lib/date`);
+  /** @type {typeof import('./reservation')} */
   const { getReminderEmail } = require(`${__hooks}/lib/reservation`);
 
   // Get reservations starting or ending tomorrow

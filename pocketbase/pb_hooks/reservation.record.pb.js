@@ -1,7 +1,9 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 onRecordBeforeCreateRequest((e) => {
+  /** @type {typeof import('./lib/reservation')} */
   const { hasOverlappingReservations } = require(`${__hooks}/lib/reservation`);
+
   const { record, httpContext } = e;
   var startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
@@ -65,7 +67,9 @@ onRecordBeforeCreateRequest((e) => {
 }, "reservations");
 
 onRecordBeforeUpdateRequest((e) => {
+  /** @type {typeof import('./lib/reservation')} */
   const { hasOverlappingReservations } = require(`${__hooks}/lib/reservation`);
+
   const { record, httpContext } = e;
   const requestUser = httpContext.get("authRecord");
   const isAdmin = httpContext.get("admin");
@@ -87,7 +91,10 @@ onRecordBeforeUpdateRequest((e) => {
 
 onRecordAfterCreateRequest((e) => {
   const locale = $os.getenv("CONFIG_LOCALE") || "en";
+
+  /** @type {typeof import('./lib/location')} */
   const { getNotificationEmailAddresses } = require(`${__hooks}/lib/location`);
+  /** @type {typeof import('./lib/emails.en')} */
   const {
     reservationConfirmationEmail,
     reservationConfirmationLocationEmail,

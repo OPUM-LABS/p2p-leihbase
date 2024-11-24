@@ -1,6 +1,12 @@
-function hasOverlappingReservations(record, allowSameDay) {
+/**
+ * Checks if a reservation has other overlapping reservations
+ * @param {models.Record} reservation
+ * @param {boolean} allowSameDay
+ * @returns {boolean}
+ */
+function hasOverlappingReservations(reservation, allowSameDay) {
   // A cancelled reservation is allowed to have an overlap
-  if (record.get("cancelled")) {
+  if (reservation.get("cancelled")) {
     return false;
   }
   // When allowing same day reservations the start of one reservation can be on
@@ -12,24 +18,31 @@ function hasOverlappingReservations(record, allowSameDay) {
     .dao()
     .findRecordsByFilter(
       "reservations",
-      record.get("id")
+      reservation.get("id")
         ? `id != {:id} && product = {:product} && cancelled != true && ${startEndComparison}`
         : `product = {:product} && cancelled != true && ${startEndComparison}`,
       null,
       1,
       0,
       {
-        id: record.get("id"),
-        product: record.get("product"),
-        start: record.get("start"),
-        end: record.get("end"),
+        id: reservation.get("id"),
+        product: reservation.get("product"),
+        start: reservation.get("start"),
+        end: reservation.get("end"),
       }
     );
   return records.length > 0;
 }
 
+/**
+ * Generates a start/end reservation reminder email
+ * @param {models.Record} reservation
+ * @param {'start'|'end'} type
+ * @returns { { to: { address: string }[], subject: string, html: string } }
+ */
 function getReminderEmail(reservation, type) {
   const locale = $os.getenv("CONFIG_LOCALE") || "en";
+  /** @type {typeof import('./emails.en')} */
   const {
     reservationStartReminderEmail,
     reservationEndReminderEmail,
@@ -54,7 +67,7 @@ function getReminderEmail(reservation, type) {
 
   if (type === "start") {
     return {
-      to: [{ address: user.get("email") }],
+      to: [{ address: user.getString("email") }],
       ...reservationStartReminderEmail({
         locationName: location.get("name"),
         productName: product.get("name"),
