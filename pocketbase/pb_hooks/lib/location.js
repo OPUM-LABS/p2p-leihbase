@@ -27,7 +27,10 @@ function sendReminders(location, type) {
   /** @type {typeof import('./date')} */
   const { addDays, startOfDate, endOfDate } = require(`${__hooks}/lib/date`);
   /** @type {typeof import('./reservation')} */
-  const { getReminderEmail } = require(`${__hooks}/lib/reservation`);
+  const {
+    saveSentEmail,
+    getReminderEmail,
+  } = require(`${__hooks}/lib/reservation`);
 
   // Get reservations starting or ending tomorrow
   const startOfToday = startOfDate(new Date());
@@ -38,8 +41,8 @@ function sendReminders(location, type) {
     .findRecordsByFilter(
       "reservations",
       type === "start"
-        ? `location = {:location} && cancelled != true && user != "" && created < {:startOfToday} && sent_reminders !~ "start" && start >= {:startOfTomorrow} && start <= {:endOfTomorrow}`
-        : `location = {:location} && cancelled != true && user != "" && started = true && ended = false && sent_reminders !~ "end" && end >= {:startOfTomorrow} && end <= {:endOfTomorrow}`,
+        ? `location = {:location} && cancelled != true && user != "" && created < {:startOfToday} && sent_emails !~ "start_reminder" && start >= {:startOfTomorrow} && start <= {:endOfTomorrow}`
+        : `location = {:location} && cancelled != true && user != "" && started = true && ended = false && sent_emails !~ "end_reminder" && end >= {:startOfTomorrow} && end <= {:endOfTomorrow}`,
       null,
       100,
       0,
@@ -55,7 +58,9 @@ function sendReminders(location, type) {
   console.log(
     `[location/reservation-reminders] found ${
       reservations.length
-    } reservations to ${type} tomorrow for location '${location.get("name")}'`
+    } reservations to remind of ${type}ing tomorrow for location '${location.get(
+      "name"
+    )}'`
   );
 
   // Send start/end reminder for each found reservation
@@ -79,10 +84,7 @@ function sendReminders(location, type) {
     );
 
     // Save that reminder has been send
-    const sent_reminders = reservation.getStringSlice("sent_reminders");
-    sent_reminders.push(type);
-    reservation.set("sent_reminders", sent_reminders);
-    $app.dao().saveRecord(reservation);
+    saveSentEmail(reservation, `${type}_reminder`);
   });
 }
 

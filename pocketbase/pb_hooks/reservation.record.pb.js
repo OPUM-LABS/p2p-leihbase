@@ -94,6 +94,8 @@ onRecordBeforeUpdateRequest((e) => {
 onRecordAfterCreateRequest((e) => {
   const locale = $os.getenv("CONFIG_LOCALE") || "en";
 
+  /** @type {typeof import('./lib/reservation')} */
+  const { saveSentEmail } = require(`${__hooks}/lib/reservation`);
   /** @type {typeof import('./lib/location')} */
   const { getNotificationEmailAddresses } = require(`${__hooks}/lib/location`);
   /** @type {typeof import('./lib/emails.en')} */
@@ -181,5 +183,7 @@ onRecordAfterCreateRequest((e) => {
       }),
     });
     $app.newMailClient().send(email);
+    // Store that email has been sent
+    saveSentEmail(record, "confirmation");
   }
 }, "reservations");

@@ -7,7 +7,7 @@ migrate((db) => {
   collection.schema.addField(new SchemaField({
     "system": false,
     "id": "42btief7",
-    "name": "sent_reminders",
+    "name": "sent_emails",
     "type": "select",
     "required": false,
     "presentable": false,
@@ -15,8 +15,9 @@ migrate((db) => {
     "options": {
       "maxSelect": 2,
       "values": [
-        "start",
-        "end"
+        "confirmation",
+        "start_reminder",
+        "end_reminder"
       ]
     }
   }))

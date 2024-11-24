@@ -35,6 +35,17 @@ function hasOverlappingReservations(reservation, allowSameDay) {
 }
 
 /**
+ * @param {models.Record} reservation
+ * @param {'confirmation'|'start_reminder'|'end_reminder'} type
+ */
+function saveSentEmail(reservation, type) {
+  const sent_emails = reservation.getStringSlice("sent_emails");
+  sent_emails.push(type);
+  reservation.set("sent_emails", sent_emails);
+  $app.dao().saveRecord(reservation);
+}
+
+/**
  * Generates a start/end reservation reminder email
  * @param {models.Record} reservation
  * @param {'start'|'end'} type
@@ -102,5 +113,6 @@ function getReminderEmail(reservation, type) {
 
 module.exports = {
   hasOverlappingReservations,
+  saveSentEmail,
   getReminderEmail,
 };
