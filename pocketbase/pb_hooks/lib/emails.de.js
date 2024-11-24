@@ -88,7 +88,7 @@ ${
     startHour,
     endHour,
   }) => ({
-    subject: `Abholen von den Gegenstand '${productName}'`,
+    subject: `Abholen des Gegenstands '${productName}'`,
     html: `Hi,<br>
 <br>
 du hast bei ${locationName} den Gegenstand '${productName}' reserviert. Der Gegenstand liegt
@@ -111,7 +111,7 @@ Dein LeihBar-Team<br>`,
     startHour,
     endHour,
   }) => ({
-    subject: `Zurückbringen von den Gegenstand '${productName}'`,
+    subject: `Zurückbringen des Gegenstands '${productName}'`,
     html: `Hi,<br>
 <br>
 wir hoffen, mit dem Gegenstand ${productName} hat alles gut funktioniert!
