@@ -88,10 +88,10 @@ ${
     startHour,
     endHour,
   }) => ({
-    subject: `Abhollen von '${productName}'`,
+    subject: `Abholen von den Gegenstand '${productName}'`,
     html: `Hi,<br>
 <br>
-du hast bei ${locationName} den Gegenstand ${productName} reserviert. Der Gegenstand liegt
+du hast bei ${locationName} den Gegenstand '${productName}' reserviert. Der Gegenstand liegt
 morgen (${formatDate(start)}) ${
       startHour && endHour ? `zwischen ${startHour} und ${endHour}` : ""
     }
@@ -111,7 +111,7 @@ Dein LeihBar-Team<br>`,
     startHour,
     endHour,
   }) => ({
-    subject: `Züruckbringen von '${productName}'`,
+    subject: `Zurückbringen von den Gegenstand '${productName}'`,
     html: `Hi,<br>
 <br>
 wir hoffen, mit dem Gegenstand ${productName} hat alles gut funktioniert!
