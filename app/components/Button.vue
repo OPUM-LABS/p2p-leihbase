@@ -56,7 +56,7 @@ button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border-radius: 0;
+  border-radius: var(--border-radius);
   cursor: pointer;
   text-decoration: none;
 
