@@ -78,8 +78,6 @@
           </span>
         </div>
 
-        <hr />
-
         <ReservationsBox
           :title="t('reservations')"
           :reservations="reservations"
@@ -405,12 +403,13 @@ section {
       margin: 0;
     }
     .info-body {
-      margin-bottom: 2rem;
+      margin-bottom: var(--fluid-spacing-8);
     }
     .info-admin {
       background-color: #0d79f212;
       padding: 1rem;
       border-radius: 5px;
+      margin-bottom: var(--fluid-spacing-8);
       h2 {
         display: flex;
         align-items: center;

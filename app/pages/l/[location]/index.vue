@@ -41,7 +41,6 @@
         ></span>
       </div>
     </header>
-    <hr />
     <section>
       <ProductGrid :location="location" />
     </section>
@@ -79,6 +78,7 @@ section {
   margin-bottom: var(--fluid-spacing-8);
 }
 header {
+  margin-bottom:  var(--fluid-spacing-8);
   .links {
     display: flex;
     gap: var(--fluid-spacing-4);
