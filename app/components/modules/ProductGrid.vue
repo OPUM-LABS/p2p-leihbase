@@ -2,9 +2,16 @@
   <div>
     <header>
       <h2>{{ props.title || t("products") }}</h2>
+      <InputField
+        :placeholder="`${t('search')}...`"
+        @input="onSearchInput"
+        @blur="onSearchBlur"
+        v-model="query"
+        class="lb-input search-input"
+      />
     </header>
     <div class="filters">
-      <ul class="categories">
+      <ul class="categories" :class="{ 'show-all': showAllCategories }">
         <li v-for="category in categories" :key="category.id">
           <NuxtLink
             :href="
@@ -18,14 +25,11 @@
           </NuxtLink>
         </li>
       </ul>
-      <div>
-        <InputField
-          :placeholder="`${t('search')}...`"
-          @input="onSearchInput"
-          @blur="onSearchBlur"
-          v-model="query"
-          class="search-input"
-        />
+      <div v-show="!showAllCategories" class="more-categories">
+        <button @click="showAllCategories = true">
+          {{ t("more_categories") }}
+          <NavArrowDown />
+        </button>
       </div>
     </div>
     <div v-if="products && products.length > 0" class="products">
@@ -63,7 +67,7 @@
 </template>
 
 <script setup>
-import { ArrowRight } from "@iconoir/vue";
+import { ArrowDown, ArrowRight, NavArrowDown } from "@iconoir/vue";
 import { ArrowLeft } from "@iconoir/vue";
 import ProductCard from "~/components/ProductCard.vue";
 
@@ -87,6 +91,9 @@ const route = useRoute();
 const categoryId = ref(route.query.category);
 const page = ref(route.query.page);
 const query = ref(route.query.query);
+
+// TODO: hide all categories by default
+const showAllCategories = ref(true);
 
 watch(
   () => route.query.category,
@@ -188,37 +195,76 @@ function getUrl(overwrites) {
 
 header {
   margin-bottom: var(--fluid-spacing-4);
-  h2 {
-    margin: 0;
-  }
-}
-.filters {
   display: grid;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
   grid-template-columns: repeat(1, minmax(0, 1fr));
+  align-items: center;
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    h2 {
+      margin: 0;
+    }
   }
-  .search-input {
-    width: 100%;
+}
+.search-input {
+  background-color: white;
+}
+.filters {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+.more-categories {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: stretch;
+  &::before {
+    content: "";
+    display: block;
+    width: 3rem;
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--body-bg-color) 0%, transparent) 0%,
+      var(--body-bg-color) 66%
+    );
+  }
+  button {
+    background-color: var(--button-secondary-bg-color);
+    border: 2px solid transparent;
+    color: var(--button-secondary-text-color);
+    border-radius: var(--border-radius);
+    padding: 0.333rem 0.666rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      border: 2px solid var(--bg-primary);
+    }
+    svg {
+      stroke-width: 1;
+    }
   }
 }
 .categories {
   list-style: none;
   display: flex;
-  flex-wrap: wrap;
   padding: 0;
-  gap: 0.5rem;
+  gap: 0.333rem;
   margin: 0;
+  overflow-x: hidden;
+  &.show-all {
+    overflow-x: visible;
+    flex-wrap: wrap;
+  }
   a {
+    width: max-content;
     display: inline-block;
-    background-color: var(--bg-secondary-light);
+    background-color: var(--button-secondary-bg-color);
     border: 2px solid transparent;
-    color: var(--body-text-color);
+    color: var(--button-secondary-text-color);
     text-decoration: none;
-    padding: 0.5rem 1rem;
+    padding: 0.333rem 0.666rem;
+    border-radius: var(--border-radius);
     &:hover {
       border: 2px solid var(--bg-primary);
     }
@@ -280,6 +326,7 @@ header {
   "en": {
     "products": "Products",
     "search": "Search",
+    "more_categories": "More categories",
     "previous_page": "Previous page",
     "next_page": "Next page",
     "no_products_found": "No products found"
@@ -287,6 +334,7 @@ header {
   "de": {
     "products": "Gegenstände",
     "search": "Suchen",
+    "more_categories": "Mehr kategorien",
     "previous_page": "Vorherige Seite",
     "next_page": "Nächste Seite",
     "no_products_found": "Keine Produkte gefunden"
