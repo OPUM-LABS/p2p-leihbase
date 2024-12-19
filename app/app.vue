@@ -31,17 +31,22 @@ const { fetch } = useLeihbase();
 const { leihbase } = storeToRefs(useLeihbase());
 await fetch();
 
-if (plausibleTrackingDomain) {
-  useHead({
-    script: [
-      {
-        defer: true,
-        "data-domain": plausibleTrackingDomain,
-        src: "https://plausible.io/js/script.js",
-      },
-    ],
-  });
-}
+const style = [
+  `body {
+  ${leihbase.value.style}
+}`,
+];
+
+useHead({
+  script: [
+    plausibleTrackingDomain && {
+      defer: true,
+      "data-domain": plausibleTrackingDomain,
+      src: "https://plausible.io/js/script.js",
+    },
+  ],
+  style,
+});
 
 if (isValid.value) {
   await userStore.login();
