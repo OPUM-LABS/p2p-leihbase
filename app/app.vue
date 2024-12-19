@@ -13,6 +13,7 @@ import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.j
 import { useUserStore } from "./stores/user";
 import NavBar from "./components/modules/NavBar.vue";
 import Footer from "./components/modules/Footer.vue";
+import { useLeihbase } from "./stores/leihbase";
 
 setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/"
@@ -23,6 +24,12 @@ const userStore = useUserStore();
 const {
   public: { plausibleTrackingDomain },
 } = useRuntimeConfig();
+
+// Fetch Leihbase collection on a central location
+// await for the result before processing the rest of the page
+const { fetch } = useLeihbase();
+const { leihbase } = storeToRefs(useLeihbase());
+await fetch();
 
 if (plausibleTrackingDomain) {
   useHead({

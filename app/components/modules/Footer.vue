@@ -22,12 +22,8 @@
 const { t } = useI18n({
   useScope: "local",
 });
-const { pb } = usePocketbase();
 
-// TODO: remove/fix $autoCancel
-const [leihbase] = await pb
-  .collection("leihbase")
-  .getFullList({ fields: ["contact_link"], $autoCancel: false });
+const { leihbase } = storeToRefs(useLeihbase());
 </script>
 
 <style lang="scss" scoped>
