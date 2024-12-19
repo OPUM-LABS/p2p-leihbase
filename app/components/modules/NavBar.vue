@@ -1,6 +1,6 @@
 <template>
   <header>
-    <NuxtLink to="/" class="logo">Leihbar<br />Köln</NuxtLink>
+    <NuxtLink to="/" class="logo">{{ leihbase.name }}</NuxtLink>
     <nav>
       <ul v-if="isValid">
         <li v-if="userStore.isAdmin">
@@ -37,6 +37,7 @@ const { t } = useI18n({
 });
 const { isValid } = usePocketbase();
 const userStore = useUserStore();
+const { leihbase } = storeToRefs(useLeihbase());
 </script>
 
 <style lang="scss" scoped>
@@ -62,6 +63,7 @@ header {
     font-weight: var(--font-weight-black);
     line-height: 1;
     text-decoration: none;
+    white-space: pre;
   }
 
   nav {
