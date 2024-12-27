@@ -246,18 +246,22 @@ const available = computed(() =>
 useHead({
   title: `${product.value?.name} | ${location.value?.name}`,
   meta: [
-    {
-      name: "description",
-      content: excerpt.value?.description,
-    },
+    excerpt.value?.description
+      ? {
+          name: "description",
+          content: excerpt.value?.description,
+        }
+      : null,
     {
       property: "og:title",
       content: product.value?.name,
     },
-    {
-      property: "og:description",
-      content: excerpt.value?.description,
-    },
+    excerpt.value?.description
+      ? {
+          property: "og:description",
+          content: excerpt.value?.description,
+        }
+      : null,
     product.value?.images && product.value?.images.length > 0
       ? {
           property: "og:image",
