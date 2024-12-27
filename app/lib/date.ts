@@ -72,3 +72,8 @@ export function endOfUTCDate(date: Date): Date {
 export function toShortISO(date: Date): string {
   return date.toISOString().split("T")[0];
 }
+
+export function subtractDays(date: Date, days: number) {
+  var d = new Date(date);
+  return new Date(d.setDate(d.getDate() - days));
+}

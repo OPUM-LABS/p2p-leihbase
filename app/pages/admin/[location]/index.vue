@@ -2,15 +2,12 @@
   <Container width="lg" centered>
     <PageAlert class="banner" />
 
-    <header>
-      <div>
-        <h1 class="h2">{{ location?.name }}</h1>
-        <h2 class="h1">{{ t("title") }}</h2>
-      </div>
+    <AdminNav :location="location" />
+    <AdminHeader :title="t('title')" :location="location">
       <Button @click="handleNewReservationClick">{{
         t("new_reservation")
       }}</Button>
-    </header>
+    </AdminHeader>
 
     <TabList v-if="location" active="today" class="tablist">
       <Tab
@@ -85,13 +82,14 @@ import OngoingTab from "./components/tabs/Ongoing.vue";
 import FutureTab from "./components/tabs/Future.vue";
 import PastTab from "./components/tabs/Past.vue";
 import OverdueTab from "./components/tabs/Overdue.vue";
+import AdminNav from "./components/AdminNav.vue";
+import AdminHeader from "./components/AdminHeader.vue";
 import TabList from "~/components/TabList/TabList.vue";
 import Tab from "~/components/TabList/Tab.vue";
 import type { Reservation } from "~/models/reservation";
 import { createEventHook } from "@vueuse/core";
 import type { RecordModel } from "pocketbase";
 
-const { pb } = usePocketbase();
 const route = useRoute();
 const { t } = useI18n({
   useScope: "local",
@@ -109,11 +107,8 @@ const reservationUpdate = createEventHook();
 
 const { getOverdueReservations } = useReservations();
 
-const { data: location } = await useAsyncData("admin_location", async () => {
-  const location = await pb
-    .collection("location")
-    .getFirstListItem(pb.filter("slug = {:slug}", { slug }));
-  return structuredClone(location);
+const location = await useLocation({
+  slug: Array.isArray(slug) ? slug[0] : slug,
 });
 
 if (!location.value || !location.value.id) {
@@ -144,21 +139,6 @@ function handleNewReservationClick() {
 <style lang="scss" scoped>
 @use "~/assets/styles/breakpoints.scss";
 
-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: var(--fluid-spacing-8);
-  h1,
-  h2 {
-    margin: 0;
-  }
-  @media screen and (min-width: breakpoints.$breakpoint-sm) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
 .overdue {
   margin-bottom: var(--fluid-spacing-8);
 }

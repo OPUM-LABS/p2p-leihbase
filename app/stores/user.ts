@@ -59,12 +59,10 @@ export const useUserStore = defineStore<"user", State>("user", {
       }
     },
     async fetchUserLocations() {
-      console.log("fetchUserLocations");
       const { pb } = usePocketbase();
       if (pb.authStore?.model?.id) {
         const locations = await pb.collection("location").getFullList();
         this.locations = locations;
-        console.log("locations", locations);
       }
     },
     setAuthenticationIntent(intent: null | "reservation", path: string) {

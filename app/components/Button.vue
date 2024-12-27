@@ -10,6 +10,7 @@
       loading,
     }"
     :href="href"
+    :to="to"
     :disabled="disabled || undefined"
     :data-client-mounted="isClientMounted"
   >
@@ -21,6 +22,8 @@
 </template>
 
 <script setup lang="ts">
+import { NuxtLink } from "#components";
+
 const props = withDefaults(
   defineProps<{
     to?: string;
@@ -45,6 +48,7 @@ const props = withDefaults(
 const { isClientMounted } = useClientMounted();
 
 const component = computed(() => {
+  if (props.to) return NuxtLink;
   if (props.href) return "a";
   return "button";
 });
@@ -72,10 +76,6 @@ button {
     border: 2px solid transparent;
     &:hover {
       border: 2px solid var(--bg-primary);
-    }
-    &.active {
-      background-color: var(--bg-primary);
-      color: white;
     }
   }
 
