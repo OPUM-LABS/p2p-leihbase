@@ -23,9 +23,17 @@
     <div class="cols">
       <div>
         <h3>{{ t("reservations") }}</h3>
-        {{ reservations?.length }} {{ t("created_reservations") }}<br />
-        {{ borrowings?.length }} {{ t("borrowings") }}<br />
-        {{ cancelled?.length || 0 }} {{ t("cancellations") }}
+        <p>
+          {{ reservations?.length }} {{ t("created_reservations") }}<br />
+          {{ borrowings?.length }} {{ t("borrowings") }}<br />
+          {{ cancelled?.length || 0 }} {{ t("cancellations") }}
+        </p>
+
+        <h3>{{ t("Users") }}</h3>
+        <p>
+          {{ borrowingsWithUser?.length }} {{ t("borrowings_with_user") }}<br />
+          {{ accounts }} {{ t("users") }}
+        </p>
       </div>
 
       <div>
@@ -112,6 +120,17 @@ const products = computed(() => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 });
+
+const borrowingsWithUser = computed(() =>
+  reservations.value?.filter((r) => !r.cancelled && !!r.user)
+);
+
+const accounts = computed(
+  () =>
+    reservations.value
+      ?.map((r) => r.user)
+      .filter((id, index, arr) => !!id && arr.indexOf(id) === index).length
+);
 </script>
 
 <style lang="scss" scoped>
@@ -142,6 +161,9 @@ const products = computed(() => {
     "created_reservations": "Created reservations",
     "borrowings": "Borrowings",
     "cancellations": "Cancellations",
+    "Users": "Users",
+    "users": "users",
+    "borrowings_with_user": "Borrowings (with user defined)",
     "most_borrowed_products": "Most borrowed products"
   },
   "de": {
@@ -152,6 +174,9 @@ const products = computed(() => {
     "created_reservations": "Angelegte Reservierungen",
     "borrowings": "Ausleihe",
     "cancellations": "Annulierungen",
+    "Users": "Nutzer",
+    "users": "Nutzer",
+    "borrowings_with_user": "Ausleihe (mit Nutzer definiert)",
     "most_borrowed_products": "Die meisten ausgeliehenen Gegenstände"
   }
 }
