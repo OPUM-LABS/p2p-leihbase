@@ -18,7 +18,8 @@ onRecordBeforeCreateRequest((e) => {
   const product = record.expandedOne("product");
   $app.dao().expandRecord(product, ["location"], null);
   const location = product.expandedOne("location");
-  const isLocationUser = location.get("users").includes(requestUser.get("id"));
+  const isLocationUser =
+    requestUser && location.get("users").includes(requestUser.get("id"));
   record.set("location", product.get("location"));
 
   // Don't allow reserving where start of end is before today
