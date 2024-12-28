@@ -199,6 +199,7 @@ const { data: location } = await useAsyncData("location", async () => {
     );
   return structuredClone(location);
 });
+
 const { data: product } = await useAsyncData("product", async () => {
   const product = await pb
     .collection(userStore.isAdmin ? "products" : "public_products")
@@ -207,6 +208,18 @@ const { data: product } = await useAsyncData("product", async () => {
     });
   return structuredClone(product);
 });
+
+// Also get product description converted to plain-text,
+// to be used in meta-tags
+const { data: excerpt } = await useAsyncData("product-excerpt", async () => {
+  const product = await pb
+    .collection(userStore.isAdmin ? "products" : "public_products")
+    .getOne(route.params.product, {
+      fields: "description:excerpt(200,true)",
+    });
+  return structuredClone(product);
+});
+
 const { data: reservations, refresh: refreshReservations } = await useAsyncData(
   "reservations",
   async () => {
@@ -230,6 +243,30 @@ const available = computed(() =>
 
 useHead({
   title: `${product.value?.name} | ${location.value?.name}`,
+  meta: [
+    excerpt.value?.description
+      ? {
+          name: "description",
+          content: excerpt.value?.description,
+        }
+      : null,
+    {
+      property: "og:title",
+      content: product.value?.name,
+    },
+    excerpt.value?.description
+      ? {
+          property: "og:description",
+          content: excerpt.value?.description,
+        }
+      : null,
+    product.value?.images && product.value?.images.length > 0
+      ? {
+          property: "og:image",
+          content: `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.value.id}/${product.value.images[0]}${thumbs.lg}`,
+        }
+      : null,
+  ].filter((m) => !!m),
 });
 
 const startOfToday = getStartOfDay();

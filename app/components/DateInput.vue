@@ -44,6 +44,7 @@ if (process.client) {
 }
 
 const model = defineModel<Date | null>();
+const emit = defineEmits<{ input: [Date] }>();
 withDefaults(
   defineProps<{
     id: string;
@@ -75,6 +76,7 @@ function handleInputFocus() {
 function handleDateChange() {
   model.value = new Date(datepicker.value.value);
   showPopup.value = false;
+  emit("input", model.value);
 }
 </script>
 
