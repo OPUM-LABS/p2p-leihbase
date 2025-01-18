@@ -69,7 +69,7 @@ test.describe("reservation", () => {
     await expect(page.getByTestId("reservation-form-error")).toBeVisible();
   });
 
-  test("user can reserve same product when first reservation is cancelled", async ({
+  test("user can reserve the same product again, when the first reservation is cancelled", async ({
     page,
   }) => {
     const product = await createProduct();
@@ -82,7 +82,7 @@ test.describe("reservation", () => {
     await expect(page.getByTestId("opening-hours")).toBeHidden();
   });
 
-  test("user can reserve the same product when first reservation is in the past", async ({
+  test("user can reserve the same product again, when first reservation is in the past", async ({
     page,
   }) => {
     const product = await createProduct();
