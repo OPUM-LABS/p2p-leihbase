@@ -4,7 +4,7 @@
     :href="href"
     :to="to"
     :class="{ root: true, clicked }"
-    data-testid="product-card"
+    :data-testid="`product-card-${product.id}`"
     :data-client-mounted="isClientMounted"
     @click="clicked = true"
   >
@@ -72,7 +72,6 @@ const component = computed(() => {
   if (props.to || props.href) return resolveComponent("NuxtLink");
   return "button";
 });
-
 </script>
 
 <style lang="scss" scoped>

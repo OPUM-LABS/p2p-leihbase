@@ -128,7 +128,11 @@
             />
             <Textarea :label="t('message')" v-model="message" />
 
-            <sl-alert variant="danger" :open="reservationCreationError">
+            <sl-alert
+              variant="danger"
+              :open="reservationCreationError"
+              data-testid="reservation-form-error"
+            >
               <sl-icon slot="icon" name="exclamation-octagon"></sl-icon>
               {{ reservationCreationError }}
             </sl-alert>
@@ -317,7 +321,14 @@ async function onSubmit() {
     });
   } catch (e) {
     isSubmittingReservation.value = false;
-    if (e.data.code === 400 && e.data.message === "Overlapping_reservation.") {
+    if (e.data.code === 400 && e.data.message === "Has_open_reservation.") {
+      reservationCreationError.value = t("errors.has_open_reservation", {
+        email: location.value.email,
+      });
+    } else if (
+      e.data.code === 400 &&
+      e.data.message === "Overlapping_reservation."
+    ) {
       reservationCreationError.value = t("errors.overlapping_reservation");
     } else if (
       e.data.code === 400 &&
@@ -516,6 +527,7 @@ sl-dialog form {
     "message": "Message",
     "reserve_now_button": "Reserve now",
     "errors": {
+      "has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
       "overlapping_reservation": "The product is already reserved for this period.",
       "start_before_today": "The start of the reservation is before today.",
       "end_before_today": "The end of the reservation is before today.",
@@ -536,6 +548,7 @@ sl-dialog form {
     "message": "Nachricht",
     "reserve_now_button": "Jetzt reservieren",
     "errors": {
+      "has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
       "overlapping_reservation": "Das Produkt ist für diesen Termin bereits reserviert.",
       "start_before_today": "Der Beginn der Reservierung liegt vor dem heutigen Tag.",
       "end_before_today": "Das Enddatum der Reservierung liegt vor dem heutigen Tag",

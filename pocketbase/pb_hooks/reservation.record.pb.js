@@ -2,7 +2,10 @@
 
 onRecordBeforeCreateRequest((e) => {
   /** @type {typeof import('./lib/reservation')} */
-  const { hasOverlappingReservations } = require(`${__hooks}/lib/reservation`);
+  const {
+    hasOpenReservations,
+    hasOverlappingReservations,
+  } = require(`${__hooks}/lib/reservation`);
 
   const { record, httpContext } = e;
   var startOfDay = new Date();
@@ -21,6 +24,12 @@ onRecordBeforeCreateRequest((e) => {
   const isLocationUser =
     requestUser && location.get("users").includes(requestUser.get("id"));
   record.set("location", product.get("location"));
+
+  // Make sure there is not already an open reservation with the same user
+  // and product
+  if (hasOpenReservations(record) && !isAdmin && !isLocationUser) {
+    throw new BadRequestError("Has_open_reservation.");
+  }
 
   // Don't allow reserving where start of end is before today
   // Except if the user is an admin or a location user
@@ -173,6 +182,7 @@ onRecordAfterCreateRequest((e) => {
       },
       to: [{ address: user.get("email") }],
       ...reservationConfirmationEmail({
+        locationEmail: location.get("email"),
         productUrl: `${$app.settings().meta.appUrl}/link/product/${product.get(
           "id"
         )}`,

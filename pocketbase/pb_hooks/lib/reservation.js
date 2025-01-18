@@ -35,6 +35,41 @@ function hasOverlappingReservations(reservation, allowSameDay) {
 }
 
 /**
+ * Checks if a reservation has other overlapping reservations
+ * @param {models.Record} reservation
+ * @returns {boolean}
+ */
+function hasOpenReservations(reservation) {
+  const { endOfDate } = require(`${__hooks}/lib/date`);
+  // A cancelled reservation is allowed to have a second reservation for the same product
+  if (reservation.get("cancelled")) {
+    return false;
+  }
+  // A reservation without a user can't already have an open reservation
+  if (!reservation.get("user")) {
+    return false;
+  }
+  const records = $app
+    .dao()
+    .findRecordsByFilter(
+      "reservations",
+      reservation.get("id")
+        ? `id != {:id} && user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`
+        : `user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`,
+      null,
+      1,
+      0,
+      {
+        id: reservation.get("id"),
+        user: reservation.get("user"),
+        product: reservation.get("product"),
+        endOfToday: endOfDate(new Date()),
+      }
+    );
+  return records.length > 0;
+}
+
+/**
  * @param {models.Record} reservation
  * @param {'confirmation'|'start_reminder'|'end_reminder'} type
  */
@@ -113,6 +148,7 @@ function getReminderEmail(reservation, type) {
 
 module.exports = {
   hasOverlappingReservations,
+  hasOpenReservations,
   saveSentEmail,
   getReminderEmail,
 };
