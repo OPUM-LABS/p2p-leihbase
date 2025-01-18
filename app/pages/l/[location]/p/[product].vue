@@ -527,7 +527,7 @@ sl-dialog form {
     "message": "Message",
     "reserve_now_button": "Reserve now",
     "errors": {
-      "has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend your reservation.",
+      "has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
       "overlapping_reservation": "The product is already reserved for this period.",
       "start_before_today": "The start of the reservation is before today.",
       "end_before_today": "The end of the reservation is before today.",
@@ -548,7 +548,7 @@ sl-dialog form {
     "message": "Nachricht",
     "reserve_now_button": "Jetzt reservieren",
     "errors": {
-      "has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern möchtest, schreibe eine Mail an {email}.",
+      "has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
       "overlapping_reservation": "Das Produkt ist für diesen Termin bereits reserviert.",
       "start_before_today": "Der Beginn der Reservierung liegt vor dem heutigen Tag.",
       "end_before_today": "Das Enddatum der Reservierung liegt vor dem heutigen Tag",
