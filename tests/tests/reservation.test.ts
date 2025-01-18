@@ -8,7 +8,7 @@ import {
   updateLastProductReservation,
 } from "../lib/product";
 
-async function reserve(page, startIndex, endIndex) {
+async function reserve(page, startIndex, endIndex, navigateToNextMonth = true) {
   // Click reserve
   await waitForClientMount(page.getByTestId("reserve-button"));
   await page.getByTestId("reserve-button").click();
@@ -17,6 +17,15 @@ async function reserve(page, startIndex, endIndex) {
   // enter start
   await page.getByTestId("start-input").click();
   await expect(page.getByTestId("start-input-calendar")).toBeVisible();
+  // go to next month to be sure we're not trying to reserve at the end
+  // of this month, as it might result in no date buttons being available
+  if (navigateToNextMonth) {
+    await page
+      .getByTestId("start-input-calendar")
+      .locator("div button")
+      .nth(1)
+      .click({ force: true });
+  }
   await page
     .getByTestId("start-input-calendar")
     .locator("shadow=calendar-month >> td button:not([aria-disabled=true])")
@@ -25,6 +34,15 @@ async function reserve(page, startIndex, endIndex) {
   // enter end
   await page.getByTestId("end-input").click();
   await expect(page.getByTestId("end-input-calendar")).toBeVisible();
+  // go to next month to be sure we're not trying to reserve at the end
+  // of this month, as it might result in no date buttons being available
+  if (navigateToNextMonth) {
+    await page
+      .getByTestId("end-input-calendar")
+      .locator("div button")
+      .nth(1)
+      .click({ force: true });
+  }
   await page
     .getByTestId("end-input-calendar")
     .locator("shadow=calendar-month >> td button:not([aria-disabled=true])")
@@ -65,7 +83,7 @@ test.describe("reservation", () => {
     await login(page);
     await navigateToProductPage(page, product.id);
     await reserve(page, 0, 1);
-    await reserve(page, 2, 3);
+    await reserve(page, 2, 3, false);
     await expect(page.getByTestId("reservation-form-error")).toBeVisible();
   });
 
@@ -78,7 +96,7 @@ test.describe("reservation", () => {
     await reserve(page, 0, 1);
     await expect(page.getByTestId("opening-hours")).toBeHidden();
     await updateLastProductReservation(product.id, { cancelled: true });
-    await reserve(page, 2, 3);
+    await reserve(page, 2, 3, false);
     await expect(page.getByTestId("opening-hours")).toBeHidden();
   });
 
@@ -94,16 +112,26 @@ test.describe("reservation", () => {
     await updateLastProductReservation(product.id, {
       start: new Date(
         new Date(reservation.start).setDate(
-          new Date(reservation.start).getDate() - 7
+          new Date(reservation.start).getDate() - 60
         )
       ),
       end: new Date(
         new Date(reservation.end).setDate(
-          new Date(reservation.end).getDate() - 7
+          new Date(reservation.end).getDate() - 67
         )
       ),
     });
-    await reserve(page, 2, 3);
+    await reserve(page, 2, 3, false);
     await expect(page.getByTestId("opening-hours")).toBeHidden();
+  });
+
+  test("reservation period can't be longer than location's max_reservation_days", async ({
+    page,
+  }) => {
+    const product = await createProduct();
+    await login(page);
+    await navigateToProductPage(page, product.id);
+    await reserve(page, 0, 5);
+    await expect(page.getByTestId("reservation-form-error")).toBeVisible();
   });
 });

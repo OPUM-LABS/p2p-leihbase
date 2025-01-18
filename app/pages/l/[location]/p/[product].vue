@@ -321,26 +321,40 @@ async function onSubmit() {
     });
   } catch (e) {
     isSubmittingReservation.value = false;
-    if (e.data.code === 400 && e.data.message === "Has_open_reservation.") {
-      reservationCreationError.value = t("errors.has_open_reservation", {
-        email: location.value.email,
-      });
-    } else if (
-      e.data.code === 400 &&
-      e.data.message === "Overlapping_reservation."
-    ) {
-      reservationCreationError.value = t("errors.overlapping_reservation");
-    } else if (
-      e.data.code === 400 &&
-      e.data.message === "Start_before_today."
-    ) {
-      reservationCreationError.value = t("errors.start_before_today");
-    } else if (e.data.code === 400 && e.data.message === "End_before_today.") {
-      reservationCreationError.value = t("errors.end_before_today");
-    } else {
-      reservationCreationError.value = t("errors.general");
+    if (e.data.code === 400 && e.data.message) {
+      switch (e.data.message) {
+        case "Has_open_reservation.":
+          reservationCreationError.value = t("errors.has_open_reservation", {
+            email: location.value.email,
+          });
+          break;
+        case "Date_range_too_long.":
+          reservationCreationError.value = t("errors.date_range_too_long", {
+            days: location.max_reservation_days || 14,
+            email: location.value.email,
+          });
+          break;
+        case "Overlapping_reservation.":
+          reservationCreationError.value = t("errors.overlapping_reservation");
+          break;
+        case "Start_before_today.":
+          reservationCreationError.value = t("errors.start_before_today");
+          break;
+        case "End_before_today.":
+          reservationCreationError.value = t("errors.end_before_today");
+          break;
+        case "Start_and_end_equal.":
+          reservationCreationError.value = t("errors.start_and_end_equal");
+          break;
+        case "End_before_start.":
+          reservationCreationError.value = t("errors.end_before_start");
+          break;
+      }
+      if (!reservationCreationError.value) {
+        reservationCreationError.value = t("errors.general");
+      }
+      return;
     }
-    return;
   }
 
   await userStore.fetchUserReservations();
@@ -528,9 +542,12 @@ sl-dialog form {
     "reserve_now_button": "Reserve now",
     "errors": {
       "has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
+      "date_range_too_long": "Products can't be reserved for longer than {days} days. Reach out on {email} to discuss a longer period.",
       "overlapping_reservation": "The product is already reserved for this period.",
       "start_before_today": "The start of the reservation is before today.",
       "end_before_today": "The end of the reservation is before today.",
+      "start_and_end_equal": "The start and end of the reservation can't be on the same day",
+      "end_before_start": "The end can't be befor the start of the reservation.",
       "general": "Something went wrong while creating the reservation, please try again."
     }
   },
@@ -549,9 +566,12 @@ sl-dialog form {
     "reserve_now_button": "Jetzt reservieren",
     "errors": {
       "has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
+      "date_range_too_long": "Produkte können nicht länger als {days} Tage reserviert werden. Kontaktiere uns unter {email}, um einen längeren Zeitraum zu besprechen.",
       "overlapping_reservation": "Das Produkt ist für diesen Termin bereits reserviert.",
       "start_before_today": "Der Beginn der Reservierung liegt vor dem heutigen Tag.",
-      "end_before_today": "Das Enddatum der Reservierung liegt vor dem heutigen Tag",
+      "end_before_today": "Das Enddatum der Reservierung liegt vor dem heutigen Tag.",
+      "start_and_end_equal": "Beginn und Ende der Reservierung dürfen nicht am selben Tag liegen.",
+      "end_before_start": "Ende kann nicht vor Beginn der Reservierung liegen.",
       "general": "Beim Erstellen deiner Reservierung ist ein Fehler aufgetreten, bitte versuche es erneut."
     }
   }
