@@ -1,4 +1,51 @@
 /**
+ * Validates the start and end of a reservation
+ * @param {Date} start
+ * @param {Date} end
+ * @param {Number} maxReservationDays
+ * @param {Boolean} isLocationUser
+ * @param {Boolean} isAdmin
+ */
+function validateStartEnd(
+  start,
+  end,
+  maxReservationDays,
+  isLocationUser,
+  isAdmin
+) {
+  var startOfDay = new Date();
+  startOfDay.setUTCHours(0, 0, 0, 0);
+
+  // Start and end shouldn't be the same
+  if (start.getTime() === end.getTime()) {
+    throw new BadRequestError("Start_and_end_equal.");
+  }
+  // End should be after start of reservation
+  if (end.getTime() < start.getTime()) {
+    throw new BadRequestError("End_before_start.");
+  }
+
+  // Don't allow reserving where start of end is before today
+  // Except if the user is an admin or a location user
+  if (start < startOfDay && !isAdmin && !isLocationUser) {
+    throw new BadRequestError("Start_before_today.");
+  }
+  if (end < startOfDay && !isAdmin && !isLocationUser) {
+    throw new BadRequestError("End_before_today.");
+  }
+
+  // Consider maximum reservation length configured in location
+  const maxDays = 1000 * 60 * 60 * 24 * maxReservationDays;
+  if (
+    end.getTime() - start.getTime() > maxDays &&
+    !isAdmin &&
+    !isLocationUser
+  ) {
+    throw new BadRequestError("Date_range_too_long.");
+  }
+}
+
+/**
  * Checks if a reservation has other overlapping reservations
  * @param {models.Record} reservation
  * @param {boolean} allowSameDay
@@ -147,6 +194,7 @@ function getReminderEmail(reservation, type) {
 }
 
 module.exports = {
+  validateStartEnd,
   hasOverlappingReservations,
   hasOpenReservations,
   saveSentEmail,

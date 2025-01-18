@@ -112,12 +112,12 @@ test.describe("reservation", () => {
     await updateLastProductReservation(product.id, {
       start: new Date(
         new Date(reservation.start).setDate(
-          new Date(reservation.start).getDate() - 60
+          new Date(reservation.start).getDate() - 67
         )
       ),
       end: new Date(
         new Date(reservation.end).setDate(
-          new Date(reservation.end).getDate() - 67
+          new Date(reservation.end).getDate() - 60
         )
       ),
     });
