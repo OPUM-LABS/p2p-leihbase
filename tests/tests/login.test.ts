@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { waitForHydration, waitForClientMount } from "../lib/utils";
+import { login } from "../lib/login";
 
 test.describe("login", () => {
   test("can reach login", async ({ page }) => {
@@ -9,13 +10,7 @@ test.describe("login", () => {
     await expect(page.getByTestId("login-h1")).toBeVisible();
   });
   test("can log in", async ({ page }) => {
-    await page.goto("/login");
-    await waitForHydration(page);
-    await page.getByTestId("email-input").fill("test@example.com");
-    await page.getByTestId("password-input").fill("testtest");
-    await page.getByTestId("submit-button").click();
-    await page.waitForURL(/\/profile/);
-    await expect(page).toHaveURL("/profile");
+    await login(page);
   });
   test("can not log in with wrong email address", async ({ page }) => {
     await page.goto("/login");
