@@ -5,7 +5,7 @@
 <style scoped>
 div {
   padding: var(--fluid-spacing-12);
-  background-color: var(--body-bg-color-light);
+  background-color: var(--surface-foreground-color);
   border-radius: 5px;
 }
 </style>

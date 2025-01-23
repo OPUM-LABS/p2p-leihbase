@@ -408,7 +408,7 @@ section {
         &:focus,
         &:active,
         &:hover {
-          box-shadow: 0 0 0 2px var(--bg-primary);
+          box-shadow: 0 0 0 2px var(--primary-color);
           outline: 0;
           border: 0;
         }
@@ -443,7 +443,7 @@ section {
       margin-bottom: var(--fluid-spacing-8);
     }
     .info-admin {
-      background-color: #0d79f212;
+      background-color: var(--surface-info-color);
       padding: 1rem;
       border-radius: 5px;
       margin-bottom: var(--fluid-spacing-8);

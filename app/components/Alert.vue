@@ -22,13 +22,13 @@ withDefaults(defineProps<{ variant: "success" | "error" | "warning" }>(), {
   gap: 1rem;
   margin-bottom: 2rem;
   &.success {
-    background-color: var(--background-success);
+    background-color: var(--surface-success-color);
   }
   &.warning {
-    background-color: var(--background-warning);
+    background-color: var(--surface-warning-color);
   }
   &.error {
-    background-color: var(--background-error);
+    background-color: var(--surface-error-color);
   }
 }
 </style>

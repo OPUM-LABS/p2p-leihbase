@@ -20,7 +20,7 @@ const props = defineProps({
 
 <style scoped>
 .availability-badge {
-  background-color: var(--button-secondary-bg-color);
+  background-color: var(--secondary-color);
   border-radius: 999px;
   padding: 0.333rem 0.75rem;
   display: inline-flex;

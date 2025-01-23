@@ -65,17 +65,17 @@ button {
   text-decoration: none;
 
   &.variant-primary {
-    background-color: var(--button-primary-bg-color);
+    background-color: var(--primary-color);
     border: 0;
-    color: var(--button-primary-text-color);
+    color: var(--primary-text-color);
     font-weight: var(--font-weight-semibold);
   }
   &.variant-secondary {
-    background-color: var(--button-secondary-bg-color);
-    color: var(--button-secondary-text-color);
+    background-color: var(--secondary-color);
+    color: var(--secondary-text-color);
     border: 2px solid transparent;
     &:hover {
-      border: 2px solid var(--bg-primary);
+      border: 2px solid var(--primary-color);
     }
   }
 

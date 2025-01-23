@@ -268,7 +268,7 @@ footer {
 }
 .sent-emails {
   width: 100%;
-  background-color: var(--background-neutral);
+  background-color: var(--surface-neutral-color);
   padding: 1rem;
   border-radius: 5px;
 }

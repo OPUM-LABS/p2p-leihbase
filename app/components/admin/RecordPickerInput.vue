@@ -1,7 +1,7 @@
 <template>
   <FormRow :for="id" :label="label" :required="required">
     <button @click.prevent="handleClick">
-      {{ isLoading ? t('loading') : record ? record[search[0]] : "None" }}
+      {{ isLoading ? t("loading") : record ? record[search[0]] : "None" }}
     </button>
   </FormRow>
 </template>
@@ -52,7 +52,7 @@ button {
   border: 0;
   background: transparent;
   text-align: left;
-  background-color: var(--background-neutral);
+  background-color: var(--surface-neutral-color);
   padding: var(--spacing-2);
   border: 1px solid transparent;
   cursor: pointer;

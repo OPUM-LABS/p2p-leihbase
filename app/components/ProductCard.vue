@@ -72,7 +72,6 @@ const component = computed(() => {
   if (props.to || props.href) return resolveComponent("NuxtLink");
   return "button";
 });
-
 </script>
 
 <style lang="scss" scoped>
@@ -86,7 +85,7 @@ const component = computed(() => {
 a.root:hover,
 a.root:active,
 a.root:focus {
-  box-shadow: 0 0 0 2px var(--bg-primary);
+  box-shadow: 0 0 0 2px var(--primary-color);
   outline: 0;
   border: 0;
 }

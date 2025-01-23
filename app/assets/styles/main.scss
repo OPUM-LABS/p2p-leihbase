@@ -58,10 +58,22 @@
   /**
    * Theme
    */
-  --background-neutral: #f6f6f6;
-  --background-success: #f2f2d9;
-  --background-error: #ffe8e5;
-  --background-warning: #fffad0;
+  --surface-background-color: #f9f9f9;
+  --surface-foreground-color: #ffffff;
+
+  --surface-neutral-color: #f6f6f6;
+  --surface-info-color: #d9eef1;
+  --surface-success-color: #f2f2d9;
+  --surface-error-color: #ffe8e5;
+  --surface-warning-color: #fffad0;
+
+  --primary-color: #333333;
+  --primary-text-color: #fff;
+
+  --secondary-color: #ececec;
+  --secondary-text-color: #333;
+
+  // ---
 
   --border-neutral: #ccc;
 
@@ -70,8 +82,6 @@
   --font-weight-bold: 700;
   --font-weight-black: 900;
 
-  --body-bg-color: #eee;
-  --body-bg-color-light: #fff;
   --body-text-color: #333;
   --body-text-color-light: #666;
 
@@ -92,11 +102,6 @@
   --footer-bg-color: #ddd;
   --footer-text-color: #333;
 
-  --button-primary-bg-color: #333;
-  --button-primary-text-color: #fff;
-  --button-secondary-bg-color: #ddd;
-  --button-secondary-text-color: #333;
-
   --input-border-radius: var(--border-radius);
   --input-border-color: #ccc;
   --input-background-color: rgba(255, 255, 255, 0.5);
@@ -109,7 +114,7 @@
 }
 
 body {
-  background-color: var(--body-bg-color);
+  background-color: var(--surface-background-color);
   margin: 0;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -190,15 +195,6 @@ select {
 
 .rich-text p:last-child {
   margin-bottom: 0;
-}
-
-hr {
-  width: 4rem;
-  height: 3px;
-  border-radius: 3px;
-  margin: var(--spacing-8) 0;
-  border: 0;
-  background-color: var(--bg-primary);
 }
 
 // Hide custom element (shoelace elements) until

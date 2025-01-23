@@ -1,5 +1,5 @@
 <template>
-  <Container width="lg" centered>
+  <Container width="lg" centered class="container">
     <header>
       <section class="links">
         <Button
@@ -74,11 +74,14 @@ useHead({
 </script>
 
 <style lang="scss" scoped>
+.container {
+  background-color: var(--secondary-100);
+}
 section {
   margin-bottom: var(--fluid-spacing-8);
 }
 header {
-  margin-bottom:  var(--fluid-spacing-8);
+  margin-bottom: var(--fluid-spacing-8);
   .links {
     display: flex;
     gap: var(--fluid-spacing-4);

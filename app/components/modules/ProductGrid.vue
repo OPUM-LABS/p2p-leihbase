@@ -224,12 +224,12 @@ header {
     width: 3rem;
     background: linear-gradient(
       to right,
-      color-mix(in srgb, var(--body-bg-color) 0%, transparent) 0%,
-      var(--body-bg-color) 66%
+      color-mix(in srgb, var(--surface-background-color) 0%, transparent) 0%,
+      var(--surface-background-color) 66%
     );
   }
   button {
-    background-color: var(--button-secondary-bg-color);
+    background-color: var(--secondary-color);
     border: 2px solid transparent;
     color: var(--button-secondary-text-color);
     border-radius: var(--border-radius);
@@ -238,7 +238,7 @@ header {
     align-items: center;
     cursor: pointer;
     &:hover {
-      border: 2px solid var(--bg-primary);
+      border: 2px solid var(--primary-color);
     }
     svg {
       stroke-width: 1;
@@ -259,17 +259,17 @@ header {
   a {
     width: max-content;
     display: inline-block;
-    background-color: var(--button-secondary-bg-color);
+    background-color: var(--secondary-color);
     border: 2px solid transparent;
     color: var(--button-secondary-text-color);
     text-decoration: none;
     padding: 0.333rem 0.666rem;
     border-radius: var(--border-radius);
     &:hover {
-      border: 2px solid var(--bg-primary);
+      border: 2px solid var(--primary-color);
     }
     &.active {
-      background-color: var(--bg-primary);
+      background-color: var(--primary-color);
       color: white;
     }
   }
@@ -298,7 +298,7 @@ header {
   display: flex;
   justify-content: space-between;
   .page-button {
-    background-color: var(--bg-primary);
+    background-color: var(--primary-color);
     color: var(--fg-primary);
     text-decoration: none;
     padding: 0.5rem 1rem;
