@@ -1,153 +1,160 @@
 <template>
-  <Container width="lg" centered>
-    <PageAlert />
-    <section class="product">
-      <div class="media-col">
-        <ProductImage
-          :src="
-            product?.images && product?.images.length > 0
-              ? `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.id}/${product.images[imageIndex]}${thumbs.lg}`
-              : null
-          "
-          fallback="/images/fallback-product-image-1200x1200.png"
-          class="main-image"
-          object-fit="contain"
-          loading="lazy"
-        />
-        <div
-          v-if="product?.images && product.images.length > 1"
-          class="thumbnails"
-        >
-          <button
-            v-for="(image, index) in product.images.slice(0, 4)"
-            type="button"
-            :class="index === imageIndex ? 'active' : ''"
-            @click="imageIndex = index"
+  <div class="background">
+    <Container width="lg" centered>
+      <PageAlert />
+      <section class="product">
+        <div class="media-col">
+          <ProductImage
+            :src="
+              product?.images && product?.images.length > 0
+                ? `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.id}/${product.images[imageIndex]}${thumbs.lg}`
+                : null
+            "
+            fallback="/images/fallback-product-image-1200x1200.png"
+            class="main-image"
+            object-fit="contain"
+            loading="lazy"
+          />
+          <div
+            v-if="product?.images && product.images.length > 1"
+            class="thumbnails"
           >
-            <img
-              :src="`${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.id}/${image}${thumbs.sm}`"
-            />
-          </button>
+            <button
+              v-for="(image, index) in product.images.slice(0, 4)"
+              type="button"
+              :class="index === imageIndex ? 'active' : ''"
+              @click="imageIndex = index"
+            >
+              <img
+                :src="`${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.id}/${image}${thumbs.sm}`"
+              />
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="info-col">
-        <header>
-          <ul class="breadcrumb">
-            <li>
-              <NuxtLink :to="`/l/${location?.slug}`">
-                {{ location?.name }}
-              </NuxtLink>
-            </li>
-            <li>
-              <span v-for="category in product?.expand?.categories">
-                <NuxtLink :to="`/l/${location?.slug}?category=${category.id}`">
-                  {{ category.name_de }}
+        <div class="info-col">
+          <header>
+            <ul class="breadcrumb">
+              <li>
+                <NuxtLink :to="`/l/${location?.slug}`">
+                  {{ location?.name }}
                 </NuxtLink>
-              </span>
-            </li>
-          </ul>
-          <h3></h3>
-        </header>
+              </li>
+              <li>
+                <span v-for="category in product?.expand?.categories">
+                  <NuxtLink
+                    :to="`/l/${location?.slug}?category=${category.id}`"
+                  >
+                    {{ category.name_de }}
+                  </NuxtLink>
+                </span>
+              </li>
+            </ul>
+            <h3></h3>
+          </header>
 
-        <div class="info-header">
-          <h1 data-testid="product-page-h1">{{ product?.name }}</h1>
-          <AvailabilityBadge :available="available" />
-        </div>
+          <div class="info-header">
+            <h1 data-testid="product-page-h1">{{ product?.name }}</h1>
+            <AvailabilityBadge :available="available" />
+          </div>
 
-        <div class="info-body">
-          <!-- Description -->
-          <div v-html="product?.description"></div>
-          <!-- Deposit -->
-          <p v-if="product?.deposit">
-            <strong>{{ t("deposit") }}</strong>
-            <br />
-            {{ formatCurrency(product.deposit, locale) }}
-          </p>
-        </div>
+          <div class="info-body">
+            <!-- Description -->
+            <div v-html="product?.description"></div>
+            <!-- Deposit -->
+            <p v-if="product?.deposit">
+              <strong>{{ t("deposit") }}</strong>
+              <br />
+              {{ formatCurrency(product.deposit, locale) }}
+            </p>
+          </div>
 
-        <div v-if="userStore.isAdmin" class="info-admin">
-          <h2 class="h4">
-            {{ t("admin_notes") }}
-            <Tooltip :html="t('admin_notes_tooltip')">
-              <Lock />
-            </Tooltip>
-          </h2>
-          <span v-if="product?.notes" v-html="product?.notes" />
-          <span v-else>
-            <i>{{ t("admin_notes_none") }}</i>
-          </span>
-        </div>
+          <div v-if="userStore.isAdmin" class="info-admin">
+            <h2 class="h4">
+              {{ t("admin_notes") }}
+              <Tooltip :html="t('admin_notes_tooltip')">
+                <Lock />
+              </Tooltip>
+            </h2>
+            <span v-if="product?.notes" v-html="product?.notes" />
+            <span v-else>
+              <i>{{ t("admin_notes_none") }}</i>
+            </span>
+          </div>
 
-        <ReservationsBox
-          :title="t('reservations')"
-          :reservations="reservations"
-          class="upcoming-reservations"
-        />
+          <ReservationsBox
+            :title="t('reservations')"
+            :reservations="reservations"
+            class="upcoming-reservations"
+          />
 
-        <Button
-          size="lg"
-          data-testid="reserve-button"
-          @click.prevent="onReserve"
-        >
-          {{ t("reserve_button") }}
-        </Button>
-
-        <sl-dialog ref="dialog" label="Reservieren" class="dialog-overview">
-          <!-- Opening hours -->
-          <p
-            v-if="location?.opening_hours"
-            class="opening-hours"
-            data-testid="opening-hours"
+          <Button
+            size="lg"
+            data-testid="reserve-button"
+            @click.prevent="onReserve"
           >
-            <span>{{ t("opening_hours_of") }} {{ location?.name }}:</span><br />
-            <span v-html="openingHoursToString(location?.opening_hours)"></span>
-          </p>
-          <form ref="form" @submit.prevent="onSubmit">
-            <Input
-              type="text"
-              :label="t('product')"
-              v-model="product.name"
-              disabled
-              readonly
-            />
-            <DateInput
-              :label="t('start')"
-              v-model="start"
-              :is-date-disallowed="isDateDisallowed"
-              :show-outside-days="false"
-              data-testid="start-input"
-            />
-            <DateInput
-              :label="t('end')"
-              v-model="end"
-              :is-date-disallowed="isDateDisallowed"
-              :show-outside-days="false"
-              data-testid="end-input"
-            />
-            <Textarea :label="t('message')" v-model="message" />
+            {{ t("reserve_button") }}
+          </Button>
 
-            <sl-alert
-              variant="danger"
-              :open="reservationCreationError"
-              data-testid="reservation-form-error"
+          <sl-dialog ref="dialog" label="Reservieren" class="dialog-overview">
+            <!-- Opening hours -->
+            <p
+              v-if="location?.opening_hours"
+              class="opening-hours"
+              data-testid="opening-hours"
             >
-              <sl-icon slot="icon" name="exclamation-octagon"></sl-icon>
-              {{ reservationCreationError }}
-            </sl-alert>
+              <span>{{ t("opening_hours_of") }} {{ location?.name }}:</span
+              ><br />
+              <span
+                v-html="openingHoursToString(location?.opening_hours)"
+              ></span>
+            </p>
+            <form ref="form" @submit.prevent="onSubmit">
+              <Input
+                type="text"
+                :label="t('product')"
+                v-model="product.name"
+                disabled
+                readonly
+              />
+              <DateInput
+                :label="t('start')"
+                v-model="start"
+                :is-date-disallowed="isDateDisallowed"
+                :show-outside-days="false"
+                data-testid="start-input"
+              />
+              <DateInput
+                :label="t('end')"
+                v-model="end"
+                :is-date-disallowed="isDateDisallowed"
+                :show-outside-days="false"
+                data-testid="end-input"
+              />
+              <Textarea :label="t('message')" v-model="message" />
 
-            <Button
-              :loading="isSubmittingReservation"
-              size="lg"
-              type="submit"
-              data-testid="reserve-submit"
-            >
-              {{ t("reserve_now_button") }}
-            </Button>
-          </form>
-        </sl-dialog>
-      </div>
-    </section>
-  </Container>
+              <sl-alert
+                variant="danger"
+                :open="reservationCreationError"
+                data-testid="reservation-form-error"
+              >
+                <sl-icon slot="icon" name="exclamation-octagon"></sl-icon>
+                {{ reservationCreationError }}
+              </sl-alert>
+
+              <Button
+                :loading="isSubmittingReservation"
+                size="lg"
+                type="submit"
+                data-testid="reserve-submit"
+              >
+                {{ t("reserve_now_button") }}
+              </Button>
+            </form>
+          </sl-dialog>
+        </div>
+      </section>
+    </Container>
+  </div>
 </template>
 
 <script setup>
@@ -366,6 +373,9 @@ async function onSubmit() {
 <style lang="scss" scoped>
 @use "~/assets/styles/_breakpoints.scss";
 
+.background {
+  background-color: var(--surface-foreground-color);
+}
 section {
   margin-bottom: var(--fluid-spacing-8);
 }
@@ -386,13 +396,13 @@ section {
   & > li:not(:last-child)::after {
     content: ">";
     margin-left: 0.5rem;
-    color: var(--body-text-color-light);
+    color: var(--text-color-light);
   }
   li > span:not(:last-child)::after {
     content: ", ";
   }
   a {
-    color: var(--body-text-color);
+    color: var(--text-color);
   }
 }
 .product {
@@ -413,7 +423,7 @@ section {
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: var(--fluid-spacing-4);
       button {
-        border-radius: 5px;
+        border-radius: var(--border-radius);
         overflow: hidden;
         background-color: rgba(0, 0, 0, 0.15);
         border: 0;
@@ -470,7 +480,7 @@ section {
     .info-admin {
       background-color: var(--surface-info-color);
       padding: 1rem;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
       margin-bottom: var(--fluid-spacing-8);
       h2 {
         display: flex;

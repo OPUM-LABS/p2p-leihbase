@@ -51,12 +51,12 @@ const userReservationIds = computed(() =>
 
 <style scoped>
 ul {
-  --border-color: #d3ad8d;
+  --border-color: var(--text-color-light);
   border: 1px solid var(--border-color);
   margin: 0;
   padding: 0;
   list-style: none;
-  border-radius: 15px;
+  border-radius: var(--border-radius);
   display: inline-block;
 }
 li {
@@ -87,7 +87,7 @@ span.user {
   margin-left: 1rem;
 }
 span.user.me {
-  background-color: rgba(255, 255, 255, 0.666);
+  background-color: var(--secondary-color);
   border-radius: 999px;
   padding: 0.25rem 0.75rem;
 }

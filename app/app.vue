@@ -61,6 +61,6 @@ if (isValid.value) {
 
 <style lang="scss" scoped>
 main {
-  min-height: calc(100vh - 8rem);
+  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
 }
 </style>

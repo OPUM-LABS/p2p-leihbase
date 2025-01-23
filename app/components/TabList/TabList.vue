@@ -68,7 +68,7 @@ li:first-child::before,
 li::after {
   content: "";
   height: 1px;
-  background-color: var(--body-text-color);
+  background-color: var(--text-color);
   width: var(--spacing-between);
 }
 li:first-child::before {
@@ -87,13 +87,13 @@ button {
   flex-shrink: 0;
   background: transparent;
   border-width: 1px 1px 1px 1px;
-  border-color: var(--body-text-color);
-  color: var(--body-text-color);
+  border-color: var(--text-color);
+  color: var(--text-color);
   border-style: solid;
   padding: 0.6rem 0.895rem;
   line-height: 1;
   cursor: pointer;
-  border-radius: 5px 5px 0 0;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
   &.active {
     font-weight: var(--font-weight-semibold);
     border-bottom: 1px solid transparent;

@@ -56,31 +56,26 @@ function handleDocumentKeyDown(e: KeyboardEvent) {
 .sidebar {
   position: fixed;
   top: 0;
-  left: 100%;
+  right: -100%;
   width: 95%;
   height: 100vh;
   background-color: var(--surface-foreground-color);
-  transition: left 200ms;
+  transition: right 200ms;
   z-index: 10;
   overflow-y: auto;
   box-sizing: border-box;
   &.open {
-    left: 5%;
+    right: 0%;
   }
   &.inset {
     padding: 2rem;
   }
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
     width: 80%;
-    &.open {
-      left: 20%;
-    }
   }
   @media screen and (min-width: breakpoints.$breakpoint-md) {
     width: 66.66%;
-    &.open {
-      left: 33.33%;
-    }
+    max-width: 600px;
   }
 }
 .header-offset {

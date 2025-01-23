@@ -33,12 +33,12 @@ footer {
   justify-content: center;
   flex-wrap: wrap;
   padding: 1rem 1rem;
-  min-height: 4rem;
-  background-color: var(--footer-bg-color);
-  color: var(--footer-text-color);
+  min-height: var(--footer-height);
+  background-color: var(--surface-foreground-color);
+  color: var(--text-color);
   text-align: center;
   a {
-    color: var(--footer-text-color);
+    color: var(--text-color);
     padding: 0 1rem;
     line-height: 1;
     text-underline-offset: 0.25rem;

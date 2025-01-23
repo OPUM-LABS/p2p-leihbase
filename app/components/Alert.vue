@@ -17,7 +17,7 @@ withDefaults(defineProps<{ variant: "success" | "error" | "warning" }>(), {
 <style lang="scss" scoped>
 .alert {
   padding: 1rem 1.25rem;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;

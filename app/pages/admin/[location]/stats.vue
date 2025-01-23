@@ -1,53 +1,56 @@
 <template>
-  <Container width="lg" centered>
-    <PageAlert class="banner" />
+  <div class="background">
+    <Container width="lg" centered>
+      <PageAlert class="banner" />
 
-    <AdminNav v-if="location" :location="location" />
-    <AdminHeader v-if="location" :title="t('title')" :location="location" />
+      <AdminNav v-if="location" :location="location" />
+      <AdminHeader v-if="location" :title="t('title')" :location="location" />
 
-    <div class="dates">
-      <DateInput
-        id="date-start"
-        :label="t('from')"
-        v-model="dateStart"
-        @input="() => refresh()"
-      />
-      <DateInput
-        id="date-end"
-        :label="t('to')"
-        v-model="dateEnd"
-        @input="() => refresh()"
-      />
-    </div>
-
-    <div class="cols">
-      <div>
-        <h3>{{ t("reservations") }}</h3>
-        <p>
-          {{ reservations?.length }} {{ t("created_reservations") }}<br />
-          {{ borrowings?.length }} {{ t("borrowings") }}<br />
-          {{ cancelled?.length || 0 }} {{ t("cancellations") }}
-        </p>
-
-        <h3>{{ t("Users") }}</h3>
-        <p>
-          {{ borrowingsWithUser?.length }} {{ t("borrowings_with_user") }}<br />
-          {{ accounts }} {{ t("users") }}
-        </p>
+      <div class="dates">
+        <DateInput
+          id="date-start"
+          :label="t('from')"
+          v-model="dateStart"
+          @input="() => refresh()"
+        />
+        <DateInput
+          id="date-end"
+          :label="t('to')"
+          v-model="dateEnd"
+          @input="() => refresh()"
+        />
       </div>
 
-      <div>
-        <h3>{{ t("most_borrowed_products") }}</h3>
-        <div v-for="(product, index) in products">
-          {{ index + 1 }}.
-          <a target="_blank" :href="`/link/product/${product.product.id}`">
-            {{ product.product.name }}
-          </a>
-          ({{ product.count }}x)<br />
+      <div class="cols">
+        <div>
+          <h3>{{ t("reservations") }}</h3>
+          <p>
+            {{ reservations?.length }} {{ t("created_reservations") }}<br />
+            {{ borrowings?.length }} {{ t("borrowings") }}<br />
+            {{ cancelled?.length || 0 }} {{ t("cancellations") }}
+          </p>
+
+          <h3>{{ t("Users") }}</h3>
+          <p>
+            {{ borrowingsWithUser?.length }} {{ t("borrowings_with_user")
+            }}<br />
+            {{ accounts }} {{ t("users") }}
+          </p>
+        </div>
+
+        <div>
+          <h3>{{ t("most_borrowed_products") }}</h3>
+          <div v-for="(product, index) in products">
+            {{ index + 1 }}.
+            <a target="_blank" :href="`/link/product/${product.product.id}`">
+              {{ product.product.name }}
+            </a>
+            ({{ product.count }}x)<br />
+          </div>
         </div>
       </div>
-    </div>
-  </Container>
+    </Container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -136,6 +139,10 @@ const accounts = computed(
 <style lang="scss" scoped>
 @use "~/assets/styles/breakpoints.scss";
 
+.background {
+  background-color: var(--surface-foreground-color);
+  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
+}
 .dates {
   display: flex;
   gap: 1rem;

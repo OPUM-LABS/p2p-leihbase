@@ -77,7 +77,7 @@ const component = computed(() => {
 <style lang="scss" scoped>
 .root {
   background-color: white;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   display: flex;
   flex-direction: column;
   width: 100%;

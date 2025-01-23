@@ -1,8 +1,18 @@
 <template>
   <FormRow :for="id" :label="label" :required="required">
-    <button @click.prevent="handleClick">
-      {{ isLoading ? t("loading") : record ? record[search[0]] : "None" }}
-    </button>
+    <div class="row">
+      <input
+        type="text"
+        :id="id"
+        :name="name"
+        :value="isLoading ? t('loading') : record ? record[search[0]] : 'None'"
+        disabled
+        readonly
+        :data-testid="dataTestid"
+        :class="{ 'lb-input': true }"
+      />
+      <button @click.prevent="handleClick">Select</button>
+    </div>
   </FormRow>
 </template>
 
@@ -46,18 +56,25 @@ function handleClick() {
 </script>
 
 <style lang="scss" scoped>
-button {
-  width: 100%;
+.row {
+  display: flex;
+  border: 1px solid var(--input-border-color);
   border-radius: var(--input-border-radius);
+}
+input {
   border: 0;
-  background: transparent;
-  text-align: left;
-  background-color: var(--surface-neutral-color);
-  padding: var(--spacing-2);
+}
+button {
+  border-radius: 0 var(--input-border-radius) var(--input-border-radius) 0;
+  background-color: var(--secondary-color);
+  color: var(--secondary-text-color);
   border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
   cursor: pointer;
   &:hover {
-    border: 1px solid var(--border-neutral);
+    border: 2px solid var(--primary-color);
+    margin: -1px -1px -1px 0;
   }
 }
 </style>

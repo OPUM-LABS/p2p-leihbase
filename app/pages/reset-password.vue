@@ -81,8 +81,8 @@ footer {
   width: 100%;
   margin-block: 1rem;
   text-align: center;
-  color: var(--body-text-color-light);
-  font-size: var(--body-font-sm);
+  color: var(--text-color-light);
+  font-size: var(--font-size-sm);
 }
 </style>
 

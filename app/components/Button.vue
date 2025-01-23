@@ -5,7 +5,6 @@
     :class="{
       ['variant-' + variant]: true,
       ['size-' + size]: true,
-      rounded,
       circle,
       loading,
     }"
@@ -30,7 +29,6 @@ const props = withDefaults(
     href?: string;
     variant?: "primary" | "secondary";
     size?: "lg" | "md";
-    rounded?: boolean;
     circle?: boolean;
     type?: "submit" | "reset" | "button" | undefined;
     loading?: boolean;
@@ -88,9 +86,6 @@ button {
     font-size: var(--font-size-lg);
   }
 
-  &.rounded {
-    border-radius: 5px;
-  }
   &.circle {
     border-radius: 100%;
     height: 2rem;

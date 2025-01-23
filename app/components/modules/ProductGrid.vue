@@ -45,15 +45,15 @@
       <p>{{ t("no_products_found") }} 🙃</p>
     </div>
     <section v-if="totalPages > 1" class="page-navigation">
-      <NuxtLink
+      <Button
         v-if="currentPage > 1"
         :to="currentPage > 1 ? getUrl({ page: currentPage - 1 }) : null"
         class="page-button previous-page"
       >
         <ArrowLeft class="icon" />
         {{ t("previous_page") }}
-      </NuxtLink>
-      <NuxtLink
+      </Button>
+      <Button
         :to="
           currentPage < totalPages ? getUrl({ page: currentPage + 1 }) : null
         "
@@ -61,7 +61,7 @@
       >
         {{ t("next_page") }}
         <ArrowRight class="icon" />
-      </NuxtLink>
+      </Button>
     </section>
   </div>
 </template>
@@ -282,7 +282,7 @@ header {
   margin-bottom: var(--fluid-spacing-8);
   .product {
     display: flex;
-    color: var(--body-text-color);
+    color: var(--text-color);
     text-decoration: none;
     width: 100%;
   }
@@ -298,10 +298,6 @@ header {
   display: flex;
   justify-content: space-between;
   .page-button {
-    background-color: var(--primary-color);
-    color: var(--fg-primary);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;

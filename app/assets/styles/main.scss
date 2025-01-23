@@ -1,7 +1,10 @@
 @use "_reset.scss";
 @use "_breakpoints.scss";
-// @use "leihbar-koeln.scss";
-// @use "leihbar-freiburg.scss";
+
+@layer base, theme, utilities;
+
+// @import "leihbar-koeln.scss";
+// @import "leihbar-freiburg.scss";
 
 :root {
   font-family: "Inter", sans-serif;
@@ -14,103 +17,121 @@
   }
 }
 
-:root {
-  --color-blue: 13, 121, 242;
+@layer base {
+  :root {
+    // Colors
+    --background-color: #f5f5f5;
+    --primary-color: #333333;
+    --secondary-color: #ececec;
+    --text-color: #333;
+    --border-radius: 5px;
+    // Font-size
+    --font-size-sm: 0.9rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.125rem;
+    // Font-weight
+    --font-weight-normal: 300;
+    --font-weight-semibold: 500;
+    --font-weight-bold: 700;
+    --font-weight-black: 900;
+  }
+}
 
-  --bg-primary: #0d79f2;
-  --bg-secondary: #feddc1;
-  --bg-secondary-light: #fef3ea;
-  --bg-body: var(--bg-secondary);
+@layer utilities {
+  :root {
+    --max-text-width: 40rem;
 
-  --fg-primary: #feddc1;
+    --spacing-1: 0.25rem;
+    --spacing-2: 0.5rem;
+    --spacing-3: 0.75rem;
+    --spacing-4: 1rem;
+    --spacing-5: 1.25rem;
+    --spacing-6: 1.5rem;
+    --spacing-7: 1.75rem;
+    --spacing-8: 2rem;
 
-  --text-primary: #feddc1;
-  --text-secondary: #0d79f2;
+    --fluid-spacing-4: clamp(0.5rem, 2vw, 1rem);
+    --fluid-spacing-8: clamp(1rem, 4.5vw, 2rem);
+    --fluid-spacing-12: clamp(1.5rem, 6vw, 4rem);
 
-  --font-size-sm: 0.9rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.125rem;
+    --container-sm: #{breakpoints.$breakpoint-sm};
+    --container-md: #{breakpoints.$breakpoint-md};
 
-  --max-text-width: 40rem;
+    --fluid-container-sm: clamp(
+      #{breakpoints.$breakpoint-sm},
+      calc(#{breakpoints.$breakpoint-sm * 0.93} + 7vw),
+      #{breakpoints.$breakpoint-sm * 2}
+    );
 
-  --spacing-1: 0.25rem;
-  --spacing-2: 0.5rem;
-  --spacing-3: 0.75rem;
-  --spacing-4: 1rem;
-  --spacing-5: 1.25rem;
-  --spacing-6: 1.5rem;
-  --spacing-7: 1.75rem;
-  --spacing-8: 2rem;
+    // Surface colors
+    --surface-background-color: var(--background-color);
+    --surface-foreground-color: color-mix(
+      in srgb,
+      var(--background-color) 33%,
+      #fff
+    );
 
-  --fluid-spacing-4: clamp(0.5rem, 2vw, 1rem);
-  --fluid-spacing-8: clamp(1rem, 4.5vw, 2rem);
-  --fluid-spacing-12: clamp(1.5rem, 6vw, 4rem);
+    // Text color
+    --primary-text-color: var(--surface-foreground-color);
+    --secondary-text-color: var(--text-color);
+    --text-color-light: color-mix(
+      in srgb,
+      var(--text-color) 66%,
+      var(--surface-foreground-color)
+    );
 
-  --container-sm: #{breakpoints.$breakpoint-sm};
-  --container-md: #{breakpoints.$breakpoint-md};
+    // Indicating surface colors
+    --surface-neutral-color: color-mix(
+      in srgb,
+      #d6d6d6 40%,
+      var(--surface-foreground-color)
+    );
+    --surface-info-color: color-mix(
+      in srgb,
+      #b1dce2 40%,
+      var(--surface-foreground-color)
+    );
+    --surface-success-color: color-mix(
+      in srgb,
+      #c0e77c 40%,
+      var(--surface-foreground-color)
+    );
+    --surface-error-color: color-mix(
+      in srgb,
+      #f1bcbc 40%,
+      var(--surface-foreground-color)
+    );
+    --surface-warning-color: color-mix(
+      in srgb,
+      #f5dc7a 40%,
+      var(--surface-foreground-color)
+    );
 
-  --fluid-container-sm: clamp(
-    #{breakpoints.$breakpoint-sm},
-    calc(#{breakpoints.$breakpoint-sm * 0.93} + 7vw),
-    #{breakpoints.$breakpoint-sm * 2}
-  );
+    // Navbar
+    --navbar-height: 4rem;
+    --footer-height: 4rem;
 
-  /**
-   * Theme
-   */
-  --surface-background-color: #f9f9f9;
-  --surface-foreground-color: #ffffff;
-
-  --surface-neutral-color: #f6f6f6;
-  --surface-info-color: #d9eef1;
-  --surface-success-color: #f2f2d9;
-  --surface-error-color: #ffe8e5;
-  --surface-warning-color: #fffad0;
-
-  --primary-color: #333333;
-  --primary-text-color: #fff;
-
-  --secondary-color: #ececec;
-  --secondary-text-color: #333;
-
-  // ---
-
-  --border-neutral: #ccc;
-
-  --font-weight-normal: 300;
-  --font-weight-semibold: 500;
-  --font-weight-bold: 700;
-  --font-weight-black: 900;
-
-  --body-text-color: #333;
-  --body-text-color-light: #666;
-
-  --surface-color: #fff;
-
-  --body-font-md: 1rem;
-  --body-font-sm: 0.897rem;
-
-  --border-radius: 5px;
-
-  /**
-   * Components
-   */
-
-  --header-bg-color: #3a3a3a;
-  --header-text-color: #fff;
-
-  --footer-bg-color: #ddd;
-  --footer-text-color: #333;
-
-  --input-border-radius: var(--border-radius);
-  --input-border-color: #ccc;
-  --input-background-color: rgba(255, 255, 255, 0.5);
-  --input-focus-outline-width: 4px;
-  --input-focus-outline-color: rgba(var(--color-blue), 0.15);
-  --input-focus-border-color: rgb(var(--color-blue));
-  --input-disabled-background-color: #f8f8f8;
-
-  --navbar-height: 4rem;
+    // Input
+    --input-border-radius: var(--border-radius);
+    --input-border-color: color-mix(
+      in srgb,
+      var(--text-color) 25%,
+      var(--surface-foreground-color)
+    );
+    --input-background-color: color-mix(
+      in srgb,
+      var(--surface-foreground-color) 50%,
+      #fff
+    );
+    --input-focus-outline-width: 4px;
+    --input-focus-outline-color: color-mix(
+      in srgb,
+      var(--primary-color) 15%,
+      transparent
+    );
+    --input-focus-border-color: var(--primary-color);
+    --input-disabled-background-color: var(--surface-foreground-color);
+  }
 }
 
 body {
@@ -118,7 +139,7 @@ body {
   margin: 0;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  color: var(--body-text-color);
+  color: var(--text-color);
 }
 
 p,
@@ -170,7 +191,7 @@ h4,
 }
 
 a {
-  color: var(--text-secondary);
+  color: color-mix(in srgb, var(--primary-color) 75%, #000);
 }
 
 strong {

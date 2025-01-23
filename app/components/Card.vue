@@ -6,6 +6,6 @@
 div {
   padding: var(--fluid-spacing-12);
   background-color: var(--surface-foreground-color);
-  border-radius: 5px;
+  border-radius: calc(var(--border-radius) * 2);
 }
 </style>
