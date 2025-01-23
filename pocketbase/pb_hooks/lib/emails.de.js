@@ -1,6 +1,5 @@
 module.exports = (function () {
   const lendingConditionsLink = $os.getenv("CONFIG_LENDING_CONDITIONS_LINK");
-  const lendingContactEmail = $os.getenv("CONFIG_LENDING_CONTACT_EMAIL");
 
   function formatDate(date) {
     return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
@@ -11,6 +10,7 @@ module.exports = (function () {
   }
 
   const reservationConfirmationEmail = ({
+    locationEmail,
     userName,
     productUrl,
     productName,
@@ -39,9 +39,9 @@ ${
 <br>
 Solltest Du Deine Reservierung stornieren müssen, freuen wir 
 uns über eine kurze Email${
-      lendingContactEmail
+      locationEmail
         ? ` an
-<a href="${lendingContactEmail}">${lendingContactEmail}</a>.`
+<a href="mailto:${locationEmail}">${locationEmail}</a>.`
         : "."
     }<br>
 <br>

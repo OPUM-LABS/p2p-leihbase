@@ -1,6 +1,5 @@
 module.exports = (function () {
   const lendingConditionsLink = $os.getenv("CONFIG_LENDING_CONDITIONS_LINK");
-  const lendingContactEmail = $os.getenv("CONFIG_LENDING_CONTACT_EMAIL");
 
   function formatDate(date) {
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
@@ -11,6 +10,7 @@ module.exports = (function () {
   }
 
   const reservationConfirmationEmail = ({
+    locationEmail,
     userName,
     productUrl,
     productName,
@@ -37,9 +37,7 @@ of borrowing on site and to pay a ${
     } deposit.<br>
 <br>
 If you need to cancel your reservation, please send a short email${
-      lendingContactEmail
-        ? ` to <a href="${lendingContactEmail}">${lendingContactEmail}</a>`
-        : ""
+      locationEmail ? ` to <a href="${locationEmail}">${locationEmail}</a>` : ""
     }.<br>
 <br>
 We're happy that you have decided to borrow instead of buy!<br>

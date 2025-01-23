@@ -4,7 +4,7 @@
     :href="href"
     :to="to"
     :class="{ root: true, clicked }"
-    data-testid="product-card"
+    :data-testid="`product-card-${product.id}`"
     :data-client-mounted="isClientMounted"
     @click="clicked = true"
   >
