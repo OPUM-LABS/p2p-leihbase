@@ -7,7 +7,7 @@
         @input="onSearchInput"
         @blur="onSearchBlur"
         v-model="query"
-        class="lb-input search-input"
+        class="lb-input"
       />
     </header>
     <div class="filters">
@@ -204,9 +204,6 @@ header {
       margin: 0;
     }
   }
-}
-.search-input {
-  background-color: white;
 }
 .filters {
   margin-bottom: 1.5rem;

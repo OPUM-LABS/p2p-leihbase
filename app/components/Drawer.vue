@@ -59,7 +59,7 @@ function handleDocumentKeyDown(e: KeyboardEvent) {
   right: -100%;
   width: 95%;
   height: 100vh;
-  background-color: var(--surface-foreground-color);
+  background-color: var(--background-color);
   transition: right 200ms;
   z-index: 10;
   overflow-y: auto;

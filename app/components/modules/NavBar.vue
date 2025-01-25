@@ -44,7 +44,7 @@ const { leihbase } = storeToRefs(useLeihbase());
 @use "~/assets/styles/breakpoints";
 
 header {
-  --header-text-color: var(--surface-foreground-color);
+  --header-text-color: color-mix(in srgb, var(--background-color) 50%, #fff);
 
   display: flex;
   justify-content: space-between;
