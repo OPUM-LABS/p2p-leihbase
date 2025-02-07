@@ -47,6 +47,8 @@ to be able to use the application:
 
 1. Browse to http://localhost:8080/\_/ to visit the Pocketbase admin interface
 1. Create an admin account
+1. Create a record in the leihbase collection, containing some configuration
+   settings for the instance
 1. Create a location in the locations collection (make sure to set the location
    to as 'active')
 1. Create a product in the products collection (make sure to set the product to
@@ -94,10 +96,7 @@ Using the following JSON format the e-mail addresses which should receives
 notifications of this location can be configured:
 
 ```json
-[
-  "example@example.com",
-  "sarah@example.com"
-]
+["example@example.com", "sarah@example.com"]
 ```
 
 #### Links
@@ -125,14 +124,14 @@ configured:
       {
         "from": "18:00",
         "to": "19:00"
-      },
+      }
     ],
     "friday": [
       {
         "from": "17:00",
         "to": "19:00"
       }
-    ],
+    ]
   },
   "except": {
     "dates": ["2024-12-25", "2024-12-26", "2024-12-31", "2025-01-01"]
