@@ -32,11 +32,12 @@ const { leihbase } = storeToRefs(useLeihbase());
 await fetch();
 
 const style = [
-  `@layer theme {
-  :root {
-    ${leihbase?.value?.style || ""}
-  }
-}`,
+  `@layer base, theme, utilities;
+   @layer theme {
+    :root {
+      ${leihbase?.value?.style || ""}
+    }
+   }`,
 ];
 
 useHead({
