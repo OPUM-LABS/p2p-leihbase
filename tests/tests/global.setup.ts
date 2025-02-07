@@ -17,6 +17,15 @@ setup.describe("setup", () => {
       },
     });
 
+    // Create leihbase
+    try {
+      await pb.collection("leihbase").create({
+        name: "Leihbase",
+      });
+    } catch (err) {
+      console.log("Error creating leihbase record", err.response.data);
+    }
+
     // Create test store
     let location;
     try {
