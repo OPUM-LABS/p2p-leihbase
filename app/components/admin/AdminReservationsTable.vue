@@ -117,15 +117,16 @@ td {
   text-align: left;
   padding: 0.5rem;
   max-width: 200px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--text-color-light) 50%, var(--background-color));
   text-overflow: ellipsis;
   text-wrap: nowrap;
   overflow: hidden;
   &.start,
   &.end {
-    color: var(--body-text-color-light);
+    color: var(--text-color-light);
     &.highlight {
-      color: var(--body-text-color);
+      color: var(--text-color);
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <header>
-    <NuxtLink to="/" class="logo">Leihbar<br />Köln</NuxtLink>
+    <NuxtLink to="/" class="logo">{{ leihbase.name }}</NuxtLink>
     <nav>
       <ul v-if="isValid">
         <li v-if="userStore.isAdmin">
@@ -37,18 +37,21 @@ const { t } = useI18n({
 });
 const { isValid } = usePocketbase();
 const userStore = useUserStore();
+const { leihbase } = storeToRefs(useLeihbase());
 </script>
 
 <style lang="scss" scoped>
 @use "~/assets/styles/breakpoints";
 
 header {
+  --header-text-color: color-mix(in srgb, var(--background-color) 50%, #fff);
+
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0rem 1rem;
   height: var(--navbar-height);
-  background-color: var(--header-bg-color);
+  background-color: var(--primary-color);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -62,6 +65,7 @@ header {
     font-weight: var(--font-weight-black);
     line-height: 1;
     text-decoration: none;
+    white-space: pre;
   }
 
   nav {

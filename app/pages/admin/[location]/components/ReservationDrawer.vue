@@ -278,9 +278,9 @@ footer {
 }
 .sent-emails {
   width: 100%;
-  background-color: var(--background-neutral);
+  background-color: var(--surface-neutral-color);
   padding: 1rem;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
 }
 .sent-emails ul {
   list-style: none;

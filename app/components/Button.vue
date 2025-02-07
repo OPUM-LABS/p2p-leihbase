@@ -5,7 +5,6 @@
     :class="{
       ['variant-' + variant]: true,
       ['size-' + size]: true,
-      rounded,
       circle,
       loading,
     }"
@@ -30,7 +29,6 @@ const props = withDefaults(
     href?: string;
     variant?: "primary" | "secondary";
     size?: "lg" | "md";
-    rounded?: boolean;
     circle?: boolean;
     type?: "submit" | "reset" | "button" | undefined;
     loading?: boolean;
@@ -60,22 +58,22 @@ button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border-radius: 0;
+  border-radius: var(--border-radius);
   cursor: pointer;
   text-decoration: none;
 
   &.variant-primary {
-    background-color: var(--button-primary-bg-color);
+    background-color: var(--primary-color);
     border: 0;
-    color: var(--button-primary-text-color);
+    color: var(--primary-text-color);
     font-weight: var(--font-weight-semibold);
   }
   &.variant-secondary {
-    background-color: var(--button-secondary-bg-color);
-    color: var(--button-secondary-text-color);
+    background-color: var(--secondary-color);
+    color: var(--secondary-text-color);
     border: 2px solid transparent;
     &:hover {
-      border: 2px solid var(--bg-primary);
+      border: 2px solid var(--primary-color);
     }
   }
 
@@ -88,9 +86,6 @@ button {
     font-size: var(--font-size-lg);
   }
 
-  &.rounded {
-    border-radius: 5px;
-  }
   &.circle {
     border-radius: 100%;
     height: 2rem;

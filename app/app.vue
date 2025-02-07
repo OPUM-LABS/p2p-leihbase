@@ -13,6 +13,7 @@ import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.j
 import { useUserStore } from "./stores/user";
 import NavBar from "./components/modules/NavBar.vue";
 import Footer from "./components/modules/Footer.vue";
+import { useLeihbase } from "./stores/leihbase";
 
 setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/"
@@ -24,17 +25,28 @@ const {
   public: { plausibleTrackingDomain },
 } = useRuntimeConfig();
 
-if (plausibleTrackingDomain) {
-  useHead({
-    script: [
-      {
-        defer: true,
-        "data-domain": plausibleTrackingDomain,
-        src: "https://plausible.io/js/script.js",
-      },
-    ],
-  });
-}
+// Fetch Leihbase collection on a central location
+// await for the result before processing the rest of the page
+const { fetch } = useLeihbase();
+const { leihbase } = storeToRefs(useLeihbase());
+await fetch();
+
+const style = [
+  `body {
+  ${leihbase.value.style}
+}`,
+];
+
+useHead({
+  script: [
+    plausibleTrackingDomain && {
+      defer: true,
+      "data-domain": plausibleTrackingDomain,
+      src: "https://plausible.io/js/script.js",
+    },
+  ],
+  style,
+});
 
 if (isValid.value) {
   await userStore.login();
@@ -49,6 +61,6 @@ if (isValid.value) {
 
 <style lang="scss" scoped>
 main {
-  min-height: calc(100vh - 8rem);
+  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
 }
 </style>

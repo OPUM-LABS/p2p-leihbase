@@ -1,6 +1,11 @@
 @use "_reset.scss";
 @use "_breakpoints.scss";
 
+@layer base, theme, utilities;
+
+// @import "leihbar-koeln.scss";
+// @import "leihbar-freiburg.scss";
+
 :root {
   font-family: "Inter", sans-serif;
   font-weight: var(--font-weight-normal);
@@ -12,97 +17,128 @@
   }
 }
 
-:root {
-  --color-blue: 13, 121, 242;
+@layer base {
+  :root,
+  [data-base-theme] {
+    // Colors
+    --background-color: #f5f5f5;
+    --primary-color: #333333;
+    --secondary-color: #e9e9e9;
+    --text-color: #333;
+    --border-radius: 5px;
+    // Font-size
+    --font-size-sm: 0.9rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.125rem;
+    // Font-weight
+    --font-weight-normal: 300;
+    --font-weight-semibold: 500;
+    --font-weight-bold: 700;
+    --font-weight-black: 900;
+  }
+}
 
-  --bg-primary: #0d79f2;
-  --bg-secondary: #feddc1;
-  --bg-secondary-light: #fef3ea;
-  --bg-body: var(--bg-secondary);
+@layer utilities {
+  :root,
+  [data-base-theme] {
+    --max-text-width: 40rem;
 
-  --fg-primary: #feddc1;
+    --spacing-1: 0.25rem;
+    --spacing-2: 0.5rem;
+    --spacing-3: 0.75rem;
+    --spacing-4: 1rem;
+    --spacing-5: 1.25rem;
+    --spacing-6: 1.5rem;
+    --spacing-7: 1.75rem;
+    --spacing-8: 2rem;
 
-  --text-primary: #feddc1;
-  --text-secondary: #0d79f2;
+    --fluid-spacing-4: clamp(0.5rem, 2vw, 1rem);
+    --fluid-spacing-8: clamp(1rem, 4.5vw, 2rem);
+    --fluid-spacing-12: clamp(1.5rem, 6vw, 4rem);
 
-  --font-size-sm: 0.9rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.125rem;
+    --container-sm: #{breakpoints.$breakpoint-sm};
+    --container-md: #{breakpoints.$breakpoint-md};
 
-  --max-text-width: 40rem;
+    --fluid-container-sm: clamp(
+      #{breakpoints.$breakpoint-sm},
+      calc(#{breakpoints.$breakpoint-sm * 0.93} + 7vw),
+      #{breakpoints.$breakpoint-sm * 2}
+    );
 
-  --spacing-1: 0.25rem;
-  --spacing-2: 0.5rem;
-  --spacing-3: 0.75rem;
-  --spacing-4: 1rem;
-  --spacing-5: 1.25rem;
-  --spacing-6: 1.5rem;
-  --spacing-7: 1.75rem;
-  --spacing-8: 2rem;
+    // Text color
+    --primary-text-color: var(--background-color);
+    --secondary-text-color: var(--text-color);
+    --text-color-light: color-mix(
+      in srgb,
+      var(--text-color) 66%,
+      var(--background-color)
+    );
 
-  --fluid-spacing-4: clamp(0.5rem, 2vw, 1rem);
-  --fluid-spacing-8: clamp(1rem, 4.5vw, 2rem);
-  --fluid-spacing-12: clamp(1.5rem, 6vw, 4rem);
+    // Indicating surface colors
+    --surface-neutral-color: color-mix(
+      in srgb,
+      #d6d6d6 40%,
+      var(--background-color)
+    );
+    --info-color: #9ebdcf;
+    --surface-info-color: color-mix(
+      in srgb,
+      var(--info-color) 40%,
+      var(--background-color)
+    );
+    --surface-success-color: color-mix(
+      in srgb,
+      #c0e77c 40%,
+      var(--background-color)
+    );
+    --surface-error-color: color-mix(
+      in srgb,
+      #f1bcbc 40%,
+      var(--background-color)
+    );
+    --surface-warning-color: color-mix(
+      in srgb,
+      #f5dc7a 40%,
+      var(--background-color)
+    );
 
-  --container-sm: #{breakpoints.$breakpoint-sm};
-  --container-md: #{breakpoints.$breakpoint-md};
+    // Navbar
+    --navbar-height: 4rem;
+    --footer-height: 4rem;
 
-  --fluid-container-sm: clamp(
-    #{breakpoints.$breakpoint-sm},
-    calc(#{breakpoints.$breakpoint-sm * 0.93} + 7vw),
-    #{breakpoints.$breakpoint-sm * 2}
-  );
-
-  /**
-   * Theme
-   */
-  --background-neutral: #f6f6f6;
-  --background-success: #f2f2d9;
-  --background-error: #ffe8e5;
-  --background-warning: #fffad0;
-
-  --border-neutral: #ccc;
-
-  --font-weight-normal: 300;
-  --font-weight-semibold: 500;
-  --font-weight-bold: 700;
-  --font-weight-black: 900;
-
-  --body-bg-color: #feddc1;
-  --body-text-color: #082342; // #041a33;
-  --body-text-color-light: #837e7b;
-
-  --body-font-md: 1rem;
-  --body-font-sm: 0.897rem;
-
-  --header-bg-color: #0d79f2;
-  --header-text-color: #fee8d5;
-
-  --footer-bg-color: #ffe7d3;
-  --footer-text-color: #404d5d;
-
-  --button-primary-bg-color: #0d79f2;
-  --button-primary-text-color: #fee8d5;
-  --button-secondary-bg-color: #fef3ea;
-  --button-secondary-text-color: var(--body-text-color);
-
-  --input-border-radius: 5px;
-  --input-border-color: #ccc;
-  --input-background-color: rgba(255, 255, 255, 0.5);
-  --input-focus-outline-width: 4px;
-  --input-focus-outline-color: rgba(var(--color-blue), 0.15);
-  --input-focus-border-color: rgb(var(--color-blue));
-  --input-disabled-background-color: #f8f8f8;
-
-  --navbar-height: 4rem;
+    // Input
+    --input-border-radius: var(--border-radius);
+    --input-border-color: color-mix(
+      in srgb,
+      var(--text-color) 25%,
+      var(--background-color)
+    );
+    --input-background-color: color-mix(
+      in srgb,
+      var(--background-color) 50%,
+      #fff
+    );
+    --input-focus-outline-width: 4px;
+    --input-focus-outline-color: color-mix(
+      in srgb,
+      var(--primary-color) 15%,
+      transparent
+    );
+    --input-focus-border-color: var(--primary-color);
+    --input-disabled-background-color: color-mix(
+      in srgb,
+      var(--background-color) 80%,
+      #fff
+    );
+  }
 }
 
 body {
-  background-color: var(--body-bg-color);
+  background-color: var(--background-color);
   margin: 0;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  color: var(--body-text-color);
+  color: var(--text-color);
 }
 
 p,
@@ -154,7 +190,7 @@ h4,
 }
 
 a {
-  color: var(--text-secondary);
+  color: color-mix(in srgb, var(--primary-color) 75%, #000);
 }
 
 strong {
@@ -179,15 +215,6 @@ select {
 
 .rich-text p:last-child {
   margin-bottom: 0;
-}
-
-hr {
-  width: 4rem;
-  height: 3px;
-  border-radius: 3px;
-  margin: var(--spacing-8) 0;
-  border: 0;
-  background-color: var(--bg-primary);
 }
 
 // Hide custom element (shoelace elements) until

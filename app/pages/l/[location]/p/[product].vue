@@ -78,8 +78,6 @@
           </span>
         </div>
 
-        <hr />
-
         <ReservationsBox
           :title="t('reservations')"
           :reservations="reservations"
@@ -388,13 +386,13 @@ section {
   & > li:not(:last-child)::after {
     content: ">";
     margin-left: 0.5rem;
-    color: var(--body-text-color-light);
+    color: var(--text-color-light);
   }
   li > span:not(:last-child)::after {
     content: ", ";
   }
   a {
-    color: var(--body-text-color);
+    color: var(--text-color);
   }
 }
 .product {
@@ -415,7 +413,7 @@ section {
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: var(--fluid-spacing-4);
       button {
-        border-radius: 5px;
+        border-radius: var(--border-radius);
         overflow: hidden;
         background-color: rgba(0, 0, 0, 0.15);
         border: 0;
@@ -435,7 +433,7 @@ section {
         &:focus,
         &:active,
         &:hover {
-          box-shadow: 0 0 0 2px var(--bg-primary);
+          box-shadow: 0 0 0 2px var(--primary-color);
           outline: 0;
           border: 0;
         }
@@ -467,12 +465,13 @@ section {
       margin: 0;
     }
     .info-body {
-      margin-bottom: 2rem;
+      margin-bottom: var(--fluid-spacing-8);
     }
     .info-admin {
-      background-color: #0d79f212;
+      background-color: var(--surface-info-color);
       padding: 1rem;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
+      margin-bottom: var(--fluid-spacing-8);
       h2 {
         display: flex;
         align-items: center;

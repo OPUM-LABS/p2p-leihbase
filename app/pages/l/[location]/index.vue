@@ -8,7 +8,6 @@
             location?.address
           )}`"
           target="_blank"
-          rounded
         >
           <template #prefix><MapPin /></template>
           {{ location?.address }}
@@ -18,7 +17,6 @@
           variant="secondary"
           :href="link.link"
           target="_blank"
-          rounded
         >
           <template #prefix><Internet /></template>
           {{ link.text }}
@@ -41,7 +39,6 @@
         ></span>
       </div>
     </header>
-    <hr />
     <section>
       <ProductGrid :location="location" />
     </section>
@@ -79,6 +76,7 @@ section {
   margin-bottom: var(--fluid-spacing-8);
 }
 header {
+  margin-bottom: var(--fluid-spacing-8);
   .links {
     display: flex;
     gap: var(--fluid-spacing-4);

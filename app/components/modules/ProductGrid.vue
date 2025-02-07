@@ -2,9 +2,16 @@
   <div>
     <header>
       <h2>{{ props.title || t("products") }}</h2>
+      <InputField
+        :placeholder="`${t('search')}...`"
+        @input="onSearchInput"
+        @blur="onSearchBlur"
+        v-model="query"
+        class="lb-input"
+      />
     </header>
     <div class="filters">
-      <ul class="categories">
+      <ul class="categories" :class="{ 'show-all': showAllCategories }">
         <li v-for="category in categories" :key="category.id">
           <NuxtLink
             :href="
@@ -18,14 +25,11 @@
           </NuxtLink>
         </li>
       </ul>
-      <div>
-        <InputField
-          :placeholder="`${t('search')}...`"
-          @input="onSearchInput"
-          @blur="onSearchBlur"
-          v-model="query"
-          class="search-input"
-        />
+      <div v-show="!showAllCategories" class="more-categories">
+        <button @click="showAllCategories = true">
+          {{ t("more_categories") }}
+          <NavArrowDown />
+        </button>
       </div>
     </div>
     <div v-if="products && products.length > 0" class="products">
@@ -41,15 +45,15 @@
       <p>{{ t("no_products_found") }} 🙃</p>
     </div>
     <section v-if="totalPages > 1" class="page-navigation">
-      <NuxtLink
+      <Button
         v-if="currentPage > 1"
         :to="currentPage > 1 ? getUrl({ page: currentPage - 1 }) : null"
         class="page-button previous-page"
       >
         <ArrowLeft class="icon" />
         {{ t("previous_page") }}
-      </NuxtLink>
-      <NuxtLink
+      </Button>
+      <Button
         :to="
           currentPage < totalPages ? getUrl({ page: currentPage + 1 }) : null
         "
@@ -57,13 +61,13 @@
       >
         {{ t("next_page") }}
         <ArrowRight class="icon" />
-      </NuxtLink>
+      </Button>
     </section>
   </div>
 </template>
 
 <script setup>
-import { ArrowRight } from "@iconoir/vue";
+import { ArrowDown, ArrowRight, NavArrowDown } from "@iconoir/vue";
 import { ArrowLeft } from "@iconoir/vue";
 import ProductCard from "~/components/ProductCard.vue";
 
@@ -87,6 +91,9 @@ const route = useRoute();
 const categoryId = ref(route.query.category);
 const page = ref(route.query.page);
 const query = ref(route.query.query);
+
+// TODO: hide all categories by default
+const showAllCategories = ref(true);
 
 watch(
   () => route.query.category,
@@ -188,42 +195,78 @@ function getUrl(overwrites) {
 
 header {
   margin-bottom: var(--fluid-spacing-4);
-  h2 {
-    margin: 0;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  align-items: center;
+  @media screen and (min-width: breakpoints.$breakpoint-sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    h2 {
+      margin: 0;
+    }
   }
 }
 .filters {
-  display: grid;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  @media screen and (min-width: breakpoints.$breakpoint-sm) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: var(--fluid-spacing-4);
+  position: relative;
+}
+.more-categories {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: stretch;
+  &::before {
+    content: "";
+    display: block;
+    width: 3rem;
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--background-color) 0%, transparent) 0%,
+      var(--background-color) 66%
+    );
   }
-  .search-input {
-    width: 100%;
+  button {
+    background-color: var(--secondary-color);
+    border: 2px solid transparent;
+    color: var(--button-secondary-text-color);
+    border-radius: var(--border-radius);
+    padding: 0.333rem 0.666rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      border: 2px solid var(--primary-color);
+    }
+    svg {
+      stroke-width: 1;
+    }
   }
 }
 .categories {
   list-style: none;
   display: flex;
-  flex-wrap: wrap;
   padding: 0;
-  gap: 0.5rem;
+  gap: 0.333rem;
   margin: 0;
+  overflow-x: hidden;
+  &.show-all {
+    overflow-x: visible;
+    flex-wrap: wrap;
+  }
   a {
+    width: max-content;
     display: inline-block;
-    background-color: var(--bg-secondary-light);
+    background-color: var(--secondary-color);
     border: 2px solid transparent;
-    color: var(--body-text-color);
+    color: var(--button-secondary-text-color);
     text-decoration: none;
-    padding: 0.5rem 1rem;
+    padding: 0.333rem 0.666rem;
+    border-radius: var(--border-radius);
     &:hover {
-      border: 2px solid var(--bg-primary);
+      border: 2px solid var(--primary-color);
     }
     &.active {
-      background-color: var(--bg-primary);
+      background-color: var(--primary-color);
       color: white;
     }
   }
@@ -232,11 +275,11 @@ header {
   --columns: 2;
   display: grid;
   grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
-  gap: 1rem;
-  margin-bottom: var(--fluid-spacing-8);
+  gap: var(--fluid-spacing-4);
+  margin-bottom: var(--fluid-spacing-4);
   .product {
     display: flex;
-    color: var(--body-text-color);
+    color: var(--text-color);
     text-decoration: none;
     width: 100%;
   }
@@ -252,10 +295,6 @@ header {
   display: flex;
   justify-content: space-between;
   .page-button {
-    background-color: var(--bg-primary);
-    color: var(--fg-primary);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -280,6 +319,7 @@ header {
   "en": {
     "products": "Products",
     "search": "Search",
+    "more_categories": "More categories",
     "previous_page": "Previous page",
     "next_page": "Next page",
     "no_products_found": "No products found"
@@ -287,6 +327,7 @@ header {
   "de": {
     "products": "Gegenstände",
     "search": "Suchen",
+    "more_categories": "Mehr kategorien",
     "previous_page": "Vorherige Seite",
     "next_page": "Nächste Seite",
     "no_products_found": "Keine Produkte gefunden"

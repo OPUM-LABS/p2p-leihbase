@@ -93,10 +93,23 @@ Tests are configured and run using [Playwright](https://playwright.dev/).
 Using the following JSON format the e-mail addresses which should receives
 notifications of this location can be configured:
 
-```
+```json
 [
   "example@example.com",
   "sarah@example.com"
+]
+```
+
+#### Links
+
+Links shown on the location page.
+
+```json
+[
+  {
+    "text": "Leihbar Website",
+    "link": "https://leihbar-koeln.de"
+  }
 ]
 ```
 
@@ -105,7 +118,7 @@ notifications of this location can be configured:
 Using the following JSON format the opening hours of a location can be
 configured:
 
-```
+```json
 {
   "days": {
     "tuesday": [

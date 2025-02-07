@@ -7,7 +7,6 @@
         Name: {{ user?.name }}<br />
         E-mail: {{ user?.email }} {{ user?.verified ? "" : "(unbestätigt)" }}
       </p>
-      <hr />
       <Button size="lg" :loading="loggingOut" @click="onLogout">Logout</Button>
     </Card>
   </Container>

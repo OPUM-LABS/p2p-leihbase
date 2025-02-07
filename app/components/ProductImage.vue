@@ -50,7 +50,7 @@ withDefaults(
   container-type: inline-size;
 }
 img {
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   overflow: hidden;
   max-width: 100%;
   object-fit: contain;
@@ -64,7 +64,7 @@ img {
     aspect-ratio: 1/1;
   }
   &.border-radius-top {
-    border-radius: 5px 5px 0 0;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
   }
 }
 .message {

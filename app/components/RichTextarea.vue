@@ -58,6 +58,7 @@ watch(model, (newValue) => {
   height: 10rem;
   display: flex;
   flex-direction: column;
+  background-color: var(--input-background-color);
 }
 </style>
 

@@ -77,7 +77,7 @@ const component = computed(() => {
 <style lang="scss" scoped>
 .root {
   background-color: white;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -85,7 +85,7 @@ const component = computed(() => {
 a.root:hover,
 a.root:active,
 a.root:focus {
-  box-shadow: 0 0 0 2px var(--bg-primary);
+  box-shadow: 0 0 0 2px var(--primary-color);
   outline: 0;
   border: 0;
 }

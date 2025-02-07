@@ -49,7 +49,11 @@ label {
   display: inline-block;
   height: calc(var(--knob-size) + var(--margin) * 2);
   width: calc(var(--knob-size) * 2 + var(--margin) * 2);
-  background: #999;
+  background: color-mix(
+    in srgb,
+    var(--text-color) 60%,
+    var(--background-color)
+  );
   border-radius: calc(var(--knob-size) + 0.4rem);
   cursor: pointer;
   color: white;
