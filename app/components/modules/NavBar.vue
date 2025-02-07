@@ -1,6 +1,6 @@
 <template>
   <header>
-    <NuxtLink to="/" class="logo">{{ leihbase.name }}</NuxtLink>
+    <NuxtLink to="/" class="logo">{{ leihbase?.name || "" }}</NuxtLink>
     <nav>
       <ul v-if="isValid">
         <li v-if="userStore.isAdmin">

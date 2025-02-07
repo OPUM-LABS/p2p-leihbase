@@ -34,7 +34,7 @@ await fetch();
 const style = [
   `@layer theme {
   :root {
-    ${leihbase.value.style}
+    ${leihbase?.value?.style || ""}
   }
 }`,
 ];
