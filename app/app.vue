@@ -32,8 +32,10 @@ const { leihbase } = storeToRefs(useLeihbase());
 await fetch();
 
 const style = [
-  `body {
-  ${leihbase.value.style}
+  `@layer theme {
+  :root {
+    ${leihbase.value.style}
+  }
 }`,
 ];
 
