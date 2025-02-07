@@ -1,5 +1,5 @@
 <template>
-  <Container width="lg" centered class="container">
+  <Container width="lg" centered>
     <header>
       <section class="links">
         <Button
