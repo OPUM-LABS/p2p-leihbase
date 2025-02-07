@@ -5,13 +5,17 @@
         type="text"
         :id="id"
         :name="name"
-        :value="isLoading ? t('loading') : record ? record[search[0]] : 'None'"
+        :value="
+          isLoading ? t('loading') : record ? record[search[0]] : t('none')
+        "
         disabled
         readonly
         :data-testid="dataTestid"
         :class="{ 'lb-input': true }"
       />
-      <button @click.prevent="handleClick">Select</button>
+      <button @click.prevent="handleClick">
+        {{ t("select") }}
+      </button>
     </div>
   </FormRow>
 </template>
@@ -82,10 +86,14 @@ button {
 <i18n lang="json">
 {
   "en": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "select": "Select",
+    "none": "None"
   },
   "de": {
-    "loading": "Laden..."
+    "loading": "Laden...",
+    "select": "Auswählen",
+    "none": "Keine"
   }
 }
 </i18n>
