@@ -118,11 +118,7 @@ td {
   padding: 0.5rem;
   max-width: 200px;
   border-bottom: 1px solid
-    color-mix(
-      in srgb,
-      var(--text-color-light) 50%,
-      var(--surface-foreground-color)
-    );
+    color-mix(in srgb, var(--text-color-light) 50%, var(--background-color));
   text-overflow: ellipsis;
   text-wrap: nowrap;
   overflow: hidden;

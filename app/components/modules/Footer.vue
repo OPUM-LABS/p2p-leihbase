@@ -34,7 +34,7 @@ footer {
   flex-wrap: wrap;
   padding: 1rem 1rem;
   min-height: var(--footer-height);
-  background-color: var(--surface-foreground-color);
+  background-color: var(--background-color);
   color: var(--text-color);
   text-align: center;
   a {

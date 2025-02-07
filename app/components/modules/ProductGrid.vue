@@ -206,7 +206,7 @@ header {
   }
 }
 .filters {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--fluid-spacing-4);
   position: relative;
 }
 .more-categories {
@@ -221,8 +221,8 @@ header {
     width: 3rem;
     background: linear-gradient(
       to right,
-      color-mix(in srgb, var(--surface-background-color) 0%, transparent) 0%,
-      var(--surface-background-color) 66%
+      color-mix(in srgb, var(--background-color) 0%, transparent) 0%,
+      var(--background-color) 66%
     );
   }
   button {
@@ -275,8 +275,8 @@ header {
   --columns: 2;
   display: grid;
   grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
-  gap: 1rem;
-  margin-bottom: var(--fluid-spacing-8);
+  gap: var(--fluid-spacing-4);
+  margin-bottom: var(--fluid-spacing-4);
   .product {
     display: flex;
     color: var(--text-color);

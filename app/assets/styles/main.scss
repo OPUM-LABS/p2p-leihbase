@@ -65,45 +65,41 @@
       #{breakpoints.$breakpoint-sm * 2}
     );
 
-    // Surface colors
-    --surface-background-color: var(--background-color);
-    --surface-foreground-color: var(--background-color);
-
     // Text color
-    --primary-text-color: var(--surface-foreground-color);
+    --primary-text-color: var(--background-color);
     --secondary-text-color: var(--text-color);
     --text-color-light: color-mix(
       in srgb,
       var(--text-color) 66%,
-      var(--surface-foreground-color)
+      var(--background-color)
     );
 
     // Indicating surface colors
     --surface-neutral-color: color-mix(
       in srgb,
       #d6d6d6 40%,
-      var(--surface-foreground-color)
+      var(--background-color)
     );
     --info-color: #9ebdcf;
     --surface-info-color: color-mix(
       in srgb,
       var(--info-color) 40%,
-      var(--surface-foreground-color)
+      var(--background-color)
     );
     --surface-success-color: color-mix(
       in srgb,
       #c0e77c 40%,
-      var(--surface-foreground-color)
+      var(--background-color)
     );
     --surface-error-color: color-mix(
       in srgb,
       #f1bcbc 40%,
-      var(--surface-foreground-color)
+      var(--background-color)
     );
     --surface-warning-color: color-mix(
       in srgb,
       #f5dc7a 40%,
-      var(--surface-foreground-color)
+      var(--background-color)
     );
 
     // Navbar
@@ -115,11 +111,11 @@
     --input-border-color: color-mix(
       in srgb,
       var(--text-color) 25%,
-      var(--surface-foreground-color)
+      var(--background-color)
     );
     --input-background-color: color-mix(
       in srgb,
-      var(--surface-foreground-color) 50%,
+      var(--background-color) 50%,
       #fff
     );
     --input-focus-outline-width: 4px;
@@ -131,14 +127,14 @@
     --input-focus-border-color: var(--primary-color);
     --input-disabled-background-color: color-mix(
       in srgb,
-      var(--surface-foreground-color) 80%,
+      var(--background-color) 80%,
       #fff
     );
   }
 }
 
 body {
-  background-color: var(--surface-background-color);
+  background-color: var(--background-color);
   margin: 0;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;

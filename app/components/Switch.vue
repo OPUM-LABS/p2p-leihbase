@@ -52,7 +52,7 @@ label {
   background: color-mix(
     in srgb,
     var(--text-color) 60%,
-    var(--surface-foreground-color)
+    var(--background-color)
   );
   border-radius: calc(var(--knob-size) + 0.4rem);
   cursor: pointer;

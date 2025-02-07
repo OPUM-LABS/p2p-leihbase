@@ -1,69 +1,67 @@
 <template>
-  <div class="background">
-    <Container width="lg" centered>
-      <PageAlert class="banner" />
+  <Container width="lg" centered>
+    <PageAlert class="banner" />
 
-      <AdminNav :location="location" />
-      <AdminHeader :title="t('title')" :location="location">
-        <Button @click="handleNewReservationClick">{{
-          t("new_reservation")
-        }}</Button>
-      </AdminHeader>
+    <AdminNav :location="location" />
+    <AdminHeader :title="t('title')" :location="location">
+      <Button @click="handleNewReservationClick">{{
+        t("new_reservation")
+      }}</Button>
+    </AdminHeader>
 
-      <TabList v-if="location" active="today" class="tablist">
-        <Tab
-          v-if="overdueReservations.length > 0"
-          id="overdue"
-          :title="t('tab_overdue')"
-          :warning="true"
-        >
-          <section>
-            <OverdueTab
-              :location="location"
-              :reservation-update-hook="reservationUpdate.on"
-              @select="handleReservationSelect"
-            />
-          </section>
-        </Tab>
-        <Tab id="today" :title="t('tab_shift')">
-          <section>
-            <TodayTab
-              :location="location"
-              :reservation-update-hook="reservationUpdate.on"
-              @select="handleReservationSelect"
-            />
-          </section>
-        </Tab>
-        <Tab id="ongoing" :title="t('tab_ongoing')">
-          <section>
-            <OngoingTab
-              :location="location"
-              :reservation-update-hook="reservationUpdate.on"
-              @select="handleReservationSelect"
-            />
-          </section>
-        </Tab>
-        <Tab id="future" :title="t('tab_future')">
-          <section>
-            <FutureTab
-              :location="location"
-              :reservation-update-hook="reservationUpdate.on"
-              @select="handleReservationSelect"
-            />
-          </section>
-        </Tab>
-        <Tab id="past" :title="t('tab_past')">
-          <section>
-            <PastTab
-              :location="location"
-              :reservation-update-hook="reservationUpdate.on"
-              @select="handleReservationSelect"
-            />
-          </section>
-        </Tab>
-      </TabList>
-    </Container>
-  </div>
+    <TabList v-if="location" active="today" class="tablist">
+      <Tab
+        v-if="overdueReservations.length > 0"
+        id="overdue"
+        :title="t('tab_overdue')"
+        :warning="true"
+      >
+        <section>
+          <OverdueTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
+        </section>
+      </Tab>
+      <Tab id="today" :title="t('tab_shift')">
+        <section>
+          <TodayTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
+        </section>
+      </Tab>
+      <Tab id="ongoing" :title="t('tab_ongoing')">
+        <section>
+          <OngoingTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
+        </section>
+      </Tab>
+      <Tab id="future" :title="t('tab_future')">
+        <section>
+          <FutureTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
+        </section>
+      </Tab>
+      <Tab id="past" :title="t('tab_past')">
+        <section>
+          <PastTab
+            :location="location"
+            :reservation-update-hook="reservationUpdate.on"
+            @select="handleReservationSelect"
+          />
+        </section>
+      </Tab>
+    </TabList>
+  </Container>
 
   <ReservationDrawer
     v-if="location"
@@ -141,10 +139,6 @@ function handleNewReservationClick() {
 <style lang="scss" scoped>
 @use "~/assets/styles/breakpoints.scss";
 
-.background {
-  background-color: var(--surface-foreground-color);
-  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
-}
 .overdue {
   margin-bottom: var(--fluid-spacing-8);
 }

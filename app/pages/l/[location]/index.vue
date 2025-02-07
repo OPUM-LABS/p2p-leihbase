@@ -1,50 +1,48 @@
 <template>
-  <div class="background">
-    <Container width="lg" centered class="container">
-      <header>
-        <section class="links">
-          <Button
-            variant="secondary"
-            :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-              location?.address
-            )}`"
-            target="_blank"
-          >
-            <template #prefix><MapPin /></template>
-            {{ location?.address }}
-          </Button>
-          <Button
-            v-for="link in location?.links"
-            variant="secondary"
-            :href="link.link"
-            target="_blank"
-          >
-            <template #prefix><Internet /></template>
-            {{ link.text }}
-          </Button>
-        </section>
-        <h1>
-          {{ location?.name || t("no_location_found") }}
-        </h1>
-        <!-- Description -->
-        <div
-          v-if="location?.description"
-          class="description"
-          v-html="location.description"
-        ></div>
-        <!-- Opening hours -->
-        <div v-if="location?.opening_hours">
-          <strong>{{ t("opening_hours") }}:</strong><br />
-          <span
-            v-html="openingHoursToString(location?.opening_hours, locale)"
-          ></span>
-        </div>
-      </header>
-      <section>
-        <ProductGrid :location="location" />
+  <Container width="lg" centered class="container">
+    <header>
+      <section class="links">
+        <Button
+          variant="secondary"
+          :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            location?.address
+          )}`"
+          target="_blank"
+        >
+          <template #prefix><MapPin /></template>
+          {{ location?.address }}
+        </Button>
+        <Button
+          v-for="link in location?.links"
+          variant="secondary"
+          :href="link.link"
+          target="_blank"
+        >
+          <template #prefix><Internet /></template>
+          {{ link.text }}
+        </Button>
       </section>
-    </Container>
-  </div>
+      <h1>
+        {{ location?.name || t("no_location_found") }}
+      </h1>
+      <!-- Description -->
+      <div
+        v-if="location?.description"
+        class="description"
+        v-html="location.description"
+      ></div>
+      <!-- Opening hours -->
+      <div v-if="location?.opening_hours">
+        <strong>{{ t("opening_hours") }}:</strong><br />
+        <span
+          v-html="openingHoursToString(location?.opening_hours, locale)"
+        ></span>
+      </div>
+    </header>
+    <section>
+      <ProductGrid :location="location" />
+    </section>
+  </Container>
 </template>
 
 <script setup>
@@ -74,9 +72,6 @@ useHead({
 </script>
 
 <style lang="scss" scoped>
-.background {
-  background-color: var(--surface-foreground-color);
-}
 section {
   margin-bottom: var(--fluid-spacing-8);
 }
