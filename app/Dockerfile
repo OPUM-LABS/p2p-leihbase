@@ -1,4 +1,4 @@
-FROM node:21.7.1-alpine3.19 AS base
+FROM node:22.13.1-alpine3.21 AS base
 
 ENV NUXT_PORT=3000
 ENV NITRO_PORT=3000
