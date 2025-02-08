@@ -5,6 +5,7 @@
   ></div>
   <div
     ref="sidebar"
+    data-base-theme
     :class="{ sidebar: true, open, 'header-offset': headerOffset, inset }"
   >
     <slot></slot>

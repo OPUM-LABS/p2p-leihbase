@@ -92,7 +92,12 @@
           {{ t("reserve_button") }}
         </Button>
 
-        <sl-dialog ref="dialog" label="Reservieren" class="dialog-overview">
+        <sl-dialog
+          data-base-theme
+          ref="dialog"
+          label="Reservieren"
+          class="dialog-overview"
+        >
           <!-- Opening hours -->
           <p
             v-if="location?.opening_hours"
