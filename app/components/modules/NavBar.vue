@@ -8,6 +8,9 @@
             <NuxtLink to="/admin">{{ t("admin") }}</NuxtLink>
           </li>
           <li>
+            <NuxtLink to="/reservations">{{ t("reservations") }}</NuxtLink>
+          </li>
+          <li>
             <NuxtLink to="/profile">{{ t("profile") }}</NuxtLink>
           </li>
         </ul>
@@ -136,12 +139,14 @@ header {
     "sign_up": "Sign up",
     "login": "Login",
     "profile": "Profile",
+    "reservations": "Reservations",
     "admin": "Admin"
   },
   "de": {
     "sign_up": "Registrieren",
     "login": "Einloggen",
     "profile": "Profil",
+    "reservations": "Reservierungen",
     "admin": "Admin"
   }
 }
