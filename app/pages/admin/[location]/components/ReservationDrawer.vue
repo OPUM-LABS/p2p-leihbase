@@ -1,5 +1,5 @@
 <template>
-  <Drawer header-offset inset v-model:open="open">
+  <Drawer :headerOffset="false" inset v-model:open="open">
     <header>
       <h2>{{ state === "new" ? t("new") : t("edit") }}</h2>
       <Button
