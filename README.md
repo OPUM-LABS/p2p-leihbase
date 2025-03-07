@@ -15,10 +15,12 @@ Web application to manage Leihladen, also known as Borrow Stores.
 - 🧑‍🤝‍🧑 User sign-up/login
 - 🎫 Product reservations
 - 👷 A back-end to manage reservations
+- 📧 Reservation pickup and return e-mail reminders
+- 🎨 Themeable
 
 ## Screenshots
 
-<img src="./screenshots/screenshot-index-page.png" width="49%" /><img src="./screenshots/screenshot-product-page.png" width="49%" /><img src="./screenshots/screenshot-reservation-dialog.png" width="49%" /><img src="./screenshots/screenshot-admin-page.png" width="49%" />
+<img src="./screenshots/screenshot-index-page.png" width="49%" /><img src="./screenshots/screenshot-product-page.png" width="49%" /><img src="./screenshots/screenshot-reservation-dialog.png" width="49%" /><img src="./screenshots/screenshot-admin-page.png" width="49%" /><img src="./screenshots/screenshot-admin-reservation-drawer.png" width="49%" /><img src="./screenshots/screenshot-statistics-page.png" width="49%" />
 
 ## Tech
 
