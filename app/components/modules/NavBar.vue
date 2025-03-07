@@ -1,32 +1,35 @@
 <template>
   <header>
-    <NuxtLink to="/" class="logo">{{ leihbase?.name || "" }}</NuxtLink>
-    <nav>
-      <ul v-if="isValid">
-        <li v-if="userStore.isAdmin">
-          <NuxtLink to="/admin">{{ t("admin") }}</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="/profile">{{ t("profile") }}</NuxtLink>
-        </li>
-      </ul>
-      <ul v-else>
-        <li class="hidden sm:block">
-          <NuxtLink data-testid="signup-link" to="/signup">
-            {{ t("sign_up") }}
-          </NuxtLink>
-        </li>
-        <li class="hidden sm:block">
-          <NuxtLink data-testid="login-link" to="/login">
-            {{ t("login") }}
-          </NuxtLink>
-        </li>
-        <li class="account sm:hidden">
-          <NuxtLink to="/login"><User class="user-icon" /></NuxtLink>
-        </li>
-      </ul>
-    </nav>
+    <div>
+      <NuxtLink to="/" class="logo">{{ leihbase?.name || "" }}</NuxtLink>
+      <nav>
+        <ul v-if="isValid">
+          <li v-if="userStore.isAdmin">
+            <NuxtLink to="/admin">{{ t("admin") }}</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="/profile">{{ t("profile") }}</NuxtLink>
+          </li>
+        </ul>
+        <ul v-else>
+          <li class="hidden sm:block">
+            <NuxtLink data-testid="signup-link" to="/signup">
+              {{ t("sign_up") }}
+            </NuxtLink>
+          </li>
+          <li class="hidden sm:block">
+            <NuxtLink data-testid="login-link" to="/login">
+              {{ t("login") }}
+            </NuxtLink>
+          </li>
+          <li class="account sm:hidden">
+            <NuxtLink to="/login"><User class="user-icon" /></NuxtLink>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </header>
+  <div class="shade"></div>
 </template>
 
 <script setup>
@@ -45,23 +48,30 @@ const { leihbase } = storeToRefs(useLeihbase());
 
 header {
   --header-text-color: color-mix(in srgb, var(--background-color) 50%, #fff);
-
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0rem 1rem;
-  height: var(--navbar-height);
-  background-color: var(--primary-color);
+  justify-content: center;
   position: sticky;
-  top: 0;
+  top: 7px;
   z-index: 10;
-  @media screen and (min-width: breakpoints.$breakpoint-sm) {
-    padding: 0 2rem 0 1rem;
-  }
 
+  & > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0rem 1rem;
+    height: var(--navbar-height);
+    background-color: var(--primary-color);
+    margin: 0 7px;
+    border-radius: 5px;
+    max-width: 1400px;
+    width: 100%;
+    @media screen and (min-width: breakpoints.$breakpoint-sm) {
+      padding: 0 2rem 0 1rem;
+    }
+  }
   .logo {
     color: var(--header-text-color);
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: var(--font-weight-black);
     line-height: 1;
     text-decoration: none;
@@ -101,6 +111,22 @@ header {
       height: 1em;
     }
   }
+}
+
+.shade {
+  content: "";
+  display: block;
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 3rem;
+  background: linear-gradient(
+    to bottom,
+    var(--background-color) -50%,
+    transparent 100%
+  );
 }
 </style>
 
