@@ -51,7 +51,7 @@ header {
   display: flex;
   justify-content: center;
   position: sticky;
-  top: 7px;
+  top: var(--navbar-offset);
   z-index: 10;
 
   & > div {
