@@ -218,3 +218,20 @@ onRecordAfterCreateRequest((e) => {
     saveSentEmail(record, "confirmation");
   }
 }, "reservations");
+
+onRecordAfterUpdateRequest((e) => {
+  /** @type {typeof import('./lib/reservation')} */
+  const { removeSentEmail } = require(`${__hooks}/lib/reservation`);
+
+  let { record } = e;
+  const originalRecord = record.originalCopy();
+
+  // Reset end_reminder notification if the end date has been moved back
+  const end = new Date(record.get("end").string().split(" ")[0]);
+  const originalEnd = new Date(
+    originalRecord.get("end").string().split(" ")[0]
+  );
+  if (end > originalEnd) {
+    record = removeSentEmail(record, "end_reminder");
+  }
+}, "reservations");

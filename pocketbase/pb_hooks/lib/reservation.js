@@ -128,6 +128,21 @@ function saveSentEmail(reservation, type) {
 }
 
 /**
+ * @param {models.Record} reservation
+ * @param {'confirmation'|'start_reminder'|'end_reminder'} type
+ */
+function removeSentEmail(reservation, type) {
+  const sent_emails = reservation.getStringSlice("sent_emails");
+  sent_emails.push(type);
+  reservation.set(
+    "sent_emails",
+    sent_emails.filter((t) => t !== type)
+  );
+  $app.dao().saveRecord(reservation);
+  return reservation;
+}
+
+/**
  * Generates a start/end reservation reminder email
  * @param {models.Record} reservation
  * @param {'start'|'end'} type
@@ -198,5 +213,6 @@ module.exports = {
   hasOverlappingReservations,
   hasOpenReservations,
   saveSentEmail,
+  removeSentEmail,
   getReminderEmail,
 };
