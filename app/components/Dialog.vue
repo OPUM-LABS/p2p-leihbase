@@ -68,6 +68,7 @@ const open = defineModel("open");
   height: 100vh;
   display: flex;
   flex-direction: column;
+  border-radius: var(--border-radius);
   &.header-offset {
     top: calc(-100% + var(--navbar-height));
     max-height: calc(90vh - var(--navbar-height));
