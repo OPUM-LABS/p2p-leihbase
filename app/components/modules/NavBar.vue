@@ -23,7 +23,9 @@
             </NuxtLink>
           </li>
           <li class="account sm:hidden">
-            <NuxtLink to="/login"><User class="user-icon" /></NuxtLink>
+            <NuxtLink data-testid="account-link" to="/login"
+              ><User class="user-icon"
+            /></NuxtLink>
           </li>
         </ul>
       </nav>

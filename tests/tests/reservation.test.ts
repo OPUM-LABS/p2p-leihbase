@@ -65,7 +65,9 @@ test.describe("reservation", () => {
 
     // Signup
     await page.getByTestId("name-input").fill("John2");
-    await page.getByTestId("email-input").fill("john2@example.com");
+    await page
+      .getByTestId("email-input")
+      .fill(`john${Math.round(Math.random() * 100)}@example.com`);
     await page.getByTestId("password-input").fill("123456789");
     await page.getByTestId("tac-checkbox").check();
     await page.getByTestId("submit-button").click();
