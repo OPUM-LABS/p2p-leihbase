@@ -3,7 +3,10 @@
     :class="{ background: true, 'header-offset': headerOffset, open }"
     @click="open = false"
   ></div>
-  <div :class="{ dialog: true, 'header-offset': headerOffset, open, inset }">
+  <div
+    data-base-theme
+    :class="{ dialog: true, 'header-offset': headerOffset, open, inset }"
+  >
     <header>
       <div class="title">
         <h2>{{ title }}</h2>
