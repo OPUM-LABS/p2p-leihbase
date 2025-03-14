@@ -12,24 +12,25 @@
     "taze:minor": "taze minor -wIr"
   },
   "dependencies": {
-    "@iconoir/vue": "^7.9.0",
-    "@nuxtjs/i18n": "^8.5.6",
-    "@shoelace-style/shoelace": "^2.18.0",
+    "@iconoir/vue": "^7.10.1",
+    "@nuxtjs/i18n": "^9.3.0",
+    "@shoelace-style/shoelace": "^2.20.1",
     "@vueup/vue-quill": "^1.2.0",
-    "@vueuse/core": "^11.2.0",
+    "@vueuse/core": "^11.3.0",
     "cally": "^0.7.2",
     "luxon": "^3.5.0",
-    "nuxt": "^3.14.159",
+    "nuxt": "^3.16.0",
     "pocketbase": "^0.21.5",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@nuxt/kit": "^3.14.159",
+    "@nuxt/kit": "^3.16.0",
     "@pinia/nuxt": "^0.5.5",
-    "sass": "^1.80.6",
+    "sass": "^1.85.1",
     "taze": "^0.18.0",
-    "typescript": "^5.6.3",
-    "vue-tsc": "^2.1.10"
-  }
+    "typescript": "^5.8.2",
+    "vue-tsc": "^2.2.8"
+  },
+  "packageManager": "pnpm@10.2.1"
 }

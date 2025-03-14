@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: "2025-03-14",
   runtimeConfig: {
     public: {
       plausibleTrackingDomain: "", // NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN
