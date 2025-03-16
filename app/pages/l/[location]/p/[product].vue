@@ -92,64 +92,64 @@
           {{ t("reserve_button") }}
         </Button>
 
-        <sl-dialog
-          data-base-theme
-          ref="dialog"
-          label="Reservieren"
-          class="dialog-overview"
-        >
-          <!-- Opening hours -->
-          <p
-            v-if="location?.opening_hours"
-            class="opening-hours"
-            data-testid="opening-hours"
-          >
-            <span>{{ t("opening_hours_of") }} {{ location?.name }}:</span><br />
-            <span v-html="openingHoursToString(location?.opening_hours)"></span>
-          </p>
-          <form ref="form" @submit.prevent="onSubmit">
-            <Input
-              type="text"
-              :label="t('product')"
-              v-model="product.name"
-              disabled
-              readonly
-            />
-            <DateInput
-              :label="t('start')"
-              v-model="start"
-              :is-date-disallowed="isDateDisallowed"
-              :show-outside-days="false"
-              data-testid="start-input"
-            />
-            <DateInput
-              :label="t('end')"
-              v-model="end"
-              :is-date-disallowed="isDateDisallowed"
-              :show-outside-days="false"
-              data-testid="end-input"
-            />
-            <Textarea :label="t('message')" v-model="message" />
-
-            <sl-alert
-              variant="danger"
-              :open="reservationCreationError"
-              data-testid="reservation-form-error"
+        <Dialog v-model:open="showDialog" inset :title="t('reserve')">
+          <div class="dialog">
+            <!-- Opening hours -->
+            <p
+              v-if="location?.opening_hours"
+              class="opening-hours"
+              data-testid="opening-hours"
             >
-              <sl-icon slot="icon" name="exclamation-octagon"></sl-icon>
-              {{ reservationCreationError }}
-            </sl-alert>
+              <span>{{ t("opening_hours_of") }} {{ location?.name }}:</span>
+              <br />
+              <span
+                v-html="openingHoursToString(location?.opening_hours)"
+              ></span>
+            </p>
+            <form ref="form" @submit.prevent="onSubmit">
+              <Input
+                type="text"
+                :label="t('product')"
+                v-model="product.name"
+                disabled
+                readonly
+              />
+              <DateInput
+                :label="t('start')"
+                v-model="start"
+                :is-date-disallowed="isDateDisallowed"
+                :show-outside-days="false"
+                data-testid="start-input"
+              />
+              <DateInput
+                :label="t('end')"
+                v-model="end"
+                :is-date-disallowed="isDateDisallowed"
+                :show-outside-days="false"
+                data-testid="end-input"
+              />
+              <Textarea :label="t('message')" v-model="message" />
 
-            <Button
-              :loading="isSubmittingReservation"
-              size="lg"
-              type="submit"
-              data-testid="reserve-submit"
-            >
-              {{ t("reserve_now_button") }}
-            </Button>
-          </form>
-        </sl-dialog>
+              <Alert
+                v-if="reservationCreationError"
+                variant="error"
+                data-testid="reservation-form-error"
+                class="alert"
+              >
+                {{ reservationCreationError }}
+              </Alert>
+
+              <Button
+                :loading="isSubmittingReservation"
+                size="lg"
+                type="submit"
+                data-testid="reserve-submit"
+              >
+                {{ t("reserve_now_button") }}
+              </Button>
+            </form>
+          </div>
+        </Dialog>
       </div>
     </section>
   </Container>
@@ -168,8 +168,6 @@ import {
 import { Lock } from "@iconoir/vue";
 
 if (process.client) {
-  await import("@shoelace-style/shoelace/dist/components/dialog/dialog.js");
-  await import("@shoelace-style/shoelace/dist/components/textarea/textarea.js");
   await import("@shoelace-style/shoelace/dist/components/alert/alert.js");
 }
 
@@ -187,7 +185,7 @@ const router = useRouter();
 const userStore = useUserStore();
 const { locale } = useI18n();
 
-const dialog = ref(null);
+const showDialog = ref(false);
 const form = ref(null);
 const imageIndex = ref(0);
 
@@ -306,7 +304,7 @@ function onReserve() {
     router.push("/signup");
     return;
   }
-  dialog.value.show();
+  showDialog.value = true;
 }
 
 const isSubmittingReservation = ref(false);
@@ -363,7 +361,7 @@ async function onSubmit() {
   await userStore.fetchUserReservations();
   refreshReservations();
 
-  dialog.value.hide();
+  showDialog.value = false;
   isSubmittingReservation.value = false;
 }
 </script>
@@ -514,18 +512,18 @@ section {
     }
   }
 }
-sl-dialog {
-  --header-spacing: 2rem;
-  --body-spacing: 0 2rem 2.5rem 2rem;
-}
-sl-dialog form {
+.dialog form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
+.dialog .alert {
+  margin: 0;
+}
 .opening-hours {
   padding: 1rem;
   background-color: #ecf4fe;
+  border-radius: var(--border-radius);
 }
 </style>
 
@@ -538,6 +536,7 @@ sl-dialog form {
     "admin_notes_tooltip": "Only visible for admin users",
     "reservations": "Reservations",
     "reserve_button": "Reserve",
+    "reserve": "Reserve",
     "opening_hours_of": "Opening hours of",
     "product": "Product",
     "start": "Start",
@@ -562,6 +561,7 @@ sl-dialog form {
     "admin_notes_tooltip": "Nur sichtbar für Admin-Benutzer",
     "reservations": "Reservierungen",
     "reserve_button": "Reservieren",
+    "reserve": "Reservieren",
     "opening_hours_of": "Öffnungszeiten von",
     "product": "Gegenstand",
     "start": "Start",

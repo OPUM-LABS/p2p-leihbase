@@ -7,12 +7,14 @@ services:
       dockerfile: Dockerfile
       target: prod
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       HOST: "0.0.0.0"
-      PORT: "3000"
-      NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: http://pocketbase:8080
-      NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: http://localhost:8080
+      PORT: "3001"
+      NUXT_PORT: "3001"
+      NITRO_PORT: "3001"
+      NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: http://pocketbase:8081
+      NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: http://localhost:8081
       NUXT_PLAUSIBLE_TRACKING_DOMAIN: ""
     networks:
       - leihbar_tests
@@ -22,8 +24,10 @@ services:
       context: ../pocketbase
       dockerfile: Dockerfile
       target: test
+      args:
+        PORT: "8081"
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
       CONFIG_LOCALE: "en"
       # If a reservation needs to have a user, or not

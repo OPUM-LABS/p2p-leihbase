@@ -5,7 +5,7 @@ export async function init(
   password = "1234567890",
   admin = true
 ) {
-  const pb = new PocketBase("http://127.0.0.1:8080");
+  const pb = new PocketBase("http://127.0.0.1:8081");
 
   // Auth
   if (admin) {
