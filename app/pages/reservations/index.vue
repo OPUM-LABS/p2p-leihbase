@@ -8,7 +8,11 @@
     </section>
     <ul class="cards">
       <li v-for="reservation in data?.reservations" :key="reservation.id">
-        <Button variant="secondary" class="card">
+        <Button
+          variant="secondary"
+          :class="['card', 'status-' + getReservationStatus(reservation)]"
+          @click="selectedReservation = reservation"
+        >
           <img
             :src="`${
               config.public.pocketbase.clientBaseUrl
@@ -22,19 +26,37 @@
               {{ formatDate(reservation.start, DateTime.DATE_MED, locale) }}
               -
               {{ formatDate(reservation.end, DateTime.DATE_MED, locale) }}
+              <br />
+              {{ getReservationStatus(reservation) }}
             </p>
           </div>
         </Button>
       </li>
     </ul>
   </Container>
+  <ReservationDetailDialog
+    :reservation="selectedReservation"
+    :product="
+      selectedReservation
+        ? data?.products[selectedReservation?.product]
+        : undefined
+    "
+    :location="
+      selectedReservation
+        ? data?.locations[selectedReservation?.location]
+        : undefined
+    "
+  />
 </template>
 
 <script setup lang="ts">
 import { DateTime } from "luxon";
-import type { RecordModel } from "pocketbase";
 import { formatDate } from "~/lib/date";
 import type { Reservation } from "~/models/reservation";
+import ReservationDetailDialog from "./_components/ReservationDetailDialog.vue";
+import type { Product } from "~/models/product";
+import { getReservationStatus } from "~/lib/reservation";
+import type { Location } from "~/models/location";
 
 const config = useRuntimeConfig();
 const {
@@ -43,30 +65,44 @@ const {
 const { pb, isValid, logout } = usePocketbase();
 const router = useRouter();
 
+const selectedReservation = ref<Reservation>();
+
 const { t, locale } = useI18n({
   useScope: "local",
 });
 
-const { data, refresh, status } = await useAsyncData(
+const { data, refresh, status } = await useAsyncData<{
+  reservations: Reservation[];
+  products: { [key: string]: Product };
+  locations: { [key: string]: Location };
+}>(
   "user_reservations",
   async () => {
     const reservations = await pb.collection("reservations").getFullList({
       filter: pb.filter("user = {:user}", {
         user: pb.authStore?.model?.["id"],
       }),
-      sort: "start",
+      sort: "-start",
       requestKey: "user_reservations",
     });
     const products = await pb.collection("public_products").getFullList({
       filter: reservations.map((r) => `id="${r.product}"`).join("||"),
       requestKey: "reservations_product",
     });
+    const locations = await pb.collection("public_locations").getFullList({
+      filter: reservations.map((r) => `id="${r.location}"`).join("||"),
+      requestKey: "reservations_location",
+    });
     return {
       reservations: structuredClone(reservations) as Reservation[],
       products: products.reduce((map, p) => {
-        map[p.id] = p;
+        map[p.id] = p as Product;
         return map;
-      }, {} as { [key: string]: RecordModel }),
+      }, {} as { [key: string]: Product }),
+      locations: locations.reduce((map, p) => {
+        map[p.id] = p as Location;
+        return map;
+      }, {} as { [key: string]: Location }),
     };
   },
   { lazy: true }
@@ -134,6 +170,9 @@ section {
     object-fit: cover;
     border-radius: var(--border-radius);
     flex-shrink: 0;
+  }
+  p {
+    margin: 0;
   }
 }
 </style>

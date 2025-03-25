@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { ReservationStatus, type Reservation } from "~/models/reservation";
 
 const startOfToday = DateTime.now().startOf("day");
 const endOfToday = DateTime.now().startOf("day");
@@ -9,4 +10,16 @@ export function isToday(reservation: { start: string; end: string }): boolean {
       startOfToday &&
     DateTime.fromJSDate(new Date(reservation.end)).startOf("day") >= endOfToday
   );
+}
+
+export function getReservationStatus(reservation: Reservation) {
+  if (reservation.cancelled) return ReservationStatus.Cancelled;
+  if (reservation.ended) return ReservationStatus.Ended;
+  if (reservation.started) {
+    if (reservation.end < startOfToday) {
+      return ReservationStatus.Overdue;
+    }
+    return ReservationStatus.Started;
+  }
+  return ReservationStatus.New;
 }
