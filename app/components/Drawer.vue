@@ -5,6 +5,7 @@
   ></div>
   <div
     ref="sidebar"
+    data-base-theme
     :class="{ sidebar: true, open, 'header-offset': headerOffset, inset }"
   >
     <slot></slot>
@@ -47,7 +48,7 @@ function handleDocumentKeyDown(e: KeyboardEvent) {
   background-color: rgba(0, 0, 0, 0);
   transition: background-color 200ms;
   pointer-events: none;
-  z-index: 9;
+  z-index: 11;
   &.open {
     background-color: rgba(0, 0, 0, 0.3);
     pointer-events: all;
@@ -61,7 +62,7 @@ function handleDocumentKeyDown(e: KeyboardEvent) {
   height: 100vh;
   background-color: var(--background-color);
   transition: right 200ms;
-  z-index: 10;
+  z-index: 12;
   overflow-y: auto;
   box-sizing: border-box;
   &.open {
@@ -79,7 +80,7 @@ function handleDocumentKeyDown(e: KeyboardEvent) {
   }
 }
 .header-offset {
-  top: var(--navbar-height);
+  top: calc(var(--navbar-height) + var(--navbar-offset));
   height: calc(100vh - var(--navbar-height));
 }
 </style>

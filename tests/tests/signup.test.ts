@@ -2,10 +2,16 @@ import { test, expect } from "@playwright/test";
 import { waitForHydration, waitForClientMount } from "../lib/utils";
 
 test.describe("signup", () => {
-  test("can reach signup from homepage", async ({ page }) => {
+  test("can reach signup from homepage", async ({ page, isMobile }) => {
     await page.goto("/");
     await waitForHydration(page);
-    await page.getByTestId("signup-link").click();
+    if (isMobile) {
+      await page.locator("header").getByTestId("account-link").click();
+      await page.waitForURL(/\/login/);
+      await page.locator("main").getByTestId("signup-link").click();
+    } else {
+      await page.locator("header").getByTestId("signup-link").click();
+    }
     await page.waitForURL(/\/signup/);
     await expect(page.getByTestId("signup-h1")).toBeVisible();
   });
@@ -17,7 +23,9 @@ test.describe("signup", () => {
     await waitForHydration(page);
     await waitForClientMount(page.getByTestId("submit-button"));
     await page.getByTestId("name-input").fill("John");
-    await page.getByTestId("email-input").fill("john@example.com");
+    await page
+      .getByTestId("email-input")
+      .fill(`john@example${Math.round(Math.random() * 100)}.com`);
     await page.getByTestId("password-input").fill("123456789");
     await page.getByTestId("tac-checkbox").check();
     await page.getByTestId("submit-button").click();
@@ -31,7 +39,9 @@ test.describe("signup", () => {
     await waitForHydration(page);
     await waitForClientMount(page.getByTestId("submit-button"));
     await page.getByTestId("name-input").fill("John");
-    await page.getByTestId("email-input").fill("test@example.com");
+    await page
+      .getByTestId("email-input")
+      .fill(`john@example${Math.round(Math.random() * 100)}.com`);
     await page.getByTestId("password-input").fill("123456789");
     await page.getByTestId("submit-button").click();
     await expect(

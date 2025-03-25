@@ -26,7 +26,9 @@
             </NuxtLink>
           </li>
           <li class="account sm:hidden">
-            <NuxtLink to="/login"><User class="user-icon" /></NuxtLink>
+            <NuxtLink data-testid="account-link" to="/login"
+              ><User class="user-icon"
+            /></NuxtLink>
           </li>
         </ul>
       </nav>
@@ -54,7 +56,7 @@ header {
   display: flex;
   justify-content: center;
   position: sticky;
-  top: 7px;
+  top: var(--navbar-offset);
   z-index: 10;
 
   & > div {

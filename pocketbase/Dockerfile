@@ -11,22 +11,26 @@ ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/po
 RUN unzip /tmp/pb.zip -d /pb/
 
 FROM base AS prod
+ARG PORT="8080"
+ENV PORT=${PORT}
 # copy migrations
 COPY ./pb_migrations /pb/pb_migrations
 # copy hooks
 COPY ./pb_hooks /pb/pb_hooks
 # start pocketbase
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8080"]
+CMD /pb/pocketbase serve --http=0.0.0.0:${PORT}
 
 FROM base AS dev
-EXPOSE 8080
+ARG PORT="8080"
+ENV PORT=${PORT}
 # start pocketbase
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8080"]
+CMD /pb/pocketbase serve --http=0.0.0.0:${PORT}
 
 FROM base AS test
-EXPOSE 8080
+ARG PORT="8080"
+ENV PORT=${PORT}
 # start pocketbase
 CMD /pb/pocketbase migrate up; \
     /pb/pocketbase admin create test@example.com 1234567890; \
-    /pb/pocketbase serve --http=0.0.0.0:8080
+    /pb/pocketbase serve --http=0.0.0.0:${PORT}
 
