@@ -6,7 +6,7 @@
       open,
       'was-open': wasOpen,
     }"
-    @click="open = false"
+    @click="close"
   ></div>
   <div
     data-base-theme
@@ -21,7 +21,7 @@
     <header>
       <div class="title">
         <h2>{{ title }}</h2>
-        <button @click="open = false">
+        <button @click="close">
           <Xmark />
         </button>
       </div>
@@ -44,11 +44,18 @@ defineProps<{
   headerOffset?: boolean;
 }>();
 
+const emit = defineEmits<{ close: [] }>();
+
 const open = defineModel<boolean>("open");
 
 watch(open, (newValue) => {
   wasOpen.value = newValue || wasOpen.value;
 });
+
+function close() {
+  open.value = false;
+  emit("close");
+}
 </script>
 
 <style lang="scss" scoped>

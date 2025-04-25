@@ -46,6 +46,7 @@
         ? data?.locations[selectedReservation?.location]
         : undefined
     "
+    @close="selectedReservation = undefined"
   />
 </template>
 
@@ -122,7 +123,7 @@ if (!isValid.value) {
 @use "~/assets/styles/_breakpoints.scss";
 
 section {
-  margin-bottom: var(--fluid-spacing-12);
+  margin-bottom: var(--fluid-spacing-8);
 }
 
 .intro {
