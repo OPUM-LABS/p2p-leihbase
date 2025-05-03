@@ -29,19 +29,47 @@
       </div>
     </div>
     <Accordion v-if="reservation" :single="true">
-      <AccordionItem
-        id="cancel"
-        :disabled="
-          getReservationStatus(reservation) === ReservationStatus.Ended ||
-          getReservationStatus(reservation) === ReservationStatus.Cancelled
-        "
-      >
-        <AccordionTrigger>{{ t("cancel_trigger") }}</AccordionTrigger>
+      <AccordionItem id="cancel">
+        <AccordionTrigger
+          :disabled="
+            getReservationStatus(reservation) === ReservationStatus.Ended ||
+            getReservationStatus(reservation) === ReservationStatus.Cancelled
+          "
+        >
+          {{ t("cancel_trigger") }}
+        </AccordionTrigger>
         <AccordionContent>
           <div
             v-if="getReservationStatus(reservation) === ReservationStatus.New"
           >
-            <Button>{{ t("cancel_button") }}</Button>
+            <Button
+              v-if="
+                cancellationStatus === ReservationCancellationStatus.Default ||
+                cancellationStatus === ReservationCancellationStatus.Loading
+              "
+              :loading="
+                cancellationStatus === ReservationCancellationStatus.Loading
+              "
+              @click="cancel"
+            >
+              {{ t("cancel_button") }}
+            </Button>
+            <Alert
+              v-else-if="
+                cancellationStatus === ReservationCancellationStatus.Success
+              "
+              variant="success"
+            >
+              {{ cancellationMessage }}
+            </Alert>
+            <Alert
+              v-else-if="
+                cancellationStatus === ReservationCancellationStatus.Error
+              "
+              variant="error"
+            >
+              {{ cancellationMessage }}
+            </Alert>
           </div>
           <div
             v-else-if="
@@ -70,6 +98,10 @@ import Accordion from "~/components/Accordion/Accordion.vue";
 import AccordionContent from "~/components/Accordion/AccordionContent.vue";
 import AccordionItem from "~/components/Accordion/AccordionItem.vue";
 import AccordionTrigger from "~/components/Accordion/AccordionTrigger.vue";
+import {
+  ReservationCancellationStatus,
+  useReservationCancellation,
+} from "~/composables/useReservationCancellation";
 import { formatDate } from "~/lib/date";
 import { getReservationStatus } from "~/lib/reservation";
 import type { Location } from "~/models/location";
@@ -90,12 +122,25 @@ const props = defineProps<{
   product?: Product;
   location?: Location;
 }>();
+
+const emit = defineEmits<{ update: [] }>();
+
 const open = ref(false);
 watch(
   () => props.reservation,
   (newValue) => {
     open.value = !!newValue;
   }
+);
+
+const {
+  cancel,
+  status: cancellationStatus,
+  message: cancellationMessage,
+} = useReservationCancellation(
+  () => props.reservation,
+  () => props.location,
+  () => emit("update")
 );
 </script>
 

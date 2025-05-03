@@ -77,6 +77,11 @@ export default defineI18nConfig(() => ({
       previous_month: "Vorheriger Monat",
       next_month: "Nächster Monat",
       closed_at: "Zu am",
+      // reservation cancellation
+      cancellation_success_message:
+        "Deine Reservierung ist erfolgreich storniert.",
+      cancellation_unknown_error_message:
+        "Beim stornieren deine Reservierung ist was schief gelaufen. Bitte versuche es erneut, oder schicke eine E-Mail an {0}.",
     },
   },
 }));

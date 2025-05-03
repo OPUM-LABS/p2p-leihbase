@@ -13,6 +13,9 @@
 import { handleToggleKey, idKey, isOpenKey } from "./Accordion.model";
 import { NavArrowDown } from "@iconoir/vue";
 
+const props = defineProps<{ disabled: boolean }>();
+// TODO: props.disabled
+
 const id = inject(idKey);
 const isOpen = inject(isOpenKey);
 const handleToggle = inject(handleToggleKey);

@@ -46,6 +46,7 @@
         ? data?.locations[selectedReservation?.location]
         : undefined
     "
+    @update="refresh"
     @close="selectedReservation = undefined"
   />
 </template>
