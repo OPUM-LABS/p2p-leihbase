@@ -2,6 +2,7 @@
   <Button
     variant="secondary"
     :class="{ open: isOpen }"
+    :disabled="disabled"
     @click="handleToggle!(id!)"
   >
     <slot></slot>
@@ -14,7 +15,6 @@ import { handleToggleKey, idKey, isOpenKey } from "./Accordion.model";
 import { NavArrowDown } from "@iconoir/vue";
 
 const props = defineProps<{ disabled: boolean }>();
-// TODO: props.disabled
 
 const id = inject(idKey);
 const isOpen = inject(isOpenKey);

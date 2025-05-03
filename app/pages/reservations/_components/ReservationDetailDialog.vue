@@ -83,7 +83,13 @@
         </AccordionContent>
       </AccordionItem>
       <AccordionItem id="change-period">
-        <AccordionTrigger>{{ t("change_period_trigger") }}</AccordionTrigger>
+        <AccordionTrigger
+          :disabled="
+            getReservationStatus(reservation) === ReservationStatus.Ended ||
+            getReservationStatus(reservation) === ReservationStatus.Cancelled
+          "
+          >{{ t("change_period_trigger") }}</AccordionTrigger
+        >
         <AccordionContent>
           <p>{{ t("change_period_text", [location?.email]) }}</p>
         </AccordionContent>
