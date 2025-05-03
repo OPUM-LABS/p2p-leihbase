@@ -1,6 +1,21 @@
 version: "3.8"
 
 services:
+
+  playwright:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ipc: host
+    ports:
+      - '9323:9323'
+    environment:
+      - PLAYWRIGHT_HTML_HOST=0.0.0.0
+      - PLAYWRIGHT_TEST_BASE_URL=http://host.docker.internal:40980
+      - PLAYWRIGHT_WORKERS=2
+    volumes:
+      - ./:/home/pwuser
+
   app:
     build:
       context: ../app
