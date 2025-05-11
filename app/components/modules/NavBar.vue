@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header ref="header" :class="{ 'is-sticky': isSticky }">
     <div>
       <NuxtLink to="/" class="logo">{{ leihbase?.name || "" }}</NuxtLink>
       <nav>
@@ -43,6 +43,10 @@ const { t } = useI18n({
 const { isValid } = usePocketbase();
 const userStore = useUserStore();
 const { leihbase } = storeToRefs(useLeihbase());
+
+const header = ref();
+
+const { isSticky } = useIsSticky(header);
 </script>
 
 <style lang="scss" scoped>
@@ -53,7 +57,8 @@ header {
   display: flex;
   justify-content: center;
   position: sticky;
-  top: var(--navbar-offset);
+  top: -1px;
+  margin-top: var(--navbar-offset);
   z-index: 10;
 
   & > div {
@@ -63,14 +68,22 @@ header {
     padding: 0rem 1rem;
     height: var(--navbar-height);
     background-color: var(--primary-color);
-    margin: 0 7px;
+    margin-left: var(--navbar-offset);
+    margin-right: var(--navbar-offset);
     border-radius: 5px;
     max-width: 1400px;
     width: 100%;
+    transition: border-radius 200ms;
     @media screen and (min-width: breakpoints.$breakpoint-sm) {
       padding: 0 2rem 0 1rem;
     }
   }
+  &.is-sticky {
+    & > div {
+      border-radius: 0 0 5px 5px;
+    }
+  }
+
   .logo {
     color: var(--header-text-color);
     font-size: 1.4rem;
