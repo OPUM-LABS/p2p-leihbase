@@ -1,10 +1,12 @@
 <template>
-  <NavBar></NavBar>
-  <main>
-    <NuxtLoadingIndicator color="#fff" />
-    <NuxtPage />
-  </main>
-  <Footer></Footer>
+  <div class="grid">
+    <NavBar></NavBar>
+    <main>
+      <NuxtLoadingIndicator color="#fff" />
+      <NuxtPage />
+    </main>
+    <Footer></Footer>
+  </div>
 </template>
 
 <script setup>
@@ -63,8 +65,9 @@ if (isValid.value) {
 </style>
 
 <style lang="scss" scoped>
-main {
-  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
-  margin-top: var(--navbar-offset);
+.grid {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 }
 </style>
