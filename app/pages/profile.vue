@@ -1,6 +1,6 @@
 <template>
-  <Container width="sm" centered no-padding>
-    <PageAlert class="banner" />
+  <Container width="sm" centered no-padding class="container">
+    <PageAlert class="alert" />
     <Card class="card">
       <h1>Profile</h1>
       <p>
@@ -41,11 +41,14 @@ function onLogout() {
 @use "~/assets/styles/_breakpoints.scss";
 
 @media (min-width: breakpoints.$breakpoint-md) {
-  .banner {
-    margin-top: 3rem;
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 3rem;
   }
-  .card {
-    margin-top: 3rem;
+  .alert {
+    margin: 0;
   }
   h1 {
     margin-top: -1rem;
