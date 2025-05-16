@@ -79,10 +79,12 @@ button {
 
   &.size-md {
     padding: 0.5rem 1rem;
+    gap: 0.5rem;
     font-size: 1rem;
   }
   &.size-lg {
     padding: 0.666rem 1.5rem;
+    gap: 0.666rem;
     font-size: var(--font-size-lg);
   }
 
@@ -118,7 +120,6 @@ button {
     flex-shrink: 0;
     width: 1em;
     height: 1em;
-    margin-right: 0.5em;
     align-items: center;
   }
 }

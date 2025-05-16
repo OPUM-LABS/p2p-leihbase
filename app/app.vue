@@ -1,10 +1,12 @@
 <template>
-  <NavBar></NavBar>
-  <main>
-    <NuxtLoadingIndicator color="#fff" />
-    <NuxtPage />
-  </main>
-  <Footer></Footer>
+  <div class="grid">
+    <NavBar></NavBar>
+    <main>
+      <NuxtLoadingIndicator color="#fff" />
+      <NuxtPage />
+    </main>
+    <Footer></Footer>
+  </div>
 </template>
 
 <script setup>
@@ -24,6 +26,7 @@ const userStore = useUserStore();
 const {
   public: { plausibleTrackingDomain },
 } = useRuntimeConfig();
+const { locale } = useI18n();
 
 // Fetch Leihbase collection on a central location
 // await for the result before processing the rest of the page
@@ -49,6 +52,9 @@ useHead({
     },
   ],
   style,
+  htmlAttrs: {
+    lang: locale,
+  },
 });
 
 if (isValid.value) {
@@ -63,8 +69,12 @@ if (isValid.value) {
 </style>
 
 <style lang="scss" scoped>
+.grid {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
 main {
-  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
-  margin-top: var(--navbar-offset);
+  min-width: 0;
 }
 </style>
