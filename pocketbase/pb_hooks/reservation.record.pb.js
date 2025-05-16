@@ -202,7 +202,6 @@ onRecordAfterCreateRequest((e) => {
       },
       to: [{ address: user.get("email") }],
       ...reservationConfirmationEmail({
-        locationEmail: location.get("email"),
         productUrl: `${$app.settings().meta.appUrl}/link/product/${product.get(
           "id"
         )}`,

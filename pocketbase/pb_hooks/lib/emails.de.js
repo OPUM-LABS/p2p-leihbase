@@ -10,7 +10,6 @@ module.exports = (function () {
   }
 
   const reservationConfirmationEmail = ({
-    locationEmail,
     userName,
     productUrl,
     productName,
@@ -33,17 +32,14 @@ ${
   lendingConditionsLink
     ? `<a href="${lendingConditionsLink}">die Leihbedingungen</a>`
     : "die Leihbedingungen"
-} zu unterschreiben und ${
+} zu unterschreiben, uns deinen Ausweis zum Abgleich zu zeigen und ${
       deposit ? `${formatCurrency(deposit)} ` : ""
     }Pfand zu hinterlegen.<br>
 <br>
-Solltest Du Deine Reservierung stornieren müssen, freuen wir 
-uns über eine kurze Email${
-      locationEmail
-        ? ` an
-<a href="mailto:${locationEmail}">${locationEmail}</a>.`
-        : "."
-    }<br>
+Deine Reservierung stornieren oder die Leihfrist ändern kannst du in deiner
+<a href="${
+      $app.settings().meta.appUrl
+    }/reservations">Reservierungsübersicht</a>.<br>
 <br>
 Wir freuen uns, dass du dich für Leihen statt Kaufen entscheidest!<br>
 <br>
@@ -91,12 +87,14 @@ ${
     subject: `Abholen des Gegenstands '${productName}'`,
     html: `Hi,<br>
 <br>
-du hast bei ${locationName} den Gegenstand '${productName}' reserviert. Der Gegenstand liegt
-morgen (${formatDate(start)}) ${
-      startHour && endHour ? `zwischen ${startHour} und ${endHour}` : ""
-    }
-bereit. Bitte denke daran, deinen Gegenstand abzuholen. Falls du ihn nicht mehr benötigst,
-antworte auf diese Mail, um deine Reservierung zu stornieren.<br>
+du hast bei ${locationName} den Gegenstand '${productName}' reserviert.
+Der Gegenstand liegt morgen (${formatDate(start)})
+${startHour && endHour ? `zwischen ${startHour} und ${endHour}` : ""}
+bereit. Bitte denke daran, deinen Gegenstand abzuholen.<br>
+<br>
+Falls du ihn nicht mehr benötigst, kannst du deine Reservierung in deiner
+<a href="${$app.settings().meta.appUrl}/reservations">Reservierungsübersicht</a>
+stornieren.<br>
 <br>
 Danke, dass du dich für Leihen statt Kaufen entscheidest!<br>
 <br>
@@ -125,6 +123,11 @@ ${
 <br>`
     : ""
 }
+Falls du den Gegenstand länger behalten möchtest, kannst du die Reservierung in
+deiner
+<a href="${$app.settings().meta.appUrl}/reservations">Reservierungsübersicht</a>
+verlängern.<br>
+<br>
 Danke, und bis morgen!<br>
 <br>
 Liebe Grüße<br>

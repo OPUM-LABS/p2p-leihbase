@@ -10,7 +10,6 @@ module.exports = (function () {
   }
 
   const reservationConfirmationEmail = ({
-    locationEmail,
     userName,
     productUrl,
     productName,
@@ -36,9 +35,10 @@ of borrowing on site and to pay a ${
       deposit ? `${formatCurrency(deposit)} ` : ""
     } deposit.<br>
 <br>
-If you need to cancel your reservation, please send a short email${
-      locationEmail ? ` to <a href="${locationEmail}">${locationEmail}</a>` : ""
-    }.<br>
+You can cancel your reservation or change the borrowing period in your
+<a href="${
+      $app.settings().meta.appUrl
+    }/reservations">reservation overview</a>.<br>
 <br>
 We're happy that you have decided to borrow instead of buy!<br>
 <br>
@@ -88,7 +88,9 @@ ${
 you reserved a ${productName} at ${locationName}. The item can be picked up tomorrow
 (${formatDate(start)}) ${
       startHour && endHour ? `between ${startHour} and ${endHour}` : ""
-    }. Please answer on this e-mail, in case you want to cancel the reservation.<br>
+    }.<br>
+If you no longer need it, you can cancel your reservation in your
+<a href="${$app.settings().meta.appUrl}/reservations">reservation overview</a>.
 <br>
 Thank you that you choose for borrowing instead of buying!<br>
 <br>
@@ -117,6 +119,12 @@ ${
 <br>`
     : ""
 }
+If you would like to keep the item for longer, you can extend the reservation in
+your
+<a href="${
+      $app.settings().meta.appUrl
+    }/reservations">reservation overview</a>.<br>
+<br>
 Thank you, and see you tomorrow!<br>
 Your LeihBar-Team`,
   });
