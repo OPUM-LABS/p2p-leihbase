@@ -16,7 +16,7 @@ export function getReservationStatus(reservation: Reservation) {
   if (reservation.cancelled) return ReservationStatus.Cancelled;
   if (reservation.ended) return ReservationStatus.Ended;
   if (reservation.started) {
-    if (reservation.end < startOfToday) {
+    if (new Date(reservation.end) < startOfToday) {
       return ReservationStatus.Overdue;
     }
     return ReservationStatus.Started;

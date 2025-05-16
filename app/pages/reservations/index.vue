@@ -6,34 +6,30 @@
         {{ t("intro") }}
       </p>
     </section>
-    <ul class="cards">
-      <li v-for="reservation in data?.reservations" :key="reservation.id">
-        <Button
-          variant="secondary"
-          :class="['card', 'status-' + getReservationStatus(reservation)]"
-          @click="selectedReservation = reservation"
-        >
-          <img
-            :src="`${
-              config.public.pocketbase.clientBaseUrl
-            }/api/files/products/${reservation.product}/${
-              data?.products[reservation.product].images[0]
-            }${thumbs.sm}`"
+    <section>
+      <h2>{{ t("active") }}</h2>
+      <ul class="cards">
+        <li v-for="reservation in current" :key="reservation.id">
+          <ReservationCardButton
+            :reservation="reservation"
+            :product="data?.products[reservation.product]"
+            @click="selectedReservation = reservation"
           />
-          <div class="details">
-            <h2>{{ data?.products[reservation.product].name }}</h2>
-            <p>
-              {{ formatDate(reservation.start, DateTime.DATE_MED, locale) }}
-              -
-              {{ formatDate(reservation.end, DateTime.DATE_MED, locale) }}
-            </p>
-            <span class="tag">
-              {{ t(getReservationStatus(reservation)) }}
-            </span>
-          </div>
-        </Button>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h2>{{ t("past") }}</h2>
+      <ul class="cards">
+        <li v-for="reservation in past" :key="reservation.id">
+          <ReservationCardButton
+            :reservation="reservation"
+            :product="data?.products[reservation.product]"
+            @click="selectedReservation = reservation"
+          />
+        </li>
+      </ul>
+    </section>
   </Container>
   <ReservationDetailDialog
     :reservation="selectedReservation"
@@ -53,24 +49,19 @@
 </template>
 
 <script setup lang="ts">
-import { DateTime } from "luxon";
-import { formatDate } from "~/lib/date";
-import type { Reservation } from "~/models/reservation";
+import { ReservationStatus, type Reservation } from "~/models/reservation";
 import ReservationDetailDialog from "./_components/ReservationDetailDialog.vue";
 import type { Product } from "~/models/product";
 import { getReservationStatus } from "~/lib/reservation";
 import type { Location } from "~/models/location";
+import ReservationCardButton from "./_components/ReservationCardButton.vue";
 
-const config = useRuntimeConfig();
-const {
-  product: { thumbs },
-} = useAppConfig();
 const { pb, isValid, logout } = usePocketbase();
 const router = useRouter();
 
 const selectedReservation = ref<Reservation>();
 
-const { t, locale } = useI18n({
+const { t } = useI18n({
   useScope: "local",
 });
 
@@ -109,6 +100,30 @@ const { data, refresh, status } = await useAsyncData<{
     };
   },
   { lazy: true }
+);
+
+const current = computed(() =>
+  (data.value?.reservations || []).filter((reservation) => {
+    if (
+      getReservationStatus(reservation) !== ReservationStatus.Ended &&
+      getReservationStatus(reservation) !== ReservationStatus.Cancelled
+    ) {
+      return true;
+    }
+    return false;
+  })
+);
+
+const past = computed(() =>
+  (data.value?.reservations || []).filter((reservation) => {
+    if (
+      getReservationStatus(reservation) === ReservationStatus.Ended ||
+      getReservationStatus(reservation) === ReservationStatus.Cancelled
+    ) {
+      return true;
+    }
+    return false;
+  })
 );
 
 useHead({
@@ -153,44 +168,6 @@ section {
     }
   }
 }
-
-.card {
-  display: flex;
-  padding: 0.5rem !important;
-  gap: var(--fluid-spacing-4);
-  text-align: left;
-  width: 100%;
-  align-items: stretch;
-  h2 {
-    font-size: 1rem;
-    margin: 0;
-  }
-  img {
-    width: 7rem;
-    height: 7rem;
-    object-fit: cover;
-    border-radius: var(--border-radius);
-    flex-shrink: 0;
-  }
-  .details {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  p {
-    margin: 0;
-  }
-  .tag {
-    border: 1px solid var(--text-color-light);
-    color: var(--text-color);
-    padding: 0.25rem 0.333rem;
-    font-size: var(--font-size-sm);
-    line-height: 1;
-    border-radius: var(--border-radius);
-    margin-top: auto;
-  }
-}
 </style>
 
 <i18n lang="json">
@@ -198,20 +175,14 @@ section {
   "en": {
     "reservations": "Reservations",
     "intro": "Here you can manage your reservations. Check your current and past loans, extend deadlines, or cancel reservations as needed.",
-    "new": "New",
-    "cancelled": "Cancelled",
-    "started": "Picked-up",
-    "ended": "Returned",
-    "overdue": "Overdue"
+    "active": "Active",
+    "past": "Past"
   },
   "de": {
     "reservations": "Reservierungen",
     "intro": "Hier kannst du deine Reservierungen verwalten. Schau dir deine aktuellen und vergangenen Ausleihen an, verlängere Fristen oder storniere Reservierungen bei Bedarf.",
-    "new": "Neu",
-    "cancelled": "Annuliert",
-    "started": "Abgehollt",
-    "ended": "Zurückgebracht",
-    "overdue": "Überfällig"
+    "active": "Aktive",
+    "past": "Vergangene"
   }
 }
 </i18n>
