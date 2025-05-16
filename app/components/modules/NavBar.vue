@@ -16,19 +16,31 @@
         <DropdownMenuPopover ref="popover" class="popover">
           <ul>
             <li v-if="!isValid">
-              <NuxtLink data-testid="signup-link" to="/signup">
+              <DropdownMenuItem
+                :as="NuxtLink"
+                data-testid="signup-link"
+                to="/signup"
+              >
                 {{ t("sign_up") }}
-              </NuxtLink>
+              </DropdownMenuItem>
             </li>
             <li v-if="!isValid">
-              <NuxtLink data-testid="login-link" to="/login">
+              <DropdownMenuItem
+                :as="NuxtLink"
+                data-testid="login-link"
+                to="/login"
+              >
                 {{ t("login") }}
-              </NuxtLink>
+              </DropdownMenuItem>
             </li>
             <li v-if="isValid">
-              <NuxtLink data-testid="account-link" to="/profile">
+              <DropdownMenuItem
+                :as="NuxtLink"
+                data-testid="account-link"
+                to="/profile"
+              >
                 {{ t("profile") }}
-              </NuxtLink>
+              </DropdownMenuItem>
             </li>
             <!-- <li v-if="isValid">
               <NuxtLink to="/reservations">
@@ -36,9 +48,9 @@
               </NuxtLink>
             </li> -->
             <li v-if="isValid && userStore.isAdmin">
-              <NuxtLink to="/admin">
+              <DropdownMenuItem :as="NuxtLink" to="/admin">
                 {{ t("admin") }}
-              </NuxtLink>
+              </DropdownMenuItem>
             </li>
           </ul>
         </DropdownMenuPopover>
@@ -53,6 +65,8 @@ import DropdownMenu from "../DropdownMenu/DropdownMenu.vue";
 import DropdownMenuTrigger from "../DropdownMenu/DropdownMenuTrigger.vue";
 import DropdownMenuPopover from "../DropdownMenu/DropdownMenuPopover.vue";
 import Button from "../Button.vue";
+import DropdownMenuItem from "../DropdownMenu/DropdownMenuItem.vue";
+import { NuxtLink } from "#components";
 
 const { t } = useI18n({
   useScope: "local",
