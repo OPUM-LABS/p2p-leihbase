@@ -120,7 +120,6 @@ button {
     flex-shrink: 0;
     width: 1em;
     height: 1em;
-    margin-right: 0.5em;
     align-items: center;
   }
 }
