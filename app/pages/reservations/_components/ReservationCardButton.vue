@@ -91,7 +91,7 @@ defineProps<{ reservation: Reservation; product?: Product }>();
   },
   "de": {
     "new": "Neu",
-    "cancelled": "Annuliert",
+    "cancelled": "Storniert",
     "started": "Abgehollt",
     "ended": "Zurückgebracht",
     "overdue": "Überfällig"

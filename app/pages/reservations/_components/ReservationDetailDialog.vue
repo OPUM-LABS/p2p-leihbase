@@ -191,7 +191,7 @@ const {
     "borrow_period": "Leihfrist",
     "cancel_trigger": "Reservierung stornieren",
     "cancel_button": "Stornieren",
-    "cancel_not_possible_text": "Diese Reservierung kann nicht storniert worden, da der schon angefangen hat. Schicke bei Fragen oder Problemen bitte ein E-Mail an {0}.",
+    "cancel_not_possible_text": "Diese Reservierung kann nicht storniert worden, da sie bereits begonnen hat. Bei Fragen oder Problemen schicke uns bitte eine E-Mail an {0}.",
     "change_period_trigger": "Leihfrist änderen",
     "change_period_text": "Um deine Leihfrist zu änderen, schicke bitte eine E-Mail an {0}."
   }
