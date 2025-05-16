@@ -74,4 +74,7 @@ if (isValid.value) {
   display: grid;
   grid-template-rows: auto 1fr auto;
 }
+main {
+  min-width: 0;
+}
 </style>
