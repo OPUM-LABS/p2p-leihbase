@@ -2,39 +2,57 @@
   <header ref="header" :class="{ 'is-sticky': isSticky }">
     <div>
       <NuxtLink to="/" class="logo">{{ leihbase?.name || "" }}</NuxtLink>
-      <nav>
-        <ul v-if="isValid">
-          <li v-if="userStore.isAdmin">
-            <NuxtLink to="/admin">{{ t("admin") }}</NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/profile">{{ t("profile") }}</NuxtLink>
-          </li>
-        </ul>
-        <ul v-else>
-          <li class="hidden sm:block">
-            <NuxtLink data-testid="signup-link" to="/signup">
-              {{ t("sign_up") }}
-            </NuxtLink>
-          </li>
-          <li class="hidden sm:block">
-            <NuxtLink data-testid="login-link" to="/login">
-              {{ t("login") }}
-            </NuxtLink>
-          </li>
-          <li class="account sm:hidden">
-            <NuxtLink data-testid="account-link" to="/login"
-              ><User class="user-icon"
-            /></NuxtLink>
-          </li>
-        </ul>
-      </nav>
+      <DropdownMenu class="dropdown">
+        <DropdownMenuTrigger
+          :as="Button"
+          variant="primary"
+          outline
+          data-testid="menu-button"
+        >
+          <span class="sr-only">{{ t("menu") }}</span>
+          <User class="icon" />
+          <Menu class="icon" />
+        </DropdownMenuTrigger>
+        <DropdownMenuPopover ref="popover" class="popover">
+          <ul>
+            <li v-if="!isValid">
+              <NuxtLink data-testid="signup-link" to="/signup">
+                {{ t("sign_up") }}
+              </NuxtLink>
+            </li>
+            <li v-if="!isValid">
+              <NuxtLink data-testid="login-link" to="/login">
+                {{ t("login") }}
+              </NuxtLink>
+            </li>
+            <li v-if="isValid">
+              <NuxtLink data-testid="account-link" to="/profile">
+                {{ t("profile") }}
+              </NuxtLink>
+            </li>
+            <!-- <li v-if="isValid">
+              <NuxtLink to="/reservations">
+                {{ t("reservations") }}
+              </NuxtLink>
+            </li> -->
+            <li v-if="isValid && userStore.isAdmin">
+              <NuxtLink to="/admin">
+                {{ t("admin") }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </DropdownMenuPopover>
+      </DropdownMenu>
     </div>
   </header>
 </template>
 
 <script setup>
-import { User } from "@iconoir/vue";
+import { User, Menu } from "@iconoir/vue";
+import DropdownMenu from "../DropdownMenu/DropdownMenu.vue";
+import DropdownMenuTrigger from "../DropdownMenu/DropdownMenuTrigger.vue";
+import DropdownMenuPopover from "../DropdownMenu/DropdownMenuPopover.vue";
+import Button from "../Button.vue";
 
 const { t } = useI18n({
   useScope: "local",
@@ -64,7 +82,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0rem 1rem;
+    padding: 0 1rem 0 1rem;
     height: var(--navbar-height);
     background-color: var(--primary-color);
     margin-left: var(--navbar-offset);
@@ -73,8 +91,9 @@ header {
     max-width: 1400px;
     width: 100%;
     transition: border-radius 200ms;
+    box-shadow: var(--shadow-sm);
     @media screen and (min-width: breakpoints.$breakpoint-sm) {
-      padding: 0 2rem 0 1rem;
+      padding: 0 1rem 0 1rem;
     }
   }
   &.is-sticky {
@@ -93,23 +112,10 @@ header {
   }
 
   nav {
-    ul {
-      display: flex;
+    & > ul {
       list-style: none;
-      gap: 1rem;
       margin: 0;
       padding: 0;
-    }
-    a {
-      text-decoration: none;
-      text-transform: uppercase;
-      font-weight: bold;
-      color: var(--header-text-color);
-      &:hover {
-        text-decoration: underline;
-        text-underline-offset: 5px;
-        text-decoration-thickness: 2px;
-      }
     }
   }
 
@@ -119,10 +125,46 @@ header {
       line-height: 0;
       display: flex;
     }
-    .user-icon {
-      display: inline-block;
-      width: 1em;
-      height: 1em;
+  }
+
+  .icon {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+  }
+}
+
+.dropdown {
+  position: relative;
+  .popover {
+    position: absolute;
+    top: 100%;
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 0.25rem 0;
+    width: 10rem;
+    right: 0.25rem;
+    box-shadow: var(--shadow-sm);
+    ul {
+      display: flex;
+      list-style: none;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      li {
+        a {
+          display: block;
+          color: var(--text-color);
+          padding: 0.5rem 1rem;
+          text-decoration: none;
+          width: 100%;
+          font-weight: var(--font-weight-semibold);
+          &:hover,
+          &:active {
+            background-color: var(--secondary-color);
+          }
+        }
+      }
     }
   }
 }
@@ -131,15 +173,19 @@ header {
 <i18n lang="json">
 {
   "en": {
+    "menu": "Menu",
     "sign_up": "Sign up",
     "login": "Login",
     "profile": "Profile",
+    "reservations": "Reservations",
     "admin": "Admin"
   },
   "de": {
+    "menu": "Menu",
     "sign_up": "Registrieren",
     "login": "Einloggen",
     "profile": "Profil",
+    "reservations": "Reservierungen",
     "admin": "Admin"
   }
 }

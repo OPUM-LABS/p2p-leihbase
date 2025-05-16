@@ -61,6 +61,9 @@
     --fluid-spacing-8: clamp(1rem, 4.5vw, 2rem);
     --fluid-spacing-12: clamp(2rem, 4.5vw, 3rem);
 
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+
     --container-sm: #{breakpoints.$breakpoint-sm};
     --container-md: #{breakpoints.$breakpoint-md};
 
@@ -71,7 +74,7 @@
     );
 
     // Text color
-    --primary-text-color: var(--background-color);
+    --primary-text-color: color-mix(in srgb, var(--background-color) 50%, #fff);
     --secondary-text-color: var(--text-color);
     --text-color-light: color-mix(
       in srgb,
@@ -267,4 +270,16 @@ select {
 }
 .lb-input[disabled] {
   background-color: var(--input-disabled-background-color);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

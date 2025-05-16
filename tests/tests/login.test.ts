@@ -3,14 +3,11 @@ import { waitForHydration, waitForClientMount } from "../lib/utils";
 import { login } from "../lib/login";
 
 test.describe("login", () => {
-  test("can reach login", async ({ page, isMobile }) => {
+  test("can reach login", async ({ page }) => {
     await page.goto("/");
     await waitForHydration(page);
-    if (isMobile) {
-      await page.getByTestId("account-link").click();
-    } else {
-      await page.getByTestId("login-link").click();
-    }
+    await page.getByTestId("menu-button").click();
+    await page.getByTestId("login-link").click();
     await expect(page.getByTestId("login-h1")).toBeVisible();
   });
   test("can log in", async ({ page }) => {

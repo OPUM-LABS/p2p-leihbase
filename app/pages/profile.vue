@@ -1,5 +1,5 @@
 <template>
-  <Container width="sm" centered no-padding class="container">
+  <Container width="sm" centered class="container">
     <PageAlert class="alert" />
     <Card class="card">
       <h1>Profile</h1>
