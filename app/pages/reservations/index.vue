@@ -20,15 +20,16 @@
               data?.products[reservation.product].images[0]
             }${thumbs.sm}`"
           />
-          <div>
+          <div class="details">
             <h2>{{ data?.products[reservation.product].name }}</h2>
             <p>
               {{ formatDate(reservation.start, DateTime.DATE_MED, locale) }}
               -
               {{ formatDate(reservation.end, DateTime.DATE_MED, locale) }}
-              <br />
-              {{ getReservationStatus(reservation) }}
             </p>
+            <span class="tag">
+              {{ t(getReservationStatus(reservation)) }}
+            </span>
           </div>
         </Button>
       </li>
@@ -159,9 +160,7 @@ section {
   gap: var(--fluid-spacing-4);
   text-align: left;
   width: 100%;
-  & > div {
-    width: 100%;
-  }
+  align-items: stretch;
   h2 {
     font-size: 1rem;
     margin: 0;
@@ -173,8 +172,23 @@ section {
     border-radius: var(--border-radius);
     flex-shrink: 0;
   }
+  .details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
   p {
     margin: 0;
+  }
+  .tag {
+    border: 1px solid var(--text-color-light);
+    color: var(--text-color);
+    padding: 0.25rem 0.333rem;
+    font-size: var(--font-size-sm);
+    line-height: 1;
+    border-radius: var(--border-radius);
+    margin-top: auto;
   }
 }
 </style>
@@ -183,11 +197,21 @@ section {
 {
   "en": {
     "reservations": "Reservations",
-    "intro": "Here you can manage your reservations. Check your current and past loans, extend deadlines, or cancel reservations as needed."
+    "intro": "Here you can manage your reservations. Check your current and past loans, extend deadlines, or cancel reservations as needed.",
+    "new": "New",
+    "cancelled": "Cancelled",
+    "started": "Picked-up",
+    "ended": "Returned",
+    "overdue": "Overdue"
   },
   "de": {
     "reservations": "Reservierungen",
-    "intro": "Hier kannst du deine Reservierungen verwalten. Schau dir deine aktuellen und vergangenen Ausleihen an, verlängere Fristen oder storniere Reservierungen bei Bedarf."
+    "intro": "Hier kannst du deine Reservierungen verwalten. Schau dir deine aktuellen und vergangenen Ausleihen an, verlängere Fristen oder storniere Reservierungen bei Bedarf.",
+    "new": "Neu",
+    "cancelled": "Annuliert",
+    "started": "Abgehollt",
+    "ended": "Zurückgebracht",
+    "overdue": "Überfällig"
   }
 }
 </i18n>
