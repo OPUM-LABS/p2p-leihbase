@@ -33,6 +33,7 @@
         <AccordionTrigger
           :disabled="
             getReservationStatus(reservation) === ReservationStatus.Ended ||
+            getReservationStatus(reservation) === ReservationStatus.Overdue ||
             getReservationStatus(reservation) === ReservationStatus.Cancelled
           "
         >
@@ -86,6 +87,7 @@
         <AccordionTrigger
           :disabled="
             getReservationStatus(reservation) === ReservationStatus.Ended ||
+            getReservationStatus(reservation) === ReservationStatus.Overdue ||
             getReservationStatus(reservation) === ReservationStatus.Cancelled
           "
           >{{ t("change_period_trigger") }}</AccordionTrigger
@@ -189,7 +191,7 @@ const {
     "borrow_period": "Leihfrist",
     "cancel_trigger": "Reservierung stornieren",
     "cancel_button": "Stornieren",
-    "cancel_not_possible_text": "Diese Reservierung kann nicht storniert worden, da der schon angefangen hat. Schicke bei weitere Fragen oder Problemen bitte ein E-Mail an {0}.",
+    "cancel_not_possible_text": "Diese Reservierung kann nicht storniert worden, da der schon angefangen hat. Schicke bei Fragen oder Problemen bitte ein E-Mail an {0}.",
     "change_period_trigger": "Leihfrist änderen",
     "change_period_text": "Um deine Leihfrist zu änderen, schicke bitte eine E-Mail an {0}."
   }
