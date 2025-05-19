@@ -3,7 +3,7 @@
     variant="secondary"
     :class="{ open: isOpen }"
     :disabled="disabled"
-    @click="handleToggle!(id!)"
+    @click="toggle!(id!)"
   >
     <slot></slot>
     <NavArrowDown />
@@ -11,14 +11,17 @@
 </template>
 
 <script setup lang="ts">
-import { handleToggleKey, idKey, isOpenKey } from "./Accordion.model";
+import { toggleKey, idKey, isOpenKey } from "./Accordion.model";
 import { NavArrowDown } from "@iconoir/vue";
 
-const props = defineProps<{ disabled: boolean }>();
+defineProps<{
+  // If the accordion trigger is disabled, not interactable
+  disabled: boolean;
+}>();
 
 const id = inject(idKey);
 const isOpen = inject(isOpenKey);
-const handleToggle = inject(handleToggleKey);
+const toggle = inject(toggleKey);
 </script>
 
 <style scoped>

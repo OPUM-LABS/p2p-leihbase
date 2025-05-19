@@ -5,13 +5,16 @@
 </template>
 
 <script setup lang="ts">
-import { handleToggleKey, openKey } from "./Accordion.model";
+import { toggleKey, openKey } from "./Accordion.model";
 
-const { single } = defineProps<{ single?: boolean }>();
+const { single } = defineProps<{
+  // If only one accordion item can be open at the same time
+  single?: boolean;
+}>();
 
 const open = ref<string[]>([]);
 
-function handleToggle(id: string) {
+function toggle(id: string) {
   const index = open.value.indexOf(id);
   if (index === -1) {
     if (single) {
@@ -25,8 +28,7 @@ function handleToggle(id: string) {
 }
 
 provide(openKey, open);
-console.log("provide", handleToggle);
-provide(handleToggleKey, handleToggle);
+provide(toggleKey, toggle);
 </script>
 
 <style scoped>
