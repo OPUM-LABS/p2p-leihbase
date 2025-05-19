@@ -23,7 +23,7 @@ div.content.open {
   grid-template-rows: 1fr;
 }
 div.content > div {
-  padding: var(--fluid-spacing-4) 0;
+  padding: var(--fluid-spacing-4) 0 var(--fluid-spacing-8) 0;
   overflow: hidden;
 }
 </style>
