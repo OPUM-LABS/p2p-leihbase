@@ -177,6 +177,7 @@ function getReminderEmail(reservation, type) {
     return {
       to: [{ address: user.getString("email") }],
       ...reservationStartReminderEmail({
+        userName: user.get("name"),
         locationName: location.get("name"),
         productName: product.get("name"),
         start,
@@ -194,6 +195,7 @@ function getReminderEmail(reservation, type) {
     return {
       to: [{ address: user.get("email") }],
       ...reservationEndReminderEmail({
+        userName: user.get("name"),
         locationName: location.get("name"),
         productName: product.get("name"),
         end,

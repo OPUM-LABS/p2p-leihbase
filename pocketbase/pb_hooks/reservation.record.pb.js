@@ -126,8 +126,11 @@ onRecordAfterCreateRequest((e) => {
 
   /** @type {typeof import('./lib/reservation')} */
   const { saveSentEmail } = require(`${__hooks}/lib/reservation`);
-  /** @type {typeof import('./lib/location')} */
-  const { getNotificationEmailAddresses } = require(`${__hooks}/lib/location`);
+  /** @type {typeof import('./lib/email')} */
+  const {
+    sendLocationNotificationEmail,
+    sendUserEmail,
+  } = require(`${__hooks}/lib/email`);
   /** @type {typeof import('./lib/emails.en')} */
   const {
     reservationConfirmationEmail,
@@ -168,40 +171,26 @@ onRecordAfterCreateRequest((e) => {
   const end = new Date(record.get("end").string().split(" ")[0]);
 
   // Notify location
-  const notificationEmailAddresses = getNotificationEmailAddresses(location);
-  if (notificationEmailAddresses.length > 0) {
-    notificationEmailAddresses.forEach((to) => {
-      const email = new MailerMessage({
-        from: {
-          address: $app.settings().meta.senderAddress,
-          name: $app.settings().meta.senderName,
-        },
-        to: [{ address: to }],
-        ...reservationConfirmationLocationEmail({
-          productUrl: `${
-            $app.settings().meta.appUrl
-          }/link/product/${product.get("id")}`,
-          productName,
-          userName,
-          userEmail: user.get("email"),
-          start,
-          end,
-          message: record.get("message"),
-        }),
-      });
-      $app.newMailClient().send(email);
-    });
-  }
+  sendLocationNotificationEmail(
+    location,
+    reservationConfirmationLocationEmail({
+      productUrl: `${$app.settings().meta.appUrl}/link/product/${product.get(
+        "id"
+      )}`,
+      productName,
+      userName,
+      userEmail: user.get("email"),
+      start,
+      end,
+      message: record.get("message"),
+    })
+  );
 
   // Notify user, if the user is the one making the reservation
   if (user && requestUser && requestUser.get("id") === user.get("id")) {
-    const email = new MailerMessage({
-      from: {
-        address: $app.settings().meta.senderAddress,
-        name: $app.settings().meta.senderName,
-      },
-      to: [{ address: user.get("email") }],
-      ...reservationConfirmationEmail({
+    sendUserEmail(
+      user,
+      reservationConfirmationEmail({
         productUrl: `${$app.settings().meta.appUrl}/link/product/${product.get(
           "id"
         )}`,
@@ -210,17 +199,30 @@ onRecordAfterCreateRequest((e) => {
         start,
         end,
         deposit: product.get("deposit"),
-      }),
-    });
-    $app.newMailClient().send(email);
+      })
+    );
     // Store that email has been sent
     saveSentEmail(record, "confirmation");
   }
 }, "reservations");
 
 onRecordAfterUpdateRequest((e) => {
+  const locale = $os.getenv("CONFIG_LOCALE") || "en";
+
   /** @type {typeof import('./lib/reservation')} */
   const { removeSentEmail } = require(`${__hooks}/lib/reservation`);
+
+  /** @type {typeof import('./lib/email')} */
+  const {
+    sendLocationNotificationEmail,
+    sendUserEmail,
+  } = require(`${__hooks}/lib/email`);
+
+  /** @type {typeof import('./lib/emails.en')} */
+  const {
+    cancellationConfirmationEmail,
+    reservationCancellationLocationEmail,
+  } = require(`${__hooks}/lib/emails.${locale}`);
 
   let { record } = e;
   const originalRecord = record.originalCopy();
@@ -232,5 +234,45 @@ onRecordAfterUpdateRequest((e) => {
   );
   if (end > originalEnd) {
     record = removeSentEmail(record, "end_reminder");
+  }
+
+  // Reservation got cancelled, send confirmations
+  if (!originalRecord.getBool("cancelled") && record.getBool("cancelled")) {
+    $app.dao().expandRecord(record, ["product", "location", "user"], null);
+    const product = record.expandedOne("product");
+    const location = record.expandedOne("location");
+    const productName = product.get("name");
+    const user = record.expandedOne("user");
+    const start = new Date(record.get("start").string().split(" ")[0]);
+    const end = new Date(record.get("end").string().split(" ")[0]);
+
+    // User
+    if (user) {
+      sendUserEmail(
+        user,
+        cancellationConfirmationEmail({
+          productUrl: `${
+            $app.settings().meta.appUrl
+          }/link/product/${product.get("id")}`,
+          productName,
+          userName: user.get("name"),
+        })
+      );
+    }
+
+    // Location
+    sendLocationNotificationEmail(
+      location,
+      reservationCancellationLocationEmail({
+        productUrl: `${$app.settings().meta.appUrl}/link/product/${product.get(
+          "id"
+        )}`,
+        productName,
+        userName: user.get("name"),
+        userEmail: user.get("email"),
+        start,
+        end,
+      })
+    );
   }
 }, "reservations");

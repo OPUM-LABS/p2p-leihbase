@@ -55,7 +55,7 @@ Your Leihbar`,
     end,
     message,
   }) => ({
-    subject: `New reservation by ${userName}: ${productName}`,
+    subject: `New reservation: ${userName} - ${productName}`,
     html: `Hi,<br>
 <br>
 A new reservation by ${userName} (<a href="mailto:${userEmail}">${userEmail}</a>).<br>
@@ -76,6 +76,7 @@ ${
   });
 
   const reservationStartReminderEmail = ({
+    userName,
     locationName,
     productName,
     start,
@@ -83,7 +84,7 @@ ${
     endHour,
   }) => ({
     subject: `Pick-up of '${productName}'`,
-    html: `Hi,<br>
+    html: `Hi ${userName},<br>
 <br>
 you reserved a ${productName} at ${locationName}. The item can be picked up tomorrow
 (${formatDate(start)}) ${
@@ -99,6 +100,7 @@ Your LeihBar<br>`,
   });
 
   const reservationEndReminderEmail = ({
+    userName,
     locationName,
     productName,
     end,
@@ -106,7 +108,7 @@ Your LeihBar<br>`,
     endHour,
   }) => ({
     subject: `Return of '${productName}'`,
-    html: `Hi,<br>
+    html: `Hi ${userName},<br>
 <br>
 we hope everything worked out well with the item '${productName}'!
 <br>
@@ -129,10 +131,46 @@ Thank you, and see you tomorrow!<br>
 Your LeihBar-Team`,
   });
 
+  const cancellationConfirmationEmail = ({
+    userName,
+    productUrl,
+    productName,
+  }) => ({
+    subject: `Cancellation confirmation for ${productName}`,
+    html: `Hi ${userName},<br>
+<br>
+We hereby confirm the cancellation of your reservation for the item "<a href="${productUrl}">${productName}</a>".<br>
+<br>
+Thanks for sharing, the item is now available again for other neighbours!<br>
+<br>
+See you next time!<br>
+<br>
+Your Leihbar`,
+  });
+
+  const reservationCancellationLocationEmail = ({
+    productUrl,
+    productName,
+    userName,
+    userEmail,
+    start,
+    end,
+  }) => ({
+    subject: `Cancellation: ${userName} - ${productName}`,
+    html: `The reservation of ${userName} (<a href="mailto:${userEmail}">${userEmail}</a>) for the item "${productName}" has been cancelled.<br>
+<br>
+<strong>Details</strong><br>
+Item: <a href="${productUrl}">${productName}</a><br>
+Start: ${formatDate(start)}<br>
+End: ${formatDate(end)}`,
+  });
+
   return {
     reservationConfirmationEmail,
     reservationConfirmationLocationEmail,
     reservationStartReminderEmail,
     reservationEndReminderEmail,
+    cancellationConfirmationEmail,
+    reservationCancellationLocationEmail,
   };
 })();
