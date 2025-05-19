@@ -70,7 +70,7 @@
             <Check v-if="reservation.ended" class="check" />
             <Xmark v-else class="xmark" />
           </td>
-          <td>€{{ reservation.deposit }}</td>
+          <td>{{ formatCurrency(reservation.deposit, locale) }}</td>
           <td>
             <Tooltip v-if="reservation.note" :html="reservation.note">
               <MessageText class="note-icon" />
@@ -86,6 +86,7 @@
 import { formatDate, isSameDate } from "~/lib/date";
 import type { Reservation } from "~/models/reservation";
 import { Check, Xmark, MessageText } from "@iconoir/vue";
+import { formatCurrency } from "~/lib/currency";
 
 const { t, locale } = useI18n({
   useScope: "local",
