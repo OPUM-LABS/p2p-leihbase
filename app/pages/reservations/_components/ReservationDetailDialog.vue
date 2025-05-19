@@ -6,22 +6,22 @@
       />
       <div>
         <p>
-          <strong>{{ t("product") }}</strong
-          ><br />
+          <strong>{{ t("product") }}</strong>
+          <br />
           <a :href="`/link/product/${product.id}`" target="_blank">
             {{ product.name }}
           </a>
         </p>
         <p>
-          <strong>{{ t("location") }}</strong
-          ><br />
+          <strong>{{ t("location") }}</strong>
+          <br />
           <a :href="`/l/${location.slug}`" target="_blank">
             {{ location.name }}
           </a>
         </p>
         <p>
-          <strong>{{ t("borrow_period") }}</strong
-          ><br />
+          <strong>{{ t("borrow_period") }}</strong>
+          <br />
           {{ formatDate(reservation.start, DateTime.DATE_MED, locale) }}
           -
           {{ formatDate(reservation.end, DateTime.DATE_MED, locale) }}
@@ -32,8 +32,8 @@
             status !== ReservationStatus.Cancelled
           "
         >
-          <strong>{{ t("deposit") }}</strong
-          ><br />
+          <strong>{{ t("deposit") }}</strong>
+          <br />
           {{ formatCurrency(reservation.deposit, locale) }}
         </p>
       </div>
