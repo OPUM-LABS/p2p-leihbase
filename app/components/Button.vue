@@ -68,7 +68,7 @@ button {
     color: var(--primary-text-color);
     font-weight: var(--font-weight-semibold);
     &:hover {
-      background-color: color-mix(in srgb, var(--primary-color) 90%, #000);
+      background-color: color-mix(in srgb, var(--primary-color) 80%, #000);
     }
   }
   &.variant-secondary {
