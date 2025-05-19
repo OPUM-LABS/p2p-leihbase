@@ -26,23 +26,33 @@
           -
           {{ formatDate(reservation.end, DateTime.DATE_MED, locale) }}
         </p>
+        <p
+          v-if="
+            status !== ReservationStatus.New &&
+            status !== ReservationStatus.Cancelled
+          "
+        >
+          <strong>{{ t("deposit") }}</strong
+          ><br />
+          {{ formatCurrency(reservation.deposit, locale) }}
+        </p>
       </div>
     </div>
+
     <Accordion v-if="reservation" :single="true">
       <AccordionItem id="cancel">
         <AccordionTrigger
           :disabled="
-            getReservationStatus(reservation) === ReservationStatus.Ended ||
-            getReservationStatus(reservation) === ReservationStatus.Overdue ||
-            getReservationStatus(reservation) === ReservationStatus.Cancelled
+            status === ReservationStatus.Ended ||
+            status === ReservationStatus.Overdue ||
+            status === ReservationStatus.Cancelled
           "
         >
           {{ t("cancel_trigger") }}
         </AccordionTrigger>
         <AccordionContent>
-          <div
-            v-if="getReservationStatus(reservation) === ReservationStatus.New"
-          >
+          <div v-if="status === ReservationStatus.New">
+            <p>{{ t("cancel_text") }}</p>
             <Button
               v-if="
                 cancellationStatus === ReservationCancellationStatus.Default ||
@@ -72,11 +82,7 @@
               {{ cancellationMessage }}
             </Alert>
           </div>
-          <div
-            v-else-if="
-              getReservationStatus(reservation) === ReservationStatus.Started
-            "
-          >
+          <div v-else-if="status === ReservationStatus.Started">
             <p>
               {{ t("cancel_not_possible_text", [location?.email]) }}
             </p>
@@ -86,9 +92,9 @@
       <AccordionItem id="change-period">
         <AccordionTrigger
           :disabled="
-            getReservationStatus(reservation) === ReservationStatus.Ended ||
-            getReservationStatus(reservation) === ReservationStatus.Overdue ||
-            getReservationStatus(reservation) === ReservationStatus.Cancelled
+            status === ReservationStatus.Ended ||
+            status === ReservationStatus.Overdue ||
+            status === ReservationStatus.Cancelled
           "
           >{{ t("change_period_trigger") }}</AccordionTrigger
         >
@@ -112,6 +118,7 @@ import {
 } from "~/composables/useReservationCancellation";
 import { formatDate } from "~/lib/date";
 import { getReservationStatus } from "~/lib/reservation";
+import { formatCurrency } from "~/lib/currency";
 import type { Location } from "~/models/location";
 import type { Product } from "~/models/product";
 import { ReservationStatus, type Reservation } from "~/models/reservation";
@@ -141,6 +148,13 @@ watch(
   }
 );
 
+const status = computed<ReservationStatus | null>(() => {
+  if (props.reservation) {
+    return getReservationStatus(props.reservation);
+  }
+  return null;
+});
+
 const {
   cancel,
   status: cancellationStatus,
@@ -155,7 +169,7 @@ const {
 <style lang="scss" scoped>
 .product {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   background-color: var(--background-color);
   padding: var(--fluid-spacing-4);
   gap: var(--fluid-spacing-4);
@@ -179,8 +193,10 @@ const {
     "product": "Product",
     "location": "Location",
     "borrow_period": "Borrow period",
+    "deposit": "Deposit",
     "cancel_trigger": "Cancel reservation",
-    "cancel_button": "Cancel",
+    "cancel_text": "Do you no longer wish to borrow the item?? Make the item available again by cancelling your reservation. Please note that this action cannot be undone.",
+    "cancel_button": "Cancel reservation",
     "cancel_not_possible_text": "This reservation can't be cancelled as it already started, please send an e-mail to {0} for any questions or remarks.",
     "change_period_trigger": "Update reservation period",
     "change_period_text": "To update the reservation period, please send an e-mail to {0}."
@@ -189,8 +205,10 @@ const {
     "product": "Gegenstand",
     "location": "Standort",
     "borrow_period": "Leihfrist",
+    "deposit": "Pfand",
     "cancel_trigger": "Reservierung stornieren",
-    "cancel_button": "Stornieren",
+    "cancel_text": "Machst du den Gegenstand nicht mehr ausleihen? Mache den Gegenstand wieder verfügbar duch das Stornieren deine Reservierung. Bitte beachte dass diese Aktion nicht rückgängig gemacht werden kann.",
+    "cancel_button": "Reservierung stornieren",
     "cancel_not_possible_text": "Diese Reservierung kann nicht storniert worden, da sie bereits begonnen hat. Bei Fragen oder Problemen schicke uns bitte eine E-Mail an {0}.",
     "change_period_trigger": "Leihfrist änderen",
     "change_period_text": "Um deine Leihfrist zu änderen, schicke bitte eine E-Mail an {0}."
