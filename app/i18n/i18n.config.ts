@@ -39,6 +39,10 @@ export default defineI18nConfig(() => ({
       previous_month: "Previous Month",
       next_month: "Next Month",
       closed_at: "Closed at",
+      // reservation cancellation
+      cancellation_success_message: "Your reservation has been cancelled.",
+      cancellation_unknown_error_message:
+        "Something went wrong while cancelling your reservation. Please try again, or send an e-mail to {0}.",
     },
     de: {
       week_days: {
