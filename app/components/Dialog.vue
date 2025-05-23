@@ -79,8 +79,9 @@ dialog {
   top: -100%;
   transform: translate(-50%, -50%);
   width: min(600px, 100%);
-  height: min-content;
-  max-height: 100vh;
+  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   z-index: 40;
