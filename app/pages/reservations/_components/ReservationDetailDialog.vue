@@ -207,7 +207,7 @@ const {
     "borrow_period": "Leihfrist",
     "deposit": "Pfand",
     "cancel_trigger": "Reservierung stornieren",
-    "cancel_text": "Machst du den Gegenstand nicht mehr ausleihen? Mache den Gegenstand wieder verfügbar duch das Stornieren deine Reservierung. Bitte beachte dass diese Aktion nicht rückgängig gemacht werden kann.",
+    "cancel_text": "Möchtest du den Gegenstand nicht mehr ausleihen? Mache den Gegenstand duch die Stornierung deiner Reservierung wieder verfügbar. Bitte beachte dass diese Aktion nicht rückgängig gemacht werden kann.",
     "cancel_button": "Reservierung stornieren",
     "cancel_not_possible_text": "Diese Reservierung kann nicht storniert worden, da sie bereits begonnen hat. Bei Fragen oder Problemen schicke uns bitte eine E-Mail an {0}.",
     "change_period_trigger": "Leihfrist änderen",
