@@ -9,8 +9,8 @@ RUN corepack enable pnpm
 
 RUN pnpm i
 
-COPY playwright.config.ts ./
-
 RUN npx playwright install chromium webkit --with-deps
+
+COPY playwright.config.ts ./
 
 CMD npx playwright test
