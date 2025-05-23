@@ -1,8 +1,11 @@
 <template>
   <Button
     variant="secondary"
+    :id="id + '-trigger'"
     :class="{ open: isOpen }"
     :disabled="disabled"
+    :aria-expanded="isOpen ? 'true' : 'false'"
+    :aria-controls="id + '-content'"
     @click="toggle!(id!)"
   >
     <slot></slot>

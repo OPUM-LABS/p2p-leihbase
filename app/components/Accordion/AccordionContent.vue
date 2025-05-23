@@ -1,5 +1,9 @@
 <template>
-  <div :class="{ content: true, open: isOpen }">
+  <div
+    :id="id + '-content'"
+    :aria-labelledby="id + '-trigger'"
+    :class="{ content: true, open: isOpen }"
+  >
     <div>
       <slot></slot>
     </div>
@@ -7,8 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { isOpenKey } from "./Accordion.model";
+import { idKey, isOpenKey } from "./Accordion.model";
 
+const id = inject(idKey);
 const isOpen = inject(isOpenKey);
 </script>
 
@@ -17,10 +22,12 @@ div.content {
   display: grid;
   grid-template-rows: 0fr;
   overflow: hidden;
-  transition: grid-template-rows 200ms;
+  transition: grid-template-rows 200ms, visibility 200ms;
+  visibility: hidden;
 }
 div.content.open {
   grid-template-rows: 1fr;
+  visibility: visible;
 }
 div.content > div {
   padding: var(--fluid-spacing-4) 0 var(--fluid-spacing-8) 0;

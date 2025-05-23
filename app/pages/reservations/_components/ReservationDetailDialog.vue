@@ -40,7 +40,7 @@
     </div>
 
     <Accordion v-if="reservation" :single="true">
-      <AccordionItem id="cancel">
+      <AccordionItem id="reservation-dialog-cancel">
         <AccordionTrigger
           :disabled="
             status === ReservationStatus.Ended ||
@@ -89,7 +89,7 @@
           </div>
         </AccordionContent>
       </AccordionItem>
-      <AccordionItem id="change-period">
+      <AccordionItem id="reservation-dialog-change-period">
         <AccordionTrigger
           :disabled="
             status === ReservationStatus.Ended ||
