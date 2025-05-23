@@ -39,6 +39,10 @@ export default defineI18nConfig(() => ({
       previous_month: "Previous Month",
       next_month: "Next Month",
       closed_at: "Closed at",
+      // reservation cancellation
+      cancellation_success_message: "Your reservation has been cancelled.",
+      cancellation_unknown_error_message:
+        "Something went wrong while cancelling your reservation. Please try again, or send an e-mail to {0}.",
     },
     de: {
       week_days: {
@@ -77,6 +81,11 @@ export default defineI18nConfig(() => ({
       previous_month: "Vorheriger Monat",
       next_month: "Nächster Monat",
       closed_at: "Zu am",
+      // reservation cancellation
+      cancellation_success_message:
+        "Deine Reservierung ist erfolgreich storniert.",
+      cancellation_unknown_error_message:
+        "Beim stornieren deine Reservierung ist was schief gelaufen. Bitte versuche es erneut, oder schicke eine E-Mail an {0}.",
     },
   },
 }));

@@ -1,5 +1,5 @@
 <template>
-  <Container width="sm" centered no-padding>
+  <Container width="sm" centered>
     <Card class="card">
       <h1 data-testid="login-h1">{{ t("title") }}</h1>
       <i18n-t keypath="text" tag="p" for="signup_text">
@@ -123,14 +123,11 @@ async function onLogin() {
 <style lang="scss" scoped>
 @use "~/assets/styles/_breakpoints.scss";
 
-@media (min-width: breakpoints.$breakpoint-md) {
-  .card {
-    margin-top: 3rem;
-  }
-  h1 {
-    margin-top: -1rem;
-  }
+h1 {
+  margin-top: -0.4em;
+  margin-bottom: var(--fluid-spacing-4);
 }
+
 form {
   display: flex;
   flex-direction: column;

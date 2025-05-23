@@ -5,13 +5,8 @@ test.describe("signup", () => {
   test("can reach signup from homepage", async ({ page, isMobile }) => {
     await page.goto("/");
     await waitForHydration(page);
-    if (isMobile) {
-      await page.locator("header").getByTestId("account-link").click();
-      await page.waitForURL(/\/login/);
-      await page.locator("main").getByTestId("signup-link").click();
-    } else {
-      await page.locator("header").getByTestId("signup-link").click();
-    }
+    await page.locator("header").getByTestId("menu-button").click();
+    await page.locator("header").getByTestId("signup-link").click();
     await page.waitForURL(/\/signup/);
     await expect(page.getByTestId("signup-h1")).toBeVisible();
   });

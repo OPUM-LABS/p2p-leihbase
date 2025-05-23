@@ -1,8 +1,6 @@
 import { expect } from "@playwright/test";
-import { init } from "../services/pocketbase";
+import { pocketbase } from "../services/pocketbase";
 import { waitForClientMount } from "./utils";
-
-const pb = await init();
 
 /**
  * Navigates to the product page,
@@ -22,6 +20,7 @@ export async function navigateToProductPage(page, productId) {
  */
 export async function createProduct() {
   // Create test product
+  const pb = await pocketbase();
   const location = (await pb.collection("location").getFullList()).at(0);
   if (!location) {
     throw new Error("createProduct: couldn't find location");
@@ -45,6 +44,7 @@ export async function createProduct() {
  * Returns the last created reservation given a product id
  */
 export async function getLastProductReservation(productId) {
+  const pb = await pocketbase();
   const reservation = await pb
     .collection("reservations")
     .getFirstListItem(`product = '${productId}'`, { sort: "created" });
@@ -55,6 +55,7 @@ export async function getLastProductReservation(productId) {
  * Updates the created reservation given a product id
  */
 export async function updateLastProductReservation(productId, data) {
+  const pb = await pocketbase();
   const reservation = await getLastProductReservation(productId);
   return await pb.collection("reservations").update(reservation.id, data);
 }
