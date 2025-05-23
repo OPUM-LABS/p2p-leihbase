@@ -144,7 +144,7 @@ dein LeihBar-Team`,
     subject: `Stornierungsbestätigung für ${productName}`,
     html: `Hi ${userName},<br>
 <br>
-hiermit bestätigen wir die Stornierung des Gegenstandes
+hiermit bestätigen wir die Stornierung deiner Reservierung für den Gegenstand
 "<a href="${productUrl}">${productName}</a>".<br>
 <br>
 Danke fürs Weitergeben, der Gegenstand ist jetzt wieder verfügbar für andere Nachbar:innen!<br>
