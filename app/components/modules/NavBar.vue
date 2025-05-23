@@ -42,11 +42,11 @@
                 {{ t("profile") }}
               </DropdownMenuItem>
             </li>
-            <!-- <li v-if="isValid">
+            <li v-if="isValid">
               <NuxtLink to="/reservations">
                 {{ t("reservations") }}
               </NuxtLink>
-            </li> -->
+            </li>
             <li v-if="isValid && userStore.isAdmin">
               <DropdownMenuItem :as="NuxtLink" to="/admin">
                 {{ t("admin") }}

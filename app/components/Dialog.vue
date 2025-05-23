@@ -1,27 +1,21 @@
 <template>
-  <div
-    :class="{
-      background: true,
-      'header-offset': headerOffset,
-      open,
-      'was-open': wasOpen,
-    }"
-    @click="open = false"
-  ></div>
-  <div
+  <dialog
+    ref="dialog"
     data-base-theme
     :class="{
       dialog: true,
-      'header-offset': headerOffset,
       open,
       'was-open': wasOpen,
       inset,
     }"
+    :aria-labelledby="id + '-title'"
+    @close="close"
   >
     <header>
       <div class="title">
-        <h2>{{ title }}</h2>
-        <button @click="open = false">
+        <h2 :id="id + '-title'">{{ title }}</h2>
+        <button @click="close">
+          <span class="sr-only">{{ t("close") }}</span>
           <Xmark />
         </button>
       </div>
@@ -30,101 +24,91 @@
     <div class="body">
       <slot></slot>
     </div>
-  </div>
+  </dialog>
 </template>
 
 <script lang="ts" setup>
 import { Xmark } from "@iconoir/vue";
+import { templateRef } from "@vueuse/core";
+
+const { t } = useI18n({
+  useScope: "local",
+});
+
+const id = useId();
 
 const wasOpen = ref(false);
+const dialog = templateRef("dialog");
 
 defineProps<{
   inset: boolean;
   title: string;
-  headerOffset?: boolean;
 }>();
 
-const open = defineModel<boolean>("open");
+const emit = defineEmits<{ close: [] }>();
 
+const open = defineModel<boolean>("open");
 watch(open, (newValue) => {
+  if (newValue) {
+    dialog.value.showModal();
+  } else {
+    dialog.value.close();
+    emit("close");
+  }
   wasOpen.value = newValue || wasOpen.value;
 });
+
+onMounted(() => {
+  dialog.value.addEventListener("click", (e: MouseEvent) => {
+    if (e.target === dialog.value) {
+      open.value = false;
+    }
+  });
+});
+
+function close() {
+  open.value = false;
+}
 </script>
 
 <style lang="scss" scoped>
 @use "~/assets/styles/breakpoints.scss";
 
-.background {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 30;
-  background-color: black;
-  animation-name: background-out;
-  animation-duration: 0;
-  animation-fill-mode: both;
-  visibility: hidden;
-  opacity: 0;
-  &.header-offset {
-    top: var(--navbar-height);
-    height: calc(100% - var(--navbar-height));
-  }
-  &.was-open {
-    animation-duration: 0.2s;
-  }
-  &.open {
-    animation-name: background-in;
-  }
-}
-
-@keyframes background-in {
-  from {
-    visibility: hidden;
-    opacity: 0;
-  }
-  to {
-    visibility: visible;
-    opacity: 0.2;
-  }
-}
-
-@keyframes background-out {
-  from {
-    visibility: visible;
-    opacity: 0.2;
-  }
-  to {
-    visibility: hidden;
-    opacity: 0;
-  }
-}
-
-.dialog {
-  position: fixed;
+dialog {
   left: 50%;
   top: -100%;
   transform: translate(-50%, -50%);
   width: min(600px, 100%);
-  background-color: white;
-  z-index: 40;
-  height: 100vh;
+  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
+  z-index: 40;
+  overflow-y: visible;
+  padding: 0;
+  background-color: white;
+  border: 0;
   border-radius: var(--border-radius);
   animation-name: dialog-out;
   animation-duration: 0s;
   animation-fill-mode: both;
   visibility: hidden;
-  &.header-offset {
-    top: calc(-100% + var(--navbar-height));
-    max-height: calc(90vh - var(--navbar-height));
+
+  // Back-drop
+  &::backdrop {
+    background-color: black;
+    opacity: 0;
+    transition: opacity 200ms;
   }
+  &[open]::backdrop {
+    opacity: 0.2;
+  }
+
   &.was-open {
     animation-duration: 0.2s;
   }
-  &.open {
+  &[open] {
     animation-name: dialog-in;
   }
   &.inset {
@@ -141,7 +125,7 @@ watch(open, (newValue) => {
     }
   }
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
-    height: auto;
+    height: min-content;
     max-height: 95vh;
     max-width: 95vw;
   }
@@ -191,3 +175,14 @@ header {
   overflow-y: scroll;
 }
 </style>
+
+<i18n lang="json">
+{
+  "en": {
+    "close": "Close"
+  },
+  "de": {
+    "close": "Schließen"
+  }
+}
+</i18n>

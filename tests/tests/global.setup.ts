@@ -1,13 +1,14 @@
 import { expect, test as setup } from "@playwright/test";
-import { init } from "../services/pocketbase";
+import { pocketbase } from "../services/pocketbase";
 import { createUser } from "../lib/user";
-
-const pb = await init();
 
 setup.describe.configure({ mode: "serial" });
 
 setup.describe("setup", () => {
-  setup("create location, product and user", async ({}) => {
+  setup("create location, product and user", async ({ page }) => {
+    const pb = await pocketbase();
+    await expect(pb).toBeDefined();
+
     // Configure mailing
     await pb.settings.update({
       smtp: {

@@ -1,11 +1,10 @@
-import { init } from "../services/pocketbase";
-
-const pb = await init();
+import { pocketbase } from "../services/pocketbase";
 
 export async function createUser(
   email = "test@example.com",
   password = "testtest"
 ) {
+  const pb = await pocketbase();
   try {
     const user = await pb.collection("users").create({
       name: "Test User",

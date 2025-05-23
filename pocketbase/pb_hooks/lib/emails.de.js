@@ -10,7 +10,6 @@ module.exports = (function () {
   }
 
   const reservationConfirmationEmail = ({
-    locationEmail,
     userName,
     productUrl,
     productName,
@@ -33,17 +32,14 @@ ${
   lendingConditionsLink
     ? `<a href="${lendingConditionsLink}">die Leihbedingungen</a>`
     : "die Leihbedingungen"
-} zu unterschreiben und ${
+} zu unterschreiben, uns deinen Ausweis zum Abgleich zu zeigen und ${
       deposit ? `${formatCurrency(deposit)} ` : ""
     }Pfand zu hinterlegen.<br>
 <br>
-Solltest Du Deine Reservierung stornieren müssen, freuen wir 
-uns über eine kurze Email${
-      locationEmail
-        ? ` an
-<a href="mailto:${locationEmail}">${locationEmail}</a>.`
-        : "."
-    }<br>
+Deine Reservierung stornieren oder die Leihfrist ändern kannst du in deiner
+<a href="${
+      $app.settings().meta.appUrl
+    }/reservations">Reservierungsübersicht</a>.<br>
 <br>
 Wir freuen uns, dass du dich für Leihen statt Kaufen entscheidest!<br>
 <br>
@@ -60,7 +56,7 @@ Deine Leihbar`,
     end,
     message,
   }) => ({
-    subject: `Neue Reservierung von ${userName}: ${productName}`,
+    subject: `Neue Reservierung: ${userName} - ${productName}`,
     html: `Hi,<br>
 <br>
 Eine neue Reservierung von ${userName}
@@ -82,6 +78,7 @@ ${
   });
 
   const reservationStartReminderEmail = ({
+    userName,
     locationName,
     productName,
     start,
@@ -89,14 +86,16 @@ ${
     endHour,
   }) => ({
     subject: `Abholen des Gegenstands '${productName}'`,
-    html: `Hi,<br>
+    html: `Hi ${userName},<br>
 <br>
-du hast bei ${locationName} den Gegenstand '${productName}' reserviert. Der Gegenstand liegt
-morgen (${formatDate(start)}) ${
-      startHour && endHour ? `zwischen ${startHour} und ${endHour}` : ""
-    }
-bereit. Bitte denke daran, deinen Gegenstand abzuholen. Falls du ihn nicht mehr benötigst,
-antworte auf diese Mail, um deine Reservierung zu stornieren.<br>
+du hast bei ${locationName} den Gegenstand '${productName}' reserviert.
+Der Gegenstand liegt morgen (${formatDate(start)})
+${startHour && endHour ? `zwischen ${startHour} und ${endHour}` : ""}
+bereit. Bitte denke daran, deinen Gegenstand abzuholen.<br>
+<br>
+Falls du ihn nicht mehr benötigst, kannst du deine Reservierung in deiner
+<a href="${$app.settings().meta.appUrl}/reservations">Reservierungsübersicht</a>
+stornieren.<br>
 <br>
 Danke, dass du dich für Leihen statt Kaufen entscheidest!<br>
 <br>
@@ -105,6 +104,7 @@ Dein LeihBar-Team<br>`,
   });
 
   const reservationEndReminderEmail = ({
+    userName,
     locationName,
     productName,
     end,
@@ -112,7 +112,7 @@ Dein LeihBar-Team<br>`,
     endHour,
   }) => ({
     subject: `Zurückbringen des Gegenstands '${productName}'`,
-    html: `Hi,<br>
+    html: `Hi ${userName},<br>
 <br>
 wir hoffen, mit dem Gegenstand ${productName} hat alles gut funktioniert!
 <br>
@@ -125,10 +125,51 @@ ${
 <br>`
     : ""
 }
+Falls du den Gegenstand länger behalten möchtest, kannst du die Reservierung in
+deiner
+<a href="${$app.settings().meta.appUrl}/reservations">Reservierungsübersicht</a>
+verlängern.<br>
+<br>
 Danke, und bis morgen!<br>
 <br>
 Liebe Grüße<br>
 dein LeihBar-Team`,
+  });
+
+  const cancellationConfirmationEmail = ({
+    userName,
+    productUrl,
+    productName,
+  }) => ({
+    subject: `Stornierungsbestätigung für ${productName}`,
+    html: `Hi ${userName},<br>
+<br>
+hiermit bestätigen wir die Stornierung deiner Reservierung für den Gegenstand
+"<a href="${productUrl}">${productName}</a>".<br>
+<br>
+Danke fürs Weitergeben, der Gegenstand ist jetzt wieder verfügbar für andere Nachbar:innen!<br>
+<br>
+Gerne bis zum nächste Mal!<br>
+<br>
+Liebe Grüße<br>
+Deine Leihbar`,
+  });
+
+  const reservationCancellationLocationEmail = ({
+    productUrl,
+    productName,
+    userName,
+    userEmail,
+    start,
+    end,
+  }) => ({
+    subject: `Stornierung: ${userName} - ${productName}`,
+    html: `Der Reservierung von ${userName} (<a href="mailto:${userEmail}">${userEmail}</a>) für den Gegenstand ${productName} ist storniert.<br>
+<br>
+<strong>Details</strong><br>
+Gegenstand: <a href="${productUrl}">${productName}</a><br>
+Beginn: ${formatDate(start)}<br>
+Ende: ${formatDate(end)}`,
   });
 
   return {
@@ -136,5 +177,7 @@ dein LeihBar-Team`,
     reservationConfirmationLocationEmail,
     reservationStartReminderEmail,
     reservationEndReminderEmail,
+    cancellationConfirmationEmail,
+    reservationCancellationLocationEmail,
   };
 })();
