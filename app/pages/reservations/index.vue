@@ -18,7 +18,7 @@
         </li>
       </ul>
     </section>
-    <section>
+    <section v-if="past && past.length > 0">
       <h2>{{ t("past") }}</h2>
       <ul class="cards">
         <li v-for="reservation in past" :key="reservation.id">
