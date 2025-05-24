@@ -20,6 +20,10 @@ services:
       - leihbar_tests
     profiles:
       - playwright
+    depends_on:
+      - app
+      - pocketbase
+      - mailhog
 
   app:
     build:

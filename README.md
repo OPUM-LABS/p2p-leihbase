@@ -80,7 +80,7 @@ Tests are configured and run using [Playwright](https://playwright.dev/).
 
 - `$ cd tests`
 - `$ pnpm install`
-- `pnpm exec playwright install`
+- `$ pnpm run start`
 
 ### Run
 
