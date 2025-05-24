@@ -8,7 +8,7 @@
     </section>
     <section>
       <h2>{{ t("active") }}</h2>
-      <ul class="cards">
+      <ul v-if="current && current.length > 0" class="cards">
         <li v-for="reservation in current" :key="reservation.id">
           <ReservationCardButton
             :reservation="reservation"
@@ -17,6 +17,9 @@
           />
         </li>
       </ul>
+      <p v-else>
+        <i>{{ t("no_active_reservations") }}</i>
+      </p>
     </section>
     <section v-if="past && past.length > 0">
       <h2>{{ t("past") }}</h2>
@@ -176,12 +179,14 @@ section {
     "reservations": "Reservations",
     "intro": "Here you can manage your reservations. Check your current and past loans, extend deadlines, or cancel reservations as needed.",
     "active": "Active",
+    "no_active_reservations": "You currently have no active reservations.",
     "past": "Past"
   },
   "de": {
     "reservations": "Reservierungen",
     "intro": "Hier kannst du deine Reservierungen verwalten. Schau dir deine aktuellen und vergangenen Ausleihen an, verlängere Fristen oder storniere Reservierungen bei Bedarf.",
     "active": "Aktive",
+    "no_active_reservations": "Du hast derzeit keine aktiven Reservierungen.",
     "past": "Vergangene"
   }
 }
