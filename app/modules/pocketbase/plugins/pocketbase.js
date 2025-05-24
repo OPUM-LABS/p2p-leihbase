@@ -13,7 +13,7 @@ export default defineNuxtPlugin(async () => {
 
   const cookie = useCookie("pb_auth", {
     path: "/",
-    secure: true,
+    secure: config.public.ci ? false : true,
     sameSite: "lax",
     httpOnly: false, // change to "true" if you want only server-side access
     maxAge: 604800,

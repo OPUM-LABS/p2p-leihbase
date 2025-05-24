@@ -10,11 +10,18 @@ export async function pocketbase(
   if (pb) {
     return pb;
   } else {
-    pb = new PocketBase("http://127.0.0.1:8081");
-    if (admin) {
-      await pb.admins.authWithPassword(email, password);
-    } else {
-      await pb.collection("users").authWithPassword(email, password);
+    pb = new PocketBase(
+      process.env.POCKETBASE_BASE_URL || "http://127.0.0.1:8081"
+    );
+    try {
+      if (admin) {
+        await pb.admins.authWithPassword(email, password);
+      } else {
+        await pb.collection("users").authWithPassword(email, password);
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
     return pb;
   }

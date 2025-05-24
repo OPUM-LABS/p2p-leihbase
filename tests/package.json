@@ -8,18 +8,18 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "docker compose up -d; pnpm run playwright:test",
+    "start": "docker compose build && docker compose up -d",
     "stop": "docker compose down",
-    "test": "docker compose build && docker compose up -d && pnpm run playwright:test; docker compose down",
-    "test:update": "docker compose build && docker compose up -d && pnpm run playwright:test --update-snapshots; docker compose down",
-    "test:ui": "docker compose build && docker compose up -d && pnpm run playwright:test --ui; docker compose down",
-    "test:headed": "docker compose up -d && pnpm run playwright:test --headed; docker compose down",
+    "test": "docker compose run --rm --service-ports playwright npx playwright test",
+    "test:update": "docker compose run --rm --service-ports playwright npx playwright test --update-snapshots",
+    "test:local": "pnpm run playwright:test",
+    "test:local:ui": "pnpm run playwright:test --ui",
     "playwright:test": "npx playwright test",
     "taze:major": "taze major -wIr",
     "taze:minor": "taze minor -wIr"
   },
   "devDependencies": {
-    "@nuxt/test-utils": "^3.17.2",
+    "@nuxt/test-utils": "^3.18.0",
     "@playwright/test": "^1.51.0",
     "@types/node": "^20.17.24",
     "taze": "^0.18.0"

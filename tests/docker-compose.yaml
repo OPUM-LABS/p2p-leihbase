@@ -1,6 +1,30 @@
 version: "3.8"
 
 services:
+
+  playwright:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ipc: host
+    ports:
+      - '9323:9323'
+    environment:
+      - PLAYWRIGHT_HTML_HOST=0.0.0.0
+      - PLAYWRIGHT_TEST_BASE_URL=http://host.docker.internal:3001
+      - POCKETBASE_BASE_URL=http://host.docker.internal:8081
+      - PLAYWRIGHT_WORKERS=2
+    volumes:
+      - ./:/home/pwuser
+    networks:
+      - leihbar_tests
+    profiles:
+      - playwright
+    depends_on:
+      - app
+      - pocketbase
+      - mailhog
+
   app:
     build:
       context: ../app
@@ -14,7 +38,8 @@ services:
       NUXT_PORT: "3001"
       NITRO_PORT: "3001"
       NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: http://pocketbase:8081
-      NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: http://localhost:8081
+      NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: http://host.docker.internal:8081
+      NUXT_PUBLIC_CI: 'true'
       NUXT_PLAUSIBLE_TRACKING_DOMAIN: ""
     depends_on:
       pocketbase:
@@ -51,6 +76,7 @@ services:
     image: mailhog/mailhog
     logging:
       driver: "none" # disable saving logs
+    entrypoint: ["/bin/sh", "-c", "MailHog &>/dev/null"]
     ports:
       - 1025:1025 # smtp server
       - 8025:8025 # web ui
