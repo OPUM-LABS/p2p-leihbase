@@ -224,7 +224,8 @@ onRecordAfterUpdateRequest((e) => {
     reservationCancellationLocationEmail,
   } = require(`${__hooks}/lib/emails.${locale}`);
 
-  let { record } = e;
+  let { record, httpContext } = e;
+  const requestUser = httpContext.get("authRecord");
   const originalRecord = record.originalCopy();
 
   // Reset end_reminder notification if the end date has been moved back
@@ -246,8 +247,8 @@ onRecordAfterUpdateRequest((e) => {
     const start = new Date(record.get("start").string().split(" ")[0]);
     const end = new Date(record.get("end").string().split(" ")[0]);
 
-    // User
-    if (user) {
+    // Notify the user if they do the cancellation themselves
+    if (user && requestUser && requestUser.get("id") === user.get("id")) {
       sendUserEmail(
         user,
         cancellationConfirmationEmail({
@@ -260,7 +261,7 @@ onRecordAfterUpdateRequest((e) => {
       );
     }
 
-    // Location
+    // Notify the location of the cancellation
     sendLocationNotificationEmail(
       location,
       reservationCancellationLocationEmail({
