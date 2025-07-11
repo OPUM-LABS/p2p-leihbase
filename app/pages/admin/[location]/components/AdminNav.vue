@@ -3,6 +3,9 @@
     <Button variant="secondary" :to="`/admin/${location?.slug}`">
       {{ t("reservations") }}
     </Button>
+    <Button variant="secondary" :to="`/admin/${location?.slug}/products`">
+      {{ t("products") }}
+    </Button>
     <Button variant="secondary" :to="`/admin/${location?.slug}/stats`">
       {{ t("statistics") }}
     </Button>
@@ -32,10 +35,12 @@ nav {
 {
   "en": {
     "reservations": "Reservations",
+    "products": "Products",
     "statistics": "Statistics"
   },
   "de": {
     "reservations": "Reservierungen",
+    "products": "Gegenständen",
     "statistics": "Statistieken"
   }
 }

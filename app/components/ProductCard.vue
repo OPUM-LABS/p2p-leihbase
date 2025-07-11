@@ -3,7 +3,7 @@
     :is="component"
     :href="href"
     :to="to"
-    :class="{ root: true, clicked }"
+    :class="{ root: true, clicked, [`spacing-${spacing}`]: true }"
     :data-testid="`product-card-${product.id}`"
     :data-client-mounted="isClientMounted"
     @click="clicked = true"
@@ -30,31 +30,33 @@
           :available="!product.ongoingReservation"
         />
       </sl-tooltip>
-      <p class="name">
-        {{ product.name }}
-      </p>
+      <slot>
+        <p class="name">
+          {{ product.name }}
+        </p>
+      </slot>
     </div>
   </component>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { RecordModel } from "pocketbase";
+
 if (process.client) {
   await import("@shoelace-style/shoelace/dist/components/tooltip/tooltip.js");
 }
 
 const { t } = useI18n();
 
-const props = defineProps({
-  product: {
-    type: Object,
-  },
-  to: {
-    type: String,
-  },
-  href: {
-    type: String,
-  },
-});
+const props = withDefaults(
+  defineProps<{
+    product: RecordModel;
+    to?: string;
+    href?: string;
+    spacing?: "sm" | "md";
+  }>(),
+  { spacing: "md" }
+);
 
 const {
   product: { thumbs },
@@ -98,8 +100,11 @@ a.root.clicked {
   display: flex;
   width: 100%;
   align-items: center;
-  max-height: 1rem;
+  // max-height: 1rem;
   line-height: 1;
+}
+.spacing-sm .content {
+  padding: clamp(0.75rem, 4vw, 1.5rem) clamp(0.75rem, 4vw, 1rem);
 }
 .name {
   max-height: 1rem;
