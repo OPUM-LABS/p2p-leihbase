@@ -17,12 +17,15 @@
         :class="{ 'lb-input': true, 'has-prefix': !!$slots.prefix }"
       />
     </div>
+    <p v-if="description">
+      <small>{{ description }}</small>
+    </p>
   </FormRow>
 </template>
 
 <script lang="ts" setup>
 const model = defineModel();
-const props = defineProps<{
+defineProps<{
   id?: string;
   label?: string;
   name?: string;
@@ -31,6 +34,7 @@ const props = defineProps<{
   disabled?: boolean;
   readonly?: boolean;
   type?: string;
+  description?: string;
   dataTestid?: string;
 }>();
 </script>
@@ -52,5 +56,8 @@ const props = defineProps<{
 }
 .lb-input.has-prefix {
   border-radius: 0 var(--input-border-radius) var(--input-border-radius) 0;
+}
+p {
+  margin: 0;
 }
 </style>

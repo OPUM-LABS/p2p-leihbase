@@ -49,11 +49,23 @@
         :label="t('returned')"
         v-model="ended"
       />
+      <!-- Deposit -->
+      <!-- Show as description the default deposit of this product (when known) -->
       <Input
         id="reservation-drawer-deposit-input"
         :label="t('deposit')"
         v-model="deposit"
         type="number"
+        :description="
+          productId &&
+          productId === reservation?.product &&
+          reservation?.expand?.product?.deposit
+            ? t('deposit_description', [
+                reservation?.expand?.product?.name,
+                formatCurrency(reservation?.expand?.product?.deposit, locale),
+              ])
+            : ''
+        "
       >
         <template #prefix>€</template>
       </Input>
@@ -114,9 +126,10 @@ import RecordPickerInput from "~/components/admin/RecordPickerInput.vue";
 import { Mail, Trash } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
 import type { Reservation } from "~/models/reservation";
+import { formatCurrency } from "~/lib/currency";
 
 const { pb } = usePocketbase();
-const { t } = useI18n({
+const { t, locale } = useI18n({
   useScope: "local",
 });
 
@@ -315,6 +328,7 @@ footer {
     "collected": "Picked up",
     "returned": "Returned",
     "deposit": "Deposit",
+    "deposit_description": "Deposit of {0} is {1}",
     "note": "Note",
     "save": "Save",
     "cancel": "Cancel",
@@ -350,6 +364,7 @@ footer {
     "collected": "Abgeholt",
     "returned": "Zurückgegeben",
     "deposit": "Pfand",
+    "deposit_description": "Pfand von {0} is {1}",
     "note": "Notiz  ",
     "save": "Speichern",
     "cancel": "Abbrechen",
