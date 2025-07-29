@@ -364,7 +364,7 @@ footer {
     "collected": "Abgeholt",
     "returned": "Zurückgegeben",
     "deposit": "Pfand",
-    "deposit_description": "Pfand von {0} is {1}",
+    "deposit_description": "Pfand von {0} ist {1}",
     "note": "Notiz  ",
     "save": "Speichern",
     "cancel": "Abbrechen",
