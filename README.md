@@ -29,11 +29,12 @@ Web application to manage Leihladen, also known as Borrow Stores.
 
 ## Deployment
 
-The repository contains [fly.toml](https://fly.io/docs/reference/configuration/)
-files to deploy the service as [fly.io](https://fly.io) applications, but can be
-deployed to any server where Docker containers can run.
+### Docker
 
-### Docker Compose
+Leihbase has two Docker Images available which are both required to set up the application:
+
+- [leihbase-webapp](https://hub.docker.com/r/lumocra/leihbase-webapp)
+- [leihbase-pb](https://hub.docker.com/r/lumocra/leihbase-pb)
 
 Use the following docker-compose.yml as a base to deploy Leihbase using Docker:
 
@@ -57,6 +58,11 @@ services:
     volumes:
       - ./pb_data:/pb/pb_data
 ```
+
+### Fly.io
+
+The repository contains [fly.toml](https://fly.io/docs/reference/configuration/)
+files to deploy the service as [fly.io](https://fly.io) applications.
 
 ## Development
 
