@@ -33,6 +33,31 @@ The repository contains [fly.toml](https://fly.io/docs/reference/configuration/)
 files to deploy the service as [fly.io](https://fly.io) applications, but can be
 deployed to any server where Docker containers can run.
 
+### Docker Compose
+
+Use the following docker-compose.yml as a base to deploy Leihbase using Docker:
+
+```yml
+services:
+  leihbase-webapp:
+    image: lumocra/leihbase-webapp:v1.7.0
+    container_name: leihbase-webapp
+    environment:
+      NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: http://leihbase-pb:8080
+      NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: <leihbase-pb public url>
+
+  leihbase-pb:
+    image: lumocra/leihbase-pb:v1.7.0
+    container_name: leihbase-pb
+    environment:
+      CONFIG_LOCALE: "en"
+      # If a reservation (created in the admin section) is required to have a user
+      CONFIG_RESERVATION_REQUIRE_USER: "false"
+      CONFIG_LENDING_CONDITIONS_LINK: "https://example.com/borrow-conditions"
+    volumes:
+      - ./pb_data:/pb/pb_data
+```
+
 ## Development
 
 ### Setup
