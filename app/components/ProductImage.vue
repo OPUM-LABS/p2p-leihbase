@@ -1,20 +1,23 @@
 <template>
-  <div v-if="src" class="container">
-    <img
-      :src="src"
-      loading="lazy"
-      :class="{
-        [objectFit]: true,
-        ['aspect-' + aspectRatio?.replace(':', '-')]: !!aspectRatio,
-        ['border-radius-' + borderRadius]: true,
-      }"
-    />
-  </div>
-  <div v-else class="container">
-    <p class="message">
-      {{ t("no_image_message") }}
-    </p>
-    <img :src="fallback" loading="lazy" />
+  <div class="container">
+    <template v-if="src">
+      <img
+        :src="src"
+        loading="lazy"
+        :class="{
+          [objectFit]: true,
+          ['aspect-' + aspectRatio?.replace(':', '-')]: !!aspectRatio,
+          ['border-radius-' + borderRadius]: true,
+        }"
+      />
+    </template>
+    <template v-else>
+      <p class="message">
+        {{ t("no_image_message") }}
+      </p>
+      <img :src="fallback" loading="lazy" />
+    </template>
+    <div class="overlay"><slot /></div>
   </div>
 </template>
 
@@ -77,6 +80,11 @@ img {
   color: white;
   line-height: 1.15;
   max-width: min(70cqi, 17rem);
+}
+.overlay {
+  position: absolute;
+  bottom: 0.333rem;
+  right: 0.333rem;
 }
 </style>
 
