@@ -32,10 +32,16 @@ ${
   lendingConditionsLink
     ? `<a href="${lendingConditionsLink}">die Leihbedingungen</a>`
     : "die Leihbedingungen"
-} zu unterschreiben, uns deinen Ausweis zum Abgleich zu zeigen und ${
-      deposit ? `${formatCurrency(deposit)} ` : ""
-    }Pfand zu hinterlegen.<br>
+} zu unterschreiben und uns deinen Ausweis zum Abgleich zu zeigen.<br>
 <br>
+${
+  deposit
+    ? `Für die Ausleihe von '${productName}' wird ein Pfand von ${formatCurrency(
+        deposit
+      )} verlangt. Bitte bringe den Betrag, wenn möglich, passend mit.<br>
+      <br>`
+    : ""
+}
 Deine Reservierung stornieren oder die Leihfrist ändern kannst du in deiner
 <a href="${
       $app.settings().meta.appUrl

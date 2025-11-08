@@ -31,10 +31,16 @@ you are borrowing something, we will ask you to sign the ${
         ? `<a href="${lendingConditionsLink}">terms and conditions</a>`
         : "terms and conditions"
     }
-of borrowing on site and to pay a ${
-      deposit ? `${formatCurrency(deposit)} ` : ""
-    } deposit.<br>
+of borrowing on site.<br>
 <br>
+${
+  deposit
+    ? `A deposit of ${formatCurrency(
+        deposit
+      )}€ is required to borrow ${productName}. Please bring the exact amount if possible.<br>
+  <br>`
+    : ""
+}
 You can cancel your reservation or change the borrowing period in your
 <a href="${
       $app.settings().meta.appUrl
