@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     public: {
       plausibleTrackingDomain: "", // NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN
       ci: "", // NUXT_PUBLIC_CI
+      locale: "", // NUXT_PUBLIC_LOCALE
       pocketbase: {
         serverBaseUrl: "", // NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL
         clientBaseUrl: "", // NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL

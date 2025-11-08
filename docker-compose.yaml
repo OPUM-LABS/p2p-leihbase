@@ -12,6 +12,7 @@ services:
       NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: http://pocketbase:8080
       NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: http://localhost:8080
       NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN: ""
+      NUXT_PUBLIC_LOCALE: "en"
     volumes:
       - ./app:/app
       - /app/node_modules

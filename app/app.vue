@@ -24,9 +24,12 @@ setBasePath(
 const { isValid } = usePocketbase();
 const userStore = useUserStore();
 const {
-  public: { plausibleTrackingDomain },
+  public: { plausibleTrackingDomain, locale: defaultLocale },
 } = useRuntimeConfig();
-const { locale } = useI18n();
+const { locale, setLocale } = useI18n();
+
+// Set default locale based on runtime config
+setLocale(defaultLocale);
 
 // Fetch Leihbase collection on a central location
 // await for the result before processing the rest of the page
