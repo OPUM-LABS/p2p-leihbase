@@ -39,8 +39,8 @@
             id="terms-and-conditions"
             type="checkbox"
             name="terms_and_conditions"
-            value="yes"
             data-testid="tac-checkbox"
+            v-model="terms"
             required
           />
           <label for="terms-and-conditions">
@@ -108,6 +108,7 @@ useHead({
 const name = ref(null);
 const email = ref(null);
 const password = ref(null);
+const terms = ref(false);
 
 async function onSignup() {
   const data = {
@@ -115,6 +116,7 @@ async function onSignup() {
     email: email.value,
     password: password.value,
     passwordConfirm: password.value,
+    terms: terms.value,
   };
   signupError.value = null;
   loading.value = true;
@@ -152,6 +154,8 @@ async function onSignup() {
       signupError.value = t("errors.password_length");
     } else if (e.data?.data?.email?.code === "validation_invalid_email") {
       signupError.value = t("errors.invalid_email");
+    } else if (e.data?.data?.terms?.code === "validation_required") {
+      signupError.value = t("errors.terms_required");
     } else {
       signupError.value = t("errors.general");
     }
@@ -208,6 +212,7 @@ fieldset.checkbox {
     "errors": {
       "password_ength": "Password should be at least 8 characters long.",
       "invalid_mail": "E-mail address is invalid or already in use.",
+      "terms_required": "To proceed, you must agree to the data protection terms.",
       "general": "An error occured during sign up, please try again."
     }
   },
@@ -225,6 +230,7 @@ fieldset.checkbox {
     "errors": {
       "password_length": "Dein Passwort sollte mindestens 8 Zeichen lang sein.",
       "invalid_email": "Die E-Mail ist ungültig oder wird bereits verwendet.",
+      "terms_required": "Um fortzufahren, musst du den Datenschutzbestimmungen zustimmen.",
       "general": "Beim Erstellen deiner Account ist ein Fehler aufgetreten, bitte versuche es erneut."
     }
   }
