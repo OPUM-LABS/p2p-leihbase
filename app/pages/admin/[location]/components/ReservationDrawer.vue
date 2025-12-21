@@ -104,6 +104,7 @@
       </footer>
     </form>
   </Drawer>
+  <!-- Removal confirmation dialog -->
   <Dialog
     v-model:open="removeDialogOpen"
     inset

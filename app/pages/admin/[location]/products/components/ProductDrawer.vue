@@ -15,7 +15,20 @@
       t("reservation_is_cancelled")
     }}</Alert>
     <form @submit.prevent="handleSubmit">
+      <Switch
+        id="product-drawer-active"
+        :label="t('active')"
+        v-model="active"
+      />
       <Input id="product-drawer-name-input" :label="t('name')" v-model="name" />
+      <RecordPickerInput
+        id="product-drawer-categories-input"
+        :label="t('categories')"
+        collection="categories"
+        :search="['name_' + locale]"
+        v-model="categories"
+        multiple
+      />
       <Alert v-if="error" variant="error">{{ error }}</Alert>
       <footer>
         <Button :loading="isSubmitting" type="submit">{{ t("save") }}</Button>
@@ -45,6 +58,8 @@
 <script lang="ts" setup>
 import { Trash } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
+import RecordPickerInput from "~/components/admin/RecordPickerInput.vue";
+import Switch from "~/components/Switch.vue";
 import type { Product } from "~/models/product";
 import type { Reservation } from "~/models/reservation";
 
@@ -62,18 +77,24 @@ const open = defineModel("open");
 const emit = defineEmits(["update"]);
 
 const name = ref<string>();
+const active = ref<boolean>();
+const categories = ref<string>();
 const error = ref<string | null>(null);
 
 watch(open, (isOpening) => {
   if (!isOpening) return;
   error.value = null;
+  active.value = props.product?.active || false;
   name.value = props.product?.name || "";
+  categories.value = props.product?.categories || [];
 });
 
 const isSubmitting = ref(false);
 async function handleSubmit() {
   const formData = {
+    active: active.value,
     name: name.value,
+    categories: categories.value,
   };
   error.value = "";
   isSubmitting.value = true;
@@ -163,6 +184,7 @@ footer {
   "en": {
     "new": "New Product",
     "edit": "Edit Product",
+    "active": "Active",
     "name": "Name",
     "save": "Save",
     "cancel": "Cancel",
@@ -180,6 +202,7 @@ footer {
   "de": {
     "new": "Neue Gegenstand",
     "edit": "Gegenstand bearbeiten",
+    "active": "Aktiv",
     "name": "Name",
     "save": "Speichern",
     "cancel": "Abbrechen",

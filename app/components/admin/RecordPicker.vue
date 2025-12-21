@@ -1,5 +1,5 @@
 <template>
-  <Dialog v-model:open="open" inset :title="title">
+  <Dialog v-model:open="open" inset :title="title || ''">
     <template #header>
       <Input
         placeholder="Enter search query..."
@@ -9,9 +9,12 @@
       />
     </template>
     <table cellspacing="0">
-      <tr v-for="record in records" :key="record.id">
-        <td v-for="s in search" @click="handleRecordClick(record)">
-          {{ record[s] }}
+      <tr v-for="d in documents" :key="d.id">
+        <td width="36">
+          <Check v-if="selectedIds?.includes(d.id)" />
+        </td>
+        <td v-for="s in columns" @click="handleRecordClick(d)">
+          {{ d[s] }}
         </td>
       </tr>
     </table>
@@ -20,60 +23,85 @@
 
 <script lang="ts" setup>
 import type { RecordModel } from "pocketbase";
+import { useRecordPickerStore } from "~/stores/record-picker";
+import { Check } from "@iconoir/vue";
+
+const props = defineProps<{ id: string }>();
 
 const { pb } = usePocketbase();
 
-const open = defineModel("open");
+const { open, title, collection, columns, selected, multiple } = storeToRefs(
+  useRecordPickerStore()
+);
 
-const title = ref("");
-const collection = ref("");
-const search = ref<string[]>([]);
+/**
+ * TODO: somehow the query doesn't work when activating two different RecordPickers after each other
+ * ...
+ */
 const query = ref("");
-let record = ref<RecordModel>();
 
-const { data: records, refresh } = await useAsyncData(async () => {
-  const records = await pb.collection(collection.value).getFullList({
-    filter: query.value
-      ? pb.filter(search.value.map((s) => `${s} ~ {:query}`).join(" || "), {
-          query: query.value,
-        })
-      : null,
-  });
-  return structuredClone(records);
+const selectedIds = computed(() => {
+  if (!selected.value) {
+    return [];
+  }
+  return selected.value.map((s) => s.id);
 });
+
+const { data: documents, refresh } = await useAsyncData(
+  props.id,
+  async () => {
+    if (!collection.value || !columns.value) {
+      throw new Error(
+        "[RecordPicker] no `collection` or `columns` parameter set"
+      );
+    }
+    const records = await pb.collection(collection.value).getFullList(
+      query.value
+        ? {
+            filter: pb.filter(
+              columns.value.map((s) => `${s} ~ {:query}`).join(" || "),
+              {
+                query: query.value,
+              }
+            ),
+          }
+        : {}
+    );
+    return structuredClone(records);
+  },
+  { watch: [open, query] }
+);
 
 function handleQueryInput() {
   refresh();
 }
 
 function handleRecordClick(_record: RecordModel) {
-  record.value = _record;
-  open.value = false;
+  // Multiple
+  if (multiple.value) {
+    if (selectedIds.value.includes(_record.id)) {
+      // If already active, remove
+      selected.value = (selected.value || []).filter(
+        (s) => s.id !== _record.id
+      );
+    } else {
+      // If not already active, add
+      selected.value = [...(selected.value || []), _record];
+    }
+  } else {
+    // Singular
+    if (
+      selected.value &&
+      selected.value.length > 0 &&
+      selected.value[0].id === _record.id
+    ) {
+      selected.value = [];
+    } else {
+      selected.value = [_record];
+    }
+    open.value = false;
+  }
 }
-
-function show({
-  title: _title,
-  collection: _collection,
-  search: _search,
-  record: _record,
-}: {
-  title: string;
-  collection: string;
-  search: string[];
-  record: Ref<RecordModel | undefined>;
-}) {
-  query.value = "";
-  title.value = _title;
-  open.value = true;
-  collection.value = _collection;
-  search.value = _search;
-  record = _record;
-  refresh();
-}
-
-defineExpose({
-  show,
-});
 </script>
 
 <style scoped>

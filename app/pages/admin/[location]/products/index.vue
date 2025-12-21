@@ -48,6 +48,8 @@
     :product="selectedProduct"
     @update="handleProductUpdate"
   />
+
+  <RecordPicker id="products-record-picker" />
 </template>
 
 <script setup lang="ts">
@@ -56,6 +58,7 @@ import AdminHeader from "../components/AdminHeader.vue";
 import type { Product } from "~/models/product";
 import ProductDrawer from "./components/ProductDrawer.vue";
 import Badge from "~/components/Badge.vue";
+import RecordPicker from "~/components/admin/RecordPicker.vue";
 
 const { t } = useI18n({
   useScope: "local",
@@ -94,9 +97,10 @@ const { data: products, refresh } = await useAsyncData(async () => {
     sort: "name",
   });
   const p = structuredClone(products) as Product[];
-  console.log(structuredClone(p));
   return p;
 });
+
+console.log("ij");
 
 function handleProductClick(product: Product) {
   console.log("Product clicked:", product);
