@@ -21,7 +21,7 @@ test.describe("login", () => {
     await page.getByTestId("submit-button").click();
     await expect(page.getByTestId("login-error")).toHaveCount(1);
     await expect(page.getByTestId("login-error")).toContainText(
-      "Einloggen nicht erfolgreich"
+      "Log in not successful"
     );
   });
 });
