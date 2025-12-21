@@ -20,7 +20,7 @@ export async function pocketbase(
         await pb.collection("users").authWithPassword(email, password);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error initializing pocketbase', err);
       throw err;
     }
     return pb;

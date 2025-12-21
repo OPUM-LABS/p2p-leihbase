@@ -11,6 +11,7 @@ export async function createUser(
       email,
       password,
       passwordConfirm: password,
+      terms: true
     });
     return user;
   } catch (err) {
