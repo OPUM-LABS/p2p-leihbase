@@ -49,6 +49,13 @@
       >
         <template #prefix>€</template>
       </Input>
+      <ImageInput
+        :label="t('images')"
+        :recordId="product?.id"
+        collection="products"
+        v-model:images="images"
+        v-model:new-images="newImages"
+      />
       <RichTextarea
         id="product-drawer-description-input"
         :label="t('description')"
@@ -97,6 +104,7 @@
 import { Trash, Eye } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
 import RecordPickerInput from "~/components/admin/RecordPickerInput.vue";
+import ImageInput from "~/components/ImageInput.vue";
 import Switch from "~/components/Switch.vue";
 import type { Product } from "~/models/product";
 
@@ -117,6 +125,8 @@ const name = ref<string>();
 const active = ref<boolean>();
 const categories = ref<string>();
 const deposit = ref<string>();
+const images = ref<string[]>([]);
+const newImages = ref<File[]>([]);
 const description = ref<string>();
 const notes = ref<string>();
 const user = ref<string>();
@@ -130,6 +140,8 @@ watch(open, (isOpening) => {
   name.value = props.product?.name || "";
   categories.value = props.product?.categories || [];
   deposit.value = props.product?.deposit || 0;
+  images.value = props.product?.images || [];
+  newImages.value = [];
   description.value = props.product?.description || "";
   notes.value = props.product?.notes || "";
   user.value = props.product?.user || undefined;
@@ -141,6 +153,8 @@ async function handleSubmit() {
     active: active.value,
     name: name.value,
     categories: categories.value,
+    images: images.value,
+    "images+": newImages.value,
     deposit: deposit.value,
     description: description.value === "<p><br></p>" ? "" : description.value,
     notes: notes.value === "<p><br></p>" ? "" : notes.value,
@@ -244,6 +258,7 @@ footer {
     "name": "Name",
     "categories": "Categories",
     "deposit": "Deposit",
+    "images": "Images",
     "description": "Description",
     "notes": "Admin note",
     "user": "User",
@@ -270,6 +285,7 @@ footer {
     "name": "Name",
     "categories": "Kategorien",
     "deposit": "Pfand",
+    "images": "Bilder",
     "description": "Beschreibung",
     "notes": "Admin Notiz",
     "user": "Nutzer:in",

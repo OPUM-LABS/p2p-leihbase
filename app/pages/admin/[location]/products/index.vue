@@ -100,10 +100,7 @@ const { data: products, refresh } = await useAsyncData(async () => {
   return p;
 });
 
-console.log("ij");
-
 function handleProductClick(product: Product) {
-  console.log("Product clicked:", product);
   selectedProduct.value = product;
   productDrawerOpen.value = true;
 }
