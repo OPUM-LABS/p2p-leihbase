@@ -13,18 +13,18 @@
         >
           <Eye />
         </Button>
-      <Button
-        v-if="state === 'edit'"
-        variant="secondary"
-        circle
-        @click="handleRemoveClick"
-      >
-        <Trash />
-      </Button>
+        <Button
+          v-if="state === 'edit'"
+          variant="secondary"
+          circle
+          @click="handleRemoveClick"
+        >
+          <Trash />
+        </Button>
       </div>
     </header>
-    <Alert v-if="props.reservation?.cancelled" variant="warning">{{
-      t("reservation_is_cancelled")
+    <Alert v-if="!props.product?.active" variant="warning">{{
+      t("product_is_inactive")
     }}</Alert>
     <form @submit.prevent="handleSubmit">
       <Switch
@@ -40,6 +40,32 @@
         :search="['name_' + locale]"
         v-model="categories"
         multiple
+      />
+      <Input
+        id="product-drawer-deposit-input"
+        type="number"
+        :label="t('deposit')"
+        v-model="deposit"
+      >
+        <template #prefix>€</template>
+      </Input>
+      <RichTextarea
+        id="product-drawer-description-input"
+        :label="t('description')"
+        v-model="description"
+      />
+      <RichTextarea
+        id="product-drawer-notes-input"
+        :label="t('notes')"
+        v-model="notes"
+      />
+      <RecordPickerInput
+        id="product-drawer-user-input"
+        :label="t('user')"
+        collection="users"
+        :search="['name', 'email']"
+        v-model="user"
+        :description="t('user_description')"
       />
       <Alert v-if="error" variant="error">{{ error }}</Alert>
       <footer>
@@ -73,7 +99,6 @@ import type { RecordModel } from "pocketbase";
 import RecordPickerInput from "~/components/admin/RecordPickerInput.vue";
 import Switch from "~/components/Switch.vue";
 import type { Product } from "~/models/product";
-import type { Reservation } from "~/models/reservation";
 
 const { pb } = usePocketbase();
 const { t, locale } = useI18n({
@@ -91,6 +116,11 @@ const emit = defineEmits(["update"]);
 const name = ref<string>();
 const active = ref<boolean>();
 const categories = ref<string>();
+const deposit = ref<string>();
+const description = ref<string>();
+const notes = ref<string>();
+const user = ref<string>();
+
 const error = ref<string | null>(null);
 
 watch(open, (isOpening) => {
@@ -99,6 +129,10 @@ watch(open, (isOpening) => {
   active.value = props.product?.active || false;
   name.value = props.product?.name || "";
   categories.value = props.product?.categories || [];
+  deposit.value = props.product?.deposit || 0;
+  description.value = props.product?.description || "";
+  notes.value = props.product?.notes || "";
+  user.value = props.product?.user || undefined;
 });
 
 const isSubmitting = ref(false);
@@ -107,6 +141,10 @@ async function handleSubmit() {
     active: active.value,
     name: name.value,
     categories: categories.value,
+    deposit: deposit.value,
+    description: description.value === "<p><br></p>" ? "" : description.value,
+    notes: notes.value === "<p><br></p>" ? "" : notes.value,
+    user: user.value,
   };
   error.value = "";
   isSubmitting.value = true;
@@ -201,8 +239,15 @@ footer {
     "new": "New Product",
     "edit": "Edit Product",
     "open_product_page": "Open product page",
+    "product_is_inactive": "This product is inactive.",
     "active": "Active",
     "name": "Name",
+    "categories": "Categories",
+    "deposit": "Deposit",
+    "description": "Description",
+    "notes": "Admin note",
+    "user": "User",
+    "user_description": "User to whom diese product belongs, in case of long term lending.",
     "save": "Save",
     "cancel": "Cancel",
     "remove_dialog": {
@@ -220,8 +265,15 @@ footer {
     "new": "Neue Gegenstand",
     "edit": "Gegenstand bearbeiten",
     "open_product_page": "Gegenstandseite anzeigen",
+    "product_is_inactive": "Dieses Gegenstand is gerade inaktiv.",
     "active": "Aktiv",
     "name": "Name",
+    "categories": "Kategorien",
+    "deposit": "Pfand",
+    "description": "Beschreibung",
+    "notes": "Admin Notiz",
+    "user": "Nutzer:in",
+    "user_description": "Nutzer:in zu wem dieses Gegenstand gehört, im Fall von dauerausleihe.",
     "save": "Speichern",
     "cancel": "Abbrechen",
     "remove_dialog": {

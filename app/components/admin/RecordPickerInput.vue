@@ -23,6 +23,9 @@
         {{ t("select") }}
       </button>
     </div>
+    <p v-if="description">
+      <small>{{ description }}</small>
+    </p>
   </FormRow>
 </template>
 
@@ -49,6 +52,7 @@ const props = defineProps<{
   readonly?: boolean;
   dataTestid?: string;
   multiple?: boolean;
+  description?: string;
 }>();
 
 const recordPickerStore = useRecordPickerStore();
@@ -59,6 +63,10 @@ const isLoading = ref(true);
 
 watch(model, (newModelValue) => {
   const active = (records.value || []).map((record) => record.id);
+  if (!newModelValue) {
+    records.value = [];
+    return;
+  }
   if (typeof newModelValue === "string" && active.includes(newModelValue)) {
     return;
   }
@@ -88,6 +96,7 @@ watch(selected, (newSelected) => {
 
 async function refresh() {
   if (!model.value) {
+    isLoading.value = false;
     return;
   }
   isLoading.value = true;
