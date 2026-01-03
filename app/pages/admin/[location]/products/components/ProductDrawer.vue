@@ -2,6 +2,17 @@
   <Drawer :headerOffset="false" inset v-model:open="open">
     <header>
       <h2>{{ state === "new" ? t("new") : t("edit") }}</h2>
+      <div class="buttons">
+        <Button
+          v-if="state === 'edit'"
+          :href="`/link/product/${product?.id}`"
+          target="_blank"
+          variant="secondary"
+          :title="t('open_product_page')"
+          circle
+        >
+          <Eye />
+        </Button>
       <Button
         v-if="state === 'edit'"
         variant="secondary"
@@ -10,6 +21,7 @@
       >
         <Trash />
       </Button>
+      </div>
     </header>
     <Alert v-if="props.reservation?.cancelled" variant="warning">{{
       t("reservation_is_cancelled")
@@ -56,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Trash } from "@iconoir/vue";
+import { Trash, Eye } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
 import RecordPickerInput from "~/components/admin/RecordPickerInput.vue";
 import Switch from "~/components/Switch.vue";
@@ -170,6 +182,10 @@ header {
   justify-content: space-between;
   gap: 1rem;
 }
+header .buttons {
+  display: flex;
+  gap: 1rem;
+}
 footer {
   display: flex;
   gap: 1rem;
@@ -184,6 +200,7 @@ footer {
   "en": {
     "new": "New Product",
     "edit": "Edit Product",
+    "open_product_page": "Open product page",
     "active": "Active",
     "name": "Name",
     "save": "Save",
@@ -202,6 +219,7 @@ footer {
   "de": {
     "new": "Neue Gegenstand",
     "edit": "Gegenstand bearbeiten",
+    "open_product_page": "Gegenstandseite anzeigen",
     "active": "Aktiv",
     "name": "Name",
     "save": "Speichern",

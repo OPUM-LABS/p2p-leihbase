@@ -12,6 +12,7 @@
     :to="to"
     :disabled="disabled || undefined"
     :data-client-mounted="isClientMounted"
+    :title="title"
   >
     <span v-if="$slots.prefix" class="prefix">
       <slot name="prefix"></slot>
@@ -33,6 +34,7 @@ const props = withDefaults(
     type?: "submit" | "reset" | "button" | undefined;
     loading?: boolean;
     disabled?: boolean;
+    title?: string;
   }>(),
   {
     variant: "primary",
