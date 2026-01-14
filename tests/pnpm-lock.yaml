@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       pocketbase:
-        specifier: ^0.21.5
-        version: 0.21.5
+        specifier: ^0.22.0
+        version: 0.22.1
     devDependencies:
       '@nuxt/test-utils':
         specifier: ^3.18.0
@@ -649,8 +649,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  pocketbase@0.21.5:
-    resolution: {integrity: sha512-bnI/uinnQps+ElSlzxkc4yvwuSFfKcoszDtXH/4QT2FhGq2mJVUvDlxn+rjRXVntUjPfmMG5LEPZ1eGqV6ssog==}
+  pocketbase@0.22.1:
+    resolution: {integrity: sha512-hnzpDcIx5kbkUJXz6IkiTox6R4nb706u4rPSMy2FYCaI2OqBnFxbY0qwWBSqx1ERz/Xi61Uguf17Gb9bWZ8+kw==}
 
   postcss@8.5.3:
     resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
@@ -1397,7 +1397,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.2
 
-  pocketbase@0.21.5: {}
+  pocketbase@0.22.1: {}
 
   postcss@8.5.3:
     dependencies:

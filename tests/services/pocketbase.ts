@@ -15,7 +15,7 @@ export async function pocketbase(
     );
     try {
       if (admin) {
-        await pb.admins.authWithPassword(email, password);
+        await pb.collection("_superusers").authWithPassword(email, password);
       } else {
         await pb.collection("users").authWithPassword(email, password);
       }

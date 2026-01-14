@@ -25,7 +25,7 @@
     "taze": "^0.18.0"
   },
   "dependencies": {
-    "pocketbase": "^0.21.5"
+    "pocketbase": "^0.22.0"
   },
   "packageManager": "pnpm@10.2.1"
 }

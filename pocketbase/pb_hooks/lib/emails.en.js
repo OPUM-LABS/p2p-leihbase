@@ -37,13 +37,13 @@ ${
   deposit
     ? `A deposit of ${formatCurrency(
         deposit
-      )}€ is required to borrow ${productName}. Please bring the exact amount if possible.<br>
+      )} is required to borrow ${productName}. Please bring the exact amount if possible.<br>
   <br>`
     : ""
 }
 You can cancel your reservation or change the borrowing period in your
 <a href="${
-      $app.settings().meta.appUrl
+      $app.settings().meta.appURL
     }/reservations">reservation overview</a>.<br>
 <br>
 We're happy that you have decided to borrow instead of buy!<br>
@@ -97,7 +97,7 @@ you reserved a ${productName} at ${locationName}. The item can be picked up tomo
       startHour && endHour ? `between ${startHour} and ${endHour}` : ""
     }.<br>
 If you no longer need it, you can cancel your reservation in your
-<a href="${$app.settings().meta.appUrl}/reservations">reservation overview</a>.
+<a href="${$app.settings().meta.appURL}/reservations">reservation overview</a>.
 <br>
 Thank you that you choose for borrowing instead of buying!<br>
 <br>
@@ -130,7 +130,7 @@ ${
 If you would like to keep the item for longer, you can extend the reservation in
 your
 <a href="${
-      $app.settings().meta.appUrl
+      $app.settings().meta.appURL
     }/reservations">reservation overview</a>.<br>
 <br>
 Thank you, and see you tomorrow!<br>

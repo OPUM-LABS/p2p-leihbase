@@ -1,5 +1,5 @@
 /**
- * @param {models.Record} location
+ * @param {core.Record} location
  * @param {Object} emailProps
  * @returns
  */

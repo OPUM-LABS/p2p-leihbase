@@ -44,7 +44,7 @@ ${
 }
 Deine Reservierung stornieren oder die Leihfrist ändern kannst du in deiner
 <a href="${
-      $app.settings().meta.appUrl
+      $app.settings().meta.appURL
     }/reservations">Reservierungsübersicht</a>.<br>
 <br>
 Wir freuen uns, dass du dich für Leihen statt Kaufen entscheidest!<br>
@@ -100,7 +100,7 @@ ${startHour && endHour ? `zwischen ${startHour} und ${endHour}` : ""}
 bereit. Bitte denke daran, deinen Gegenstand abzuholen.<br>
 <br>
 Falls du ihn nicht mehr benötigst, kannst du deine Reservierung in deiner
-<a href="${$app.settings().meta.appUrl}/reservations">Reservierungsübersicht</a>
+<a href="${$app.settings().meta.appURL}/reservations">Reservierungsübersicht</a>
 stornieren.<br>
 <br>
 Danke, dass du dich für Leihen statt Kaufen entscheidest!<br>
@@ -133,7 +133,7 @@ ${
 }
 Falls du den Gegenstand länger behalten möchtest, kannst du die Reservierung in
 deiner
-<a href="${$app.settings().meta.appUrl}/reservations">Reservierungsübersicht</a>
+<a href="${$app.settings().meta.appURL}/reservations">Reservierungsübersicht</a>
 verlängern.<br>
 <br>
 Danke, und bis morgen!<br>

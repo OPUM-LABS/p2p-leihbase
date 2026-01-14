@@ -27,7 +27,7 @@ if (!isValid.value) {
   logout();
   router.push("/login");
 } else {
-  user.value = await pb.collection("users").getOne(pb.authStore.model.id);
+  user.value = await pb.collection("users").getOne(pb.authStore.record.id);
 }
 
 function onLogout() {

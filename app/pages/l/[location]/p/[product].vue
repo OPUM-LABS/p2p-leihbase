@@ -313,7 +313,7 @@ async function onSubmit() {
   isSubmittingReservation.value = true;
   try {
     const reservation = await pb.collection("reservations").create({
-      user: pb.authStore.model.id,
+      user: pb.authStore.record.id,
       product: product.value.id,
       start: start.value,
       end: end.value,
@@ -322,8 +322,9 @@ async function onSubmit() {
     });
   } catch (e) {
     isSubmittingReservation.value = false;
-    if (e.data.code === 400 && e.data.message) {
-      switch (e.data.message) {
+    console.log("aahhhh", e, e.message, e.status, e.data);
+    if (e.status === 400 && e.message) {
+      switch (e.message) {
         case "Has_open_reservation.":
           reservationCreationError.value = t("errors.has_open_reservation", {
             email: location.value.email,
