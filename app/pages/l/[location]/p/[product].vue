@@ -322,7 +322,6 @@ async function onSubmit() {
     });
   } catch (e) {
     isSubmittingReservation.value = false;
-    console.log("aahhhh", e, e.message, e.status, e.data);
     if (e.status === 400 && e.message) {
       switch (e.message) {
         case "Has_open_reservation.":
