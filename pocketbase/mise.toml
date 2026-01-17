@@ -1,0 +1,20 @@
+[tasks.setup]
+description = "Setup"
+run = [
+    'echo "Pocketbase setup os:${DETECTED_OS} arch:${DETECTED_ARCH}"',
+    "wget -O pb.zip https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_${DETECTED_OS}_${DETECTED_ARCH}.zip",
+    "unzip pb.zip -d ./temp",
+    "mv ./temp/pocketbase ./",
+    "rm -rf ./temp",
+    "rm ./pb.zip"
+]
+
+[tasks.dev]
+description = "Run in dev mode"
+run = "./pocketbase serve --dev"
+
+[env]
+PB_VERSION = "0.36.0"
+CONFIG_LOCALE = "en"
+CONFIG_RESERVATION_REQUIRE_USER = "false"
+CONFIG_LENDING_CONDITIONS_LINK = "https://example.com/lending-conditions"

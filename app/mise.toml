@@ -1,0 +1,13 @@
+[tasks.setup]
+description = "Install dependencies"
+run = "pnpm i"
+
+[tasks.dev]
+description = "Run in dev mode"
+run = "pnpm run dev"
+
+[env]
+NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL = "http://localhost:8090"
+NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL = "http://localhost:8090"
+NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN = ""
+NUXT_PUBLIC_LOCALE = "en"

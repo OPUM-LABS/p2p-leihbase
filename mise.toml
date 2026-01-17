@@ -1,0 +1,8 @@
+experimental_monorepo_root = true
+
+[tools]
+node = "22.21.0"
+
+[env]
+_.source = "./scripts/env.sh"
+
