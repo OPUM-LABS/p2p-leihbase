@@ -47,7 +47,7 @@ function validateStartEnd(
 
 /**
  * Checks if a reservation has other overlapping reservations
- * @param {models.Record} reservation
+ * @param {core.Record} reservation
  * @param {boolean} allowSameDay
  * @returns {boolean}
  */
@@ -62,7 +62,6 @@ function hasOverlappingReservations(reservation, allowSameDay) {
     ? "start < {:end} && end > {:start}"
     : "start <= {:end} && end >= {:start}";
   const records = $app
-    .dao()
     .findRecordsByFilter(
       "reservations",
       reservation.get("id")
@@ -83,7 +82,7 @@ function hasOverlappingReservations(reservation, allowSameDay) {
 
 /**
  * Checks if a reservation has other overlapping reservations
- * @param {models.Record} reservation
+ * @param {core.Record} reservation
  * @returns {boolean}
  */
 function hasOpenReservations(reservation) {
@@ -97,7 +96,6 @@ function hasOpenReservations(reservation) {
     return false;
   }
   const records = $app
-    .dao()
     .findRecordsByFilter(
       "reservations",
       reservation.get("id")
@@ -117,18 +115,18 @@ function hasOpenReservations(reservation) {
 }
 
 /**
- * @param {models.Record} reservation
+ * @param {core.Record} reservation
  * @param {'confirmation'|'start_reminder'|'end_reminder'} type
  */
 function saveSentEmail(reservation, type) {
   const sent_emails = reservation.getStringSlice("sent_emails");
   sent_emails.push(type);
   reservation.set("sent_emails", sent_emails);
-  $app.dao().saveRecord(reservation);
+  $app.saveRecord(reservation);
 }
 
 /**
- * @param {models.Record} reservation
+ * @param {core.Record} reservation
  * @param {'confirmation'|'start_reminder'|'end_reminder'} type
  */
 function removeSentEmail(reservation, type) {
@@ -138,13 +136,13 @@ function removeSentEmail(reservation, type) {
     "sent_emails",
     sent_emails.filter((t) => t !== type)
   );
-  $app.dao().saveRecord(reservation);
+  $app.saveRecord(reservation);
   return reservation;
 }
 
 /**
  * Generates a start/end reservation reminder email
- * @param {models.Record} reservation
+ * @param {core.Record} reservation
  * @param {'start'|'end'} type
  * @returns { { to: { address: string }[], subject: string, html: string } }
  */
@@ -157,7 +155,7 @@ function getReminderEmail(reservation, type) {
   } = require(`${__hooks}/lib/emails.${locale}`);
   const { getOpeningHoursDay } = require(`${__hooks}/lib/openingHours`);
 
-  $app.dao().expandRecord(reservation, ["location", "user", "product"], null);
+  $app.expandRecord(reservation, ["location", "user", "product"], null);
   const location = reservation.expandedOne("location");
   const product = reservation.expandedOne("product");
   const user = reservation.expandedOne("user");

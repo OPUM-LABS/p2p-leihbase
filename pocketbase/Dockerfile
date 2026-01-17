@@ -1,6 +1,6 @@
 FROM alpine:latest AS base
 
-ARG PB_VERSION=0.22.18
+ARG PB_VERSION=0.36.0
 
 RUN apk add --no-cache \
     unzip \
@@ -24,13 +24,13 @@ FROM base AS dev
 ARG PORT="8080"
 ENV PORT=${PORT}
 # start pocketbase
-CMD /pb/pocketbase serve --http=0.0.0.0:${PORT}
+CMD /pb/pocketbase serve --dev --http=0.0.0.0:${PORT}
 
 FROM base AS test
 ARG PORT="8080"
 ENV PORT=${PORT}
 # start pocketbase
 CMD /pb/pocketbase migrate up; \
-    /pb/pocketbase admin create test@example.com 1234567890; \
+    /pb/pocketbase superuser upsert test@example.com 1234567890; \
     /pb/pocketbase serve --http=0.0.0.0:${PORT}
 

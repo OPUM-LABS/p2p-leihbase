@@ -1,5 +1,5 @@
 /**
- * @param {models.Record} locationRecord
+ * @param {core.Record} locationRecord
  * @returns
  */
 function getNotificationEmailAddresses(locationRecord) {
@@ -20,7 +20,7 @@ function getNotificationEmailAddresses(locationRecord) {
 
 /**
  *
- * @param {models.Record} location
+ * @param {core.Record} location
  * @param {'start'|'end'} type
  */
 function sendReminders(location, type) {
@@ -37,7 +37,6 @@ function sendReminders(location, type) {
   const startOfTomorrow = startOfDate(addDays(new Date(), 1));
   const endOfTomorrow = endOfDate(addDays(new Date(), 1));
   const reservations = $app
-    .dao()
     .findRecordsByFilter(
       "reservations",
       type === "start"

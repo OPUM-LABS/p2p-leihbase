@@ -8,7 +8,7 @@ cronAdd("reservation-reminder", "0 12 * * *", () => {
   console.log(`[cron/reservation-reminder] start`);
 
   // Get active locations
-  const locations = $app.dao().findRecordsByFilter("location", "active = true");
+  const locations = $app.findRecordsByFilter("location", "active = true", "", -1, 0);
   console.log(
     `[cron/reservation-reminder] found ${locations.length} locations`
   );

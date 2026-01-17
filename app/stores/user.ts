@@ -52,7 +52,7 @@ export const useUserStore = defineStore<"user", State>("user", {
       if (pb.authStore?.model?.id) {
         const reservations = await pb.collection("reservations").getFullList({
           filter: pb.filter("user = {:user}", {
-            user: pb.authStore.model.id,
+            user: pb.authStore.record.id,
           }),
         });
         this.reservations = reservations;

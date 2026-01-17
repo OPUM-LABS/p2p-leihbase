@@ -1,6 +1,6 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-onRecordBeforeCreateRequest((e) => {
+onRecordCreateRequest((e) => {
   /** @type {typeof import('./lib/reservation')} */
   const {
     validateStartEnd,
@@ -8,17 +8,17 @@ onRecordBeforeCreateRequest((e) => {
     hasOverlappingReservations,
   } = require(`${__hooks}/lib/reservation`);
 
-  const { record, httpContext } = e;
+  const { record } = e;
   const start = new Date(record.get("start").string().split(" ")[0]);
   const end = new Date(record.get("end").string().split(" ")[0]);
-  const isAdmin = !!httpContext.get("admin");
-  const requestUser = httpContext.get("authRecord");
+  const isAdmin = e.hasSuperuserAuth();
+  const requestUser = e.auth;
   const requireUser = $os.getenv("CONFIG_RESERVATION_REQUIRE_USER") !== "false";
 
   // Store location of product in reservation
-  $app.dao().expandRecord(record, ["product"], null);
+  $app.expandRecord(record, ["product"], null);
   const product = record.expandedOne("product");
-  $app.dao().expandRecord(product, ["location"], null);
+  $app.expandRecord(product, ["location"], null);
   const location = product.expandedOne("location");
   const isLocationUser =
     requestUser && location.get("users").includes(requestUser.get("id"));
@@ -73,9 +73,11 @@ onRecordBeforeCreateRequest((e) => {
     "message",
     record.get("message").replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "")
   );
+
+  e.next()
 }, "reservations");
 
-onRecordBeforeUpdateRequest((e) => {
+onRecordUpdateRequest((e) => {
   /** @type {typeof import('./lib/reservation')} */
   const {
     validateStartEnd,
@@ -83,12 +85,12 @@ onRecordBeforeUpdateRequest((e) => {
     hasOpenReservations,
   } = require(`${__hooks}/lib/reservation`);
 
-  const { record, httpContext } = e;
-  const requestUser = httpContext.get("authRecord");
-  const isAdmin = !!httpContext.get("admin");
+  const { record } = e;
+  const requestUser = e.auth;
+  const isAdmin = e.hasSuperuserAuth();
   const start = new Date(record.get("start").string().split(" ")[0]);
   const end = new Date(record.get("end").string().split(" ")[0]);
-  $app.dao().expandRecord(record, ["location"], null);
+  $app.expandRecord(record, ["location"], null);
   const location = record.expandedOne("location");
   const isLocationUser = requestUser
     ? location.get("users").includes(requestUser.get("id"))
@@ -119,9 +121,13 @@ onRecordBeforeUpdateRequest((e) => {
   if (hasOverlappingReservations(record, allowSameDayReservations)) {
     throw new BadRequestError("Overlapping_reservation.");
   }
+
+  e.next()
 }, "reservations");
 
-onRecordAfterCreateRequest((e) => {
+onRecordCreateRequest((e) => {
+  e.next()
+
   const locale = $os.getenv("CONFIG_LOCALE") || "en";
 
   /** @type {typeof import('./lib/reservation')} */
@@ -137,10 +143,10 @@ onRecordAfterCreateRequest((e) => {
     reservationConfirmationLocationEmail,
   } = require(`${__hooks}/lib/emails.${locale}`);
 
-  const { record, httpContext } = e;
+  const { record } = e;
 
-  const requestUser = httpContext.get("authRecord");
-  $app.dao().expandRecord(record, ["location"], null);
+  const requestUser = e.auth;
+  $app.expandRecord(record, ["location"], null);
   const location = record.expandedOne("location");
 
   if (!record.get("send_confirmation")) {
@@ -153,7 +159,7 @@ onRecordAfterCreateRequest((e) => {
   // also the user involved in the reservation
   // https://pocketbase.io/docs/js-routing/#retrieving-the-current-auth-state
 
-  $app.dao().expandRecord(record, ["product", "user"], null);
+  $app.expandRecord(record, ["product", "user"], null);
 
   const product = record.expandedOne("product");
   const productName = product.get("name");
@@ -174,7 +180,7 @@ onRecordAfterCreateRequest((e) => {
   sendLocationNotificationEmail(
     location,
     reservationConfirmationLocationEmail({
-      productUrl: `${$app.settings().meta.appUrl}/link/product/${product.get(
+      productUrl: `${$app.settings().meta.appURL}/link/product/${product.get(
         "id"
       )}`,
       productName,
@@ -191,7 +197,7 @@ onRecordAfterCreateRequest((e) => {
     sendUserEmail(
       user,
       reservationConfirmationEmail({
-        productUrl: `${$app.settings().meta.appUrl}/link/product/${product.get(
+        productUrl: `${$app.settings().meta.appURL}/link/product/${product.get(
           "id"
         )}`,
         productName,
@@ -206,7 +212,9 @@ onRecordAfterCreateRequest((e) => {
   }
 }, "reservations");
 
-onRecordAfterUpdateRequest((e) => {
+onRecordUpdateRequest((e) => {
+  e.next()
+
   const locale = $os.getenv("CONFIG_LOCALE") || "en";
 
   /** @type {typeof import('./lib/reservation')} */
@@ -224,9 +232,9 @@ onRecordAfterUpdateRequest((e) => {
     reservationCancellationLocationEmail,
   } = require(`${__hooks}/lib/emails.${locale}`);
 
-  let { record, httpContext } = e;
-  const requestUser = httpContext.get("authRecord");
-  const originalRecord = record.originalCopy();
+  let { record } = e;
+  const requestUser = e.auth;
+  const originalRecord = record.original();
 
   // Reset end_reminder notification if the end date has been moved back
   const end = new Date(record.get("end").string().split(" ")[0]);
@@ -239,7 +247,7 @@ onRecordAfterUpdateRequest((e) => {
 
   // Reservation got cancelled, send confirmations
   if (!originalRecord.getBool("cancelled") && record.getBool("cancelled")) {
-    $app.dao().expandRecord(record, ["product", "location", "user"], null);
+    $app.expandRecord(record, ["product", "location", "user"], null);
     const product = record.expandedOne("product");
     const location = record.expandedOne("location");
     const productName = product.get("name");
@@ -253,7 +261,7 @@ onRecordAfterUpdateRequest((e) => {
         user,
         cancellationConfirmationEmail({
           productUrl: `${
-            $app.settings().meta.appUrl
+            $app.settings().meta.appURL
           }/link/product/${product.get("id")}`,
           productName,
           userName: user.get("name"),
@@ -265,7 +273,7 @@ onRecordAfterUpdateRequest((e) => {
     sendLocationNotificationEmail(
       location,
       reservationCancellationLocationEmail({
-        productUrl: `${$app.settings().meta.appUrl}/link/product/${product.get(
+        productUrl: `${$app.settings().meta.appURL}/link/product/${product.get(
           "id"
         )}`,
         productName,

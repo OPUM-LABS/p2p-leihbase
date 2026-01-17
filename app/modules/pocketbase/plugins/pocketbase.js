@@ -26,7 +26,7 @@ export default defineNuxtPlugin(async () => {
   pb.authStore.onChange(() => {
     cookie.value = {
       token: pb.authStore.token,
-      model: pb.authStore.model,
+      model: pb.authStore.record,
     };
   });
 
