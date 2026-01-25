@@ -8,9 +8,17 @@ _.source = "./scripts/env.sh"
 
 [tasks.setup]
 description = "Setup"
+depends = ['mailpit', 'pnpm']
+
+[tasks.mailpit]
+description = "Setup mailpit"
 env = { INSTALL_PATH = "{{cwd}}/.bin" }
 dir = "{{cwd}}"
 file = "https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh"
+
+[tasks.pnpm]
+description = "Install dependencies using pnpm"
+run = "pnpm i"
 
 [tasks.dev]
 description = "Run mailpit"

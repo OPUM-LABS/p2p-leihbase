@@ -38,7 +38,7 @@ Leihbase has two Docker Images available which are both required to set up the a
 
 Use the following docker-compose.yml as a base to deploy Leihbase using Docker:
 
-```yml
+```yaml
 services:
   leihbase-webapp:
     image: lumocra/leihbase-webapp:v1.7.0
@@ -71,10 +71,10 @@ files to deploy the service as [fly.io](https://fly.io) applications.
 Requirements: [Mise](https://mise.jdx.dev)
 
 ```bash
-# Install repository tools (mailtrap, pocketbase)
+# Install repository tools (mailpit, pocketbase)
 $ mise install
 # Setup project
-$ mise run //:setup
+$ mise run //...:setup
 ```
 
 ### Run
@@ -91,7 +91,8 @@ $ mise run //...:dev
 After starting the service using the setup steps above. Enter some initial data
 to be able to use the application:
 
-1. Browse to [localhost:8080/_/](http://localhost:8080/_/) to visit the Pocketbase admin interface
+1. Browse to [localhost:8080/_/](http://localhost:8080/_/) to visit the Pocketbase
+   admin interface
 1. Create an admin account
 1. Create a record in the leihbase collection, containing some configuration
    settings for the instance
@@ -99,21 +100,21 @@ to be able to use the application:
    to as 'active')
 1. Create a product in the products collection (make sure to set the product to
    as 'active')
-1. Now you should be able to visit [localhost:3000](http://localhost:3000) to visit the front-end
+1. Now you should be able to visit [localhost:3000](http://localhost:3000) to
+   visit the front-end
 
 ### E-mail
 
-When starting the service with docker-compose, a
-[mailhog](https://hub.docker.com/r/mailhog/mailhog) container starts as well. In
-Pocketbase ([localhost:8080/_/](http://localhost:8080/_/) > Settings > Mail settings) the following
-SMTP values can be configured:
+When starting the services, [mailpit](https://github.com/axllent/mailpit) also
+starts. In Pocketbase ([localhost:8080/_/](http://localhost:8080/_/) > Settings
+> Mail settings) the following SMTP values can be configured:
 
-- SMTP server host: mailhog
+- SMTP server host: localhost
 - Port: 1025
 - Username: _\<empty>_
 - Password: _\<empty>_
 
-Any sent e-mail can then be viewed in the mailhog web interface at
+Any sent e-mail can then be viewed in the mailpit web interface at
 [localhost:8025](http://localhost:8025).
 
 ## Tests

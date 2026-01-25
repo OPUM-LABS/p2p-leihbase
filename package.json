@@ -1,0 +1,11 @@
+{
+  "name": "leihbase",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter app run dev",
+    "test": "pnpm --filter tests run test"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "packageManager": "pnpm@10.26.1"
+}
