@@ -68,17 +68,30 @@ files to deploy the service as [fly.io](https://fly.io) applications.
 
 ### Setup
 
-Requirements: [Docker](https://www.docker.com/)
+Requirements: [Mise](https://mise.jdx.dev)
 
-- `$ docker compose build`
-- `$ docker compose up`
+```bash
+# Install repository tools (mailtrap, pocketbase)
+$ mise install
+# Setup project
+$ mise run //:setup
+```
+
+### Run
+
+```bash
+# Enable mise monorepo support
+$ export MISE_EXPERIMENTAL=1
+# Run services
+$ mise run //...:dev
+```
 
 ### Initial content
 
 After starting the service using the setup steps above. Enter some initial data
 to be able to use the application:
 
-1. Browse to http://localhost:8080/\_/ to visit the Pocketbase admin interface
+1. Browse to [localhost:8080/_/](http://localhost:8080/_/) to visit the Pocketbase admin interface
 1. Create an admin account
 1. Create a record in the leihbase collection, containing some configuration
    settings for the instance
@@ -86,13 +99,13 @@ to be able to use the application:
    to as 'active')
 1. Create a product in the products collection (make sure to set the product to
    as 'active')
-1. Now you should be able to visit http://localhost:3000 to visit the front-end
+1. Now you should be able to visit [localhost:3000](http://localhost:3000) to visit the front-end
 
 ### E-mail
 
 When starting the service with docker-compose, a
 [mailhog](https://hub.docker.com/r/mailhog/mailhog) container starts as well. In
-Pocketbase (http://localhost:8080/\_/ > Settings > Mail settings) the following
+Pocketbase ([localhost:8080/_/](http://localhost:8080/_/) > Settings > Mail settings) the following
 SMTP values can be configured:
 
 - SMTP server host: mailhog
@@ -101,19 +114,19 @@ SMTP values can be configured:
 - Password: _\<empty>_
 
 Any sent e-mail can then be viewed in the mailhog web interface at
-http://localhost:8025.
+[localhost:8025](http://localhost:8025).
 
 ## Tests
 
 Tests are configured and run using [Playwright](https://playwright.dev/).
 
-### Setup
+### Setup tests
 
 - `$ cd tests`
 - `$ pnpm install`
 - `$ pnpm run start`
 
-### Run
+### Run tests
 
 - `pnpm run test`
 
