@@ -44,4 +44,6 @@ export default defineNuxtConfig({
         tag.startsWith("sl-") || tag.startsWith("calendar-"),
     },
   },
+
+  experimental: { appManifest: false },
 });
