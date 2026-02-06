@@ -1,7 +1,8 @@
 experimental_monorepo_root = true
 
 [tools]
-node = "22.21.0"
+pnpm = "10.28.2"
+node = "22.22.0"
 
 [env]
 _.source = "./scripts/env.sh"
@@ -23,3 +24,11 @@ run = "pnpm i"
 [tasks.dev]
 description = "Run mailpit"
 run = "./.bin/mailpit"
+
+[tasks.'test:e2e']
+description = "Run e2e test"
+run = "docker compose -f docker-compose.dev.yaml run --service-ports --build --remove-orphans app bash -c 'mise run //tests:e2e'"
+
+[tasks.'test:e2e:update']
+description = "Run e2e test & update snapshots"
+run = "docker compose -f docker-compose.dev.yaml run --service-ports --build --remove-orphans app bash -c 'mise run //tests:e2e:update'"

@@ -119,17 +119,18 @@ Any sent e-mail can then be viewed in the mailpit web interface at
 
 ## Tests
 
-Tests are configured and run using [Playwright](https://playwright.dev/).
-
-### Setup tests
-
-- `$ cd tests`
-- `$ pnpm install`
-- `$ pnpm run start`
+Tests are configured and run using [Playwright](https://playwright.dev/), as the
+tests includes visual snapshots tests they are executed
+in a docker environment.
 
 ### Run tests
 
-- `pnpm run test`
+```bash
+# Run e2e tests
+mise run test:e2e
+# Run e2e tests, and update visual snapshots
+mise run test:e2e
+```
 
 ## Configuration
 

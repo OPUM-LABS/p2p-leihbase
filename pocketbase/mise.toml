@@ -1,17 +1,29 @@
 [tasks.setup]
 description = "Setup"
 run = [
-    'echo "Pocketbase setup os:${DETECTED_OS} arch:${DETECTED_ARCH}"',
-    "wget -O pb.zip https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_${DETECTED_OS}_${DETECTED_ARCH}.zip",
-    "unzip pb.zip -d ./temp",
-    "mv ./temp/pocketbase ./",
-    "rm -rf ./temp",
-    "rm ./pb.zip"
+  'echo "Pocketbase setup os:${DETECTED_OS} arch:${DETECTED_ARCH}"',
+  "wget -O pb.zip https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_${DETECTED_OS}_${DETECTED_ARCH}.zip",
+  "unzip pb.zip -d ./temp",
+  "mv ./temp/pocketbase ./",
+  "rm -rf ./temp",
+  "rm ./pb.zip",
 ]
 
 [tasks.dev]
-description = "Run in dev mode"
-run = "./pocketbase serve --dev"
+description = "Run pocketbase in dev mode"
+run = "./pocketbase serve --dev --http=0.0.0.0:8090"
+
+[tasks.start]
+description = "Run pocketbase"
+run = "./pocketbase serve --http=0.0.0.0:8090"
+
+[tasks.'start:test']
+description = "Run pocketbase"
+run = [
+  "./pocketbase migrate up",
+  "./pocketbase superuser upsert test@example.com 1234567890",
+  "./pocketbase serve --http=0.0.0.0:8090",
+]
 
 [env]
 PB_VERSION = "0.36.0"

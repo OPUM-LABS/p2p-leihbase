@@ -1,6 +1,23 @@
 [tasks.dev]
-description = "Run in dev mode"
+description = "Run app in dev mode"
 run = "pnpm run dev"
+
+[tasks.build]
+description = "Build app"
+run = "pnpm run build"
+sources = ["./**/*"]
+
+[tasks.start]
+depends = ["build"]
+description = "Run app"
+run = "pnpm run start"
+
+[tasks.'start:test']
+description = "Run test app"
+depends = ["build"]
+run = "pnpm run start"
+[tasks.'start:test'.env]
+NUXT_PUBLIC_LOCALE = "en"
 
 [[env]]
 NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL = "http://localhost:8090"
