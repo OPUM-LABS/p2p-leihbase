@@ -9,13 +9,11 @@
       </Button>
     </AdminHeader>
 
-    <div class="filter-bar">
-      <Select :label="t('status')" v-model="status" @input="handleSelect">
-        <option value="">{{ t("all") }}</option>
-        <option value="active">{{ t("active") }}</option>
-        <option value="inactive">{{ t("inactive") }}</option>
-      </Select>
-    </div>
+    <FilterBar
+      v-model:status="status"
+      v-model:query="query"
+      @input="handleFilterInput"
+    />
 
     <p v-if="location && products">
       {{ products.length }} {{ t("results", products.length) }}
@@ -62,7 +60,7 @@ import type { Product } from "~/models/product";
 import ProductDrawer from "./components/ProductDrawer.vue";
 import Badge from "~/components/Badge.vue";
 import RecordPicker from "~/components/admin/RecordPicker.vue";
-import Select from "~/components/Select.vue";
+import FilterBar from "./components/FilterBar.vue";
 
 const { t } = useI18n({
   useScope: "local",
@@ -77,6 +75,7 @@ const location = await useLocation({
 });
 
 const status = ref("");
+const query = ref("");
 const productDrawerOpen = ref(false);
 const selectedProduct = ref<Product | null>(null);
 
@@ -87,17 +86,25 @@ if (!location.value || !location.value.id) {
   });
 }
 
-function handleSelect() {
+function handleFilterInput() {
   nextTick(() => {
     refresh();
   });
 }
 
 const { data: products, refresh } = await useAsyncData(async () => {
+  const filters = [];
+  const params: Record<string, any> = {};
+  if (status.value) {
+    filters.push("active = {:active}");
+    params['active'] = status.value === "active" ? true : false;
+  }
+  if (query.value) {
+    filters.push("(name ~ {:query} || description ~ {:query})");
+    params.query = query.value;
+  }
   const products = await pb.collection("products").getFullList({
-    filter: pb.filter(status.value ? "active = {:active}" : "", {
-      active: status.value === "active" ? true : false,
-    }),
+    filter: pb.filter(filters.join(" && "), params),
     sort: "name",
   });
   const p = structuredClone(products) as Product[];
@@ -122,12 +129,8 @@ function handleProductUpdate() {
 <style lang="scss" scoped>
 @use "~/assets/styles/breakpoints.scss";
 
-.filter-bar {
-  margin-bottom: var(--fluid-spacing-8);
-}
-
 .products {
-  --columns: 3;
+  --columns: ;
   display: grid;
   grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
   gap: var(--fluid-spacing-4);
@@ -167,19 +170,11 @@ function handleProductUpdate() {
 {
   "en": {
     "title": "Products",
-    "status": "Status",
-    "all": "All",
-    "active": "Active",
-    "inactive": "Inactive",
     "results": "result | results",
     "new_product": "New product"
   },
   "de": {
     "title": "Gegenständen",
-    "status": "Status",
-    "all": "Alle",
-    "active": "Aktiv",
-    "inactive": "Inaktiv",
     "results": "Ergebnis | Ergebnisse",
     "new_product": "Neues Gegenstand"
   }
