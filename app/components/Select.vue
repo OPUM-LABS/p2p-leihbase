@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label :for="`select-${id}`">{{ label }}</label>
+    <label :for="`select-${id}`" :class="hideLabel ? 'sr-only' : ''">{{ label }}</label>
     <select :id="`select-${id}`" v-bind="$attrs" v-model="model">
       <slot />
     </select>
@@ -13,7 +13,10 @@ import { NavArrowDown } from '@iconoir/vue';
 defineOptions({
   inheritAttrs: false
 })
-defineProps<{label: string}>();
+defineProps<{
+  label: string
+  hideLabel: boolean
+}>();
 const id = useId();
 const model = defineModel();
 </script>
@@ -40,8 +43,9 @@ select {
   appearance: none;
   background: transparent;
   border: 0;
-  outline: 1px solid var(--text-color);
-  padding: 0.33rem 2.33rem 0.33rem 0.66rem;
+  background-color: var(--secondary-color);
+  color: var(--secondary-text-color);
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
   border-radius: var(--border-radius);
   cursor: pointer;
 }
