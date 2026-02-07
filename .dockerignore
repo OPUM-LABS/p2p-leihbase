@@ -1,0 +1,11 @@
+.git
+*/node_modules
+.bin
+
+app/.nuxt
+app/.output
+
+*/pb_data
+pocketbase/pocketbase
+
+

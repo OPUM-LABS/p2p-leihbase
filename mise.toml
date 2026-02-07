@@ -1,0 +1,34 @@
+experimental_monorepo_root = true
+
+[tools]
+pnpm = "10.28.2"
+node = "22.22.0"
+
+[env]
+_.source = "./scripts/env.sh"
+
+[tasks.setup]
+description = "Setup"
+depends = ['mailpit', 'pnpm']
+
+[tasks.mailpit]
+description = "Setup mailpit"
+env = { INSTALL_PATH = "{{cwd}}/.bin" }
+dir = "{{cwd}}"
+file = "https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh"
+
+[tasks.pnpm]
+description = "Install dependencies using pnpm"
+run = "pnpm i"
+
+[tasks.dev]
+description = "Run mailpit"
+run = "./.bin/mailpit"
+
+[tasks.'test:e2e']
+description = "Run e2e test"
+run = "docker compose -f docker-compose.dev.yaml run --service-ports --build --remove-orphans app bash -c 'mise run //tests:e2e'"
+
+[tasks.'test:e2e:update']
+description = "Run e2e test & update snapshots"
+run = "docker compose -f docker-compose.dev.yaml run --service-ports --build --remove-orphans app bash -c 'mise run //tests:e2e:update'"

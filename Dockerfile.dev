@@ -1,0 +1,50 @@
+FROM debian:12-slim AS base
+
+WORKDIR /leihbase
+
+RUN apt-get update \
+  && apt-get -y --no-install-recommends install \
+  # install any other dependencies you might need
+  sudo curl git ca-certificates build-essential wget unzip \
+  && rm -rf /var/lib/apt/lists/*;
+
+ENV NODE_ENV=development
+
+ENV NUXT_PORT=3000
+ENV NITRO_PORT=3000
+ENV NITRO_HOST=0.0.0.0
+ENV NUXT_HOST=0.0.0.0
+
+# setup mise
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ENV MISE_DATA_DIR="/mise"
+ENV MISE_CONFIG_DIR="/mise"
+ENV MISE_CACHE_DIR="/mise/cache"
+ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
+ENV MISE_EXPERIMENTAL="true"
+ENV PATH="/mise/shims:$PATH"
+RUN curl https://mise.run | sh
+# install dependencies
+SHELL ["/bin/sh", "-c"]
+COPY mise.toml mise.toml
+RUN mise trust mise.toml && mise install
+
+# setup playwright
+RUN npx playwright install chromium webkit --with-deps
+
+# setup mailpit and pocketbase
+COPY scripts ./scripts
+COPY pocketbase/mise.toml ./pocketbase/
+RUN mise run mailpit ::: //pocketbase:setup
+
+# install pnpm dependencies
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+COPY package.json pnpm-* ./
+COPY app/package.json ./app/
+COPY tests/package.json ./tests/
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+COPY . .
+
+CMD ["mise", "run", "//...:dev"]
