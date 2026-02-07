@@ -13,8 +13,3 @@ const props = defineProps({
 });
 </script>
 
-<style scoped>
-input {
-  padding: 0.5rem 1rem;
-}
-</style>
