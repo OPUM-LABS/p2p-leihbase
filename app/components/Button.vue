@@ -76,9 +76,9 @@ button {
   &.variant-secondary {
     background-color: var(--secondary-color);
     color: var(--secondary-text-color);
-    border: 2px solid transparent;
+    border: 0;
     &:hover {
-      border: 2px solid var(--primary-color);
+      outline: 2px solid var(--primary-color);
     }
   }
 
