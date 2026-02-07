@@ -4,9 +4,9 @@
 
     <AdminNav :location="location" />
     <AdminHeader :title="t('title')" :location="location">
-      <Button @click="handleNewReservationClick">{{
-        t("new_reservation")
-      }}</Button>
+      <Button @click="handleNewReservationClick">
+        {{ t("new_reservation") }}
+      </Button>
     </AdminHeader>
 
     <TabList v-if="location" active="today" class="tablist">

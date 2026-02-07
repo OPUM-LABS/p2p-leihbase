@@ -3,7 +3,11 @@
     <PageAlert class="banner" />
 
     <AdminNav v-if="location" :location="location" />
-    <AdminHeader v-if="location" :title="t('title')" :location="location" />
+    <AdminHeader v-if="location" :title="t('title')" :location="location">
+      <Button @click="handleNewProductClick">
+        {{ t("new_product") }}
+      </Button>
+    </AdminHeader>
 
     <div class="filter-bar">
       {{ t("status") }}
@@ -100,6 +104,11 @@ const { data: products, refresh } = await useAsyncData(async () => {
   return p;
 });
 
+function handleNewProductClick() {
+  selectedProduct.value = null;
+  productDrawerOpen.value = true;
+}
+
 function handleProductClick(product: Product) {
   selectedProduct.value = product;
   productDrawerOpen.value = true;
@@ -162,7 +171,8 @@ function handleProductUpdate() {
     "all": "All",
     "active": "Active",
     "inactive": "Inactive",
-    "results": "result | results"
+    "results": "result | results",
+    "new_product": "New product"
   },
   "de": {
     "title": "Gegenständen",
@@ -170,7 +180,8 @@ function handleProductUpdate() {
     "all": "Alle",
     "active": "Aktiv",
     "inactive": "Inaktiv",
-    "results": "Ergebnis | Ergebnisse"
+    "results": "Ergebnis | Ergebnisse",
+    "new_product": "Neues Gegenstand"
   }
 }
 </i18n>

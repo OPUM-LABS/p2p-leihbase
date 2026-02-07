@@ -23,7 +23,7 @@
         </Button>
       </div>
     </header>
-    <Alert v-if="!props.product?.active" variant="warning">{{
+    <Alert v-if="state === 'edit' && !props.product?.active" variant="warning">{{
       t("product_is_inactive")
     }}</Alert>
     <form @submit.prevent="handleSubmit">
@@ -150,6 +150,7 @@ watch(open, (isOpening) => {
 const isSubmitting = ref(false);
 async function handleSubmit() {
   const formData = {
+    location: props.location.id,
     active: active.value,
     name: name.value,
     categories: categories.value,
