@@ -10,12 +10,11 @@
     </AdminHeader>
 
     <div class="filter-bar">
-      {{ t("status") }}
-      <select v-model="status" @input="handleSelect">
+      <Select :label="t('status')" v-model="status" @input="handleSelect">
         <option value="">{{ t("all") }}</option>
         <option value="active">{{ t("active") }}</option>
         <option value="inactive">{{ t("inactive") }}</option>
-      </select>
+      </Select>
     </div>
 
     <p v-if="location && products">
@@ -63,6 +62,7 @@ import type { Product } from "~/models/product";
 import ProductDrawer from "./components/ProductDrawer.vue";
 import Badge from "~/components/Badge.vue";
 import RecordPicker from "~/components/admin/RecordPicker.vue";
+import Select from "~/components/Select.vue";
 
 const { t } = useI18n({
   useScope: "local",
