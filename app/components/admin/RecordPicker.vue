@@ -34,11 +34,11 @@ const { open, title, collection, columns, selected, multiple } = storeToRefs(
   useRecordPickerStore()
 );
 
-/**
- * TODO: somehow the query doesn't work when activating two different RecordPickers after each other
- * ...
- */
+// Search query
 const query = ref("");
+watch(open, () => {
+  query.value = "";
+});
 
 const selectedIds = computed(() => {
   if (!selected.value) {
@@ -47,6 +47,9 @@ const selectedIds = computed(() => {
   return selected.value.map((s) => s.id);
 });
 
+/**
+ * Fetches all documents for the current active collection
+ */
 const { data: documents, refresh } = await useAsyncData(
   props.id,
   async () => {
