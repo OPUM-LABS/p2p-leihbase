@@ -4,13 +4,17 @@
 -->
 
 <template>
-  <div>
+  <component :is="is" class="horizontal-scroll">
     <slot />
-  </div>
+  </component>
 </template>
 
+<script lang="ts" setup>
+withDefaults(defineProps<{ is?: string }>(), { is: "div" });
+</script>
+
 <style scoped>
-div {
+.horizontal-scroll {
   overflow-x: auto;
   margin-inline: calc(var(--fluid-spacing-8) * -1);
   padding-inline: var(--fluid-spacing-8);

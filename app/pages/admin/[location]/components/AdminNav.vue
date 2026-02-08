@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <HorizontalScroll is="nav" class="nav">
     <Button variant="secondary" :to="`/admin/${location?.slug}`">
       {{ t("reservations") }}
     </Button>
@@ -9,25 +9,25 @@
     <Button variant="secondary" :to="`/admin/${location?.slug}/stats`">
       {{ t("statistics") }}
     </Button>
-  </nav>
+  </HorizontalScroll>
 </template>
 
 <script setup lang="ts">
 import type { RecordModel } from "pocketbase";
+import HorizontalScroll from "~/components/HorizontalScroll.vue";
 
-const { t, locale } = useI18n({
+const { t } = useI18n({
   useScope: "local",
 });
-const route = useRoute();
 
 defineProps<{ location: RecordModel }>();
 </script>
 
 <style scoped>
-nav {
+.nav {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: var(--fluid-spacing-8);
+  margin-bottom: var(--fluid-spacing-8) !important;
 }
 </style>
 

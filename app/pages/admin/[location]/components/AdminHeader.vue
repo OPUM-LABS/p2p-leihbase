@@ -13,8 +13,6 @@
 <script setup lang="ts">
 import type { RecordModel } from "pocketbase";
 
-const route = useRoute();
-
 defineProps<{ title: string; location: RecordModel }>();
 </script>
 
@@ -25,6 +23,7 @@ header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: var(--fluid-spacing-4);
   margin-bottom: var(--fluid-spacing-8);
   h1 {
     margin: 0;
