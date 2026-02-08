@@ -1,15 +1,14 @@
-export const useLeihbase = defineStore('leihbase', () => {
+export const useLeihbase = defineStore("leihbase", () => {
   const { pb } = usePocketbase();
 
   const { data: leihbases, refresh } = useAsyncData(
-    'leihbase',
+    "leihbase",
     () => {
-      return pb
-        .collection("leihbase")
-        .getFullList();
-    }, { immediate: false }
+      return pb.collection("leihbase").getFullList();
+    },
+    { immediate: false }
   );
-  const leihbase = computed(() => leihbases.value?.[0])
+  const leihbase = computed(() => leihbases.value?.[0]);
 
-  return { leihbase, fetch: refresh }
-})
+  return { leihbase, fetch: refresh };
+});

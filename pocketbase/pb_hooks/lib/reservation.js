@@ -61,22 +61,21 @@ function hasOverlappingReservations(reservation, allowSameDay) {
   const startEndComparison = allowSameDay
     ? "start < {:end} && end > {:start}"
     : "start <= {:end} && end >= {:start}";
-  const records = $app
-    .findRecordsByFilter(
-      "reservations",
-      reservation.get("id")
-        ? `id != {:id} && product = {:product} && cancelled != true && ${startEndComparison}`
-        : `product = {:product} && cancelled != true && ${startEndComparison}`,
-      null,
-      1,
-      0,
-      {
-        id: reservation.get("id"),
-        product: reservation.get("product"),
-        start: reservation.get("start"),
-        end: reservation.get("end"),
-      }
-    );
+  const records = $app.findRecordsByFilter(
+    "reservations",
+    reservation.get("id")
+      ? `id != {:id} && product = {:product} && cancelled != true && ${startEndComparison}`
+      : `product = {:product} && cancelled != true && ${startEndComparison}`,
+    null,
+    1,
+    0,
+    {
+      id: reservation.get("id"),
+      product: reservation.get("product"),
+      start: reservation.get("start"),
+      end: reservation.get("end"),
+    }
+  );
   return records.length > 0;
 }
 
@@ -95,22 +94,21 @@ function hasOpenReservations(reservation) {
   if (!reservation.get("user")) {
     return false;
   }
-  const records = $app
-    .findRecordsByFilter(
-      "reservations",
-      reservation.get("id")
-        ? `id != {:id} && user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`
-        : `user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`,
-      null,
-      1,
-      0,
-      {
-        id: reservation.get("id"),
-        user: reservation.get("user"),
-        product: reservation.get("product"),
-        endOfToday: endOfDate(new Date()),
-      }
-    );
+  const records = $app.findRecordsByFilter(
+    "reservations",
+    reservation.get("id")
+      ? `id != {:id} && user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`
+      : `user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`,
+    null,
+    1,
+    0,
+    {
+      id: reservation.get("id"),
+      user: reservation.get("user"),
+      product: reservation.get("product"),
+      endOfToday: endOfDate(new Date()),
+    }
+  );
   return records.length > 0;
 }
 

@@ -74,7 +74,7 @@ onRecordCreateRequest((e) => {
     record.get("message").replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "")
   );
 
-  e.next()
+  e.next();
 }, "reservations");
 
 onRecordUpdateRequest((e) => {
@@ -122,21 +122,20 @@ onRecordUpdateRequest((e) => {
     throw new BadRequestError("Overlapping_reservation.");
   }
 
-  e.next()
+  e.next();
 }, "reservations");
 
 onRecordCreateRequest((e) => {
-  e.next()
+  e.next();
 
   const locale = $os.getenv("CONFIG_LOCALE") || "en";
 
   /** @type {typeof import('./lib/reservation')} */
   const { saveSentEmail } = require(`${__hooks}/lib/reservation`);
   /** @type {typeof import('./lib/email')} */
-  const {
-    sendLocationNotificationEmail,
-    sendUserEmail,
-  } = require(`${__hooks}/lib/email`);
+  const { sendLocationNotificationEmail, sendUserEmail } = require(
+    `${__hooks}/lib/email`
+  );
   /** @type {typeof import('./lib/emails.en')} */
   const {
     reservationConfirmationEmail,
@@ -213,7 +212,7 @@ onRecordCreateRequest((e) => {
 }, "reservations");
 
 onRecordUpdateRequest((e) => {
-  e.next()
+  e.next();
 
   const locale = $os.getenv("CONFIG_LOCALE") || "en";
 
@@ -221,10 +220,9 @@ onRecordUpdateRequest((e) => {
   const { removeSentEmail } = require(`${__hooks}/lib/reservation`);
 
   /** @type {typeof import('./lib/email')} */
-  const {
-    sendLocationNotificationEmail,
-    sendUserEmail,
-  } = require(`${__hooks}/lib/email`);
+  const { sendLocationNotificationEmail, sendUserEmail } = require(
+    `${__hooks}/lib/email`
+  );
 
   /** @type {typeof import('./lib/emails.en')} */
   const {

@@ -91,7 +91,7 @@ $ mise run //...:dev
 After starting the service using the setup steps above. Enter some initial data
 to be able to use the application:
 
-1. Browse to [localhost:8080/_/](http://localhost:8080/_/) to visit the Pocketbase
+1. Browse to [localhost:8080/\_/](http://localhost:8080/_/) to visit the Pocketbase
    admin interface
 1. Create an admin account
 1. Create a record in the leihbase collection, containing some configuration
@@ -106,7 +106,8 @@ to be able to use the application:
 ### E-mail
 
 When starting the services, [mailpit](https://github.com/axllent/mailpit) also
-starts. In Pocketbase ([localhost:8080/_/](http://localhost:8080/_/) > Settings
+starts. In Pocketbase ([localhost:8080/\_/](http://localhost:8080/_/) > Settings
+
 > Mail settings) the following SMTP values can be configured:
 
 - SMTP server host: localhost

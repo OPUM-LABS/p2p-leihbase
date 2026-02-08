@@ -22,7 +22,9 @@ div.content {
   display: grid;
   grid-template-rows: 0fr;
   overflow: hidden;
-  transition: grid-template-rows 200ms, visibility 200ms;
+  transition:
+    grid-template-rows 200ms,
+    visibility 200ms;
   visibility: hidden;
 }
 div.content.open {
