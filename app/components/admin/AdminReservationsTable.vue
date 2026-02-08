@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-reservations-table">
+  <HorizontalScroll>
     <table cellspacing="0">
       <thead>
         <tr>
@@ -79,7 +79,7 @@
         </tr>
       </tbody>
     </table>
-  </div>
+  </HorizontalScroll>
 </template>
 
 <script setup lang="ts">
@@ -87,6 +87,7 @@ import { formatDate, isSameDate } from "~/lib/date";
 import type { Reservation } from "~/models/reservation";
 import { Check, Xmark, MessageText } from "@iconoir/vue";
 import { formatCurrency } from "~/lib/currency";
+import HorizontalScroll from "../HorizontalScroll.vue";
 
 const { t, locale } = useI18n({
   useScope: "local",
@@ -106,10 +107,6 @@ function handleReservationClick(reservation: Reservation) {
 </script>
 
 <style scoped lang="scss">
-.admin-reservations-table {
-  width: 100%;
-  overflow-x: auto;
-}
 table {
   min-width: 100%;
 }

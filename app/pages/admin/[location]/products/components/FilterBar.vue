@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-bar">
+  <HorizontalScroll class="filter-bar">
     <!-- Status filter -->
     <Select
       :label="t('status')"
@@ -44,11 +44,13 @@
       <Xmark />
       {{ t("clear_filters") }}
     </Button>
-  </div>
+  </HorizontalScroll>
 </template>
 
 <script lang="ts" setup>
 import { Xmark } from "@iconoir/vue";
+import HorizontalScroll from "~/components/HorizontalScroll.vue";
+
 const { t } = useI18n({
   useScope: "local",
 });
@@ -60,15 +62,9 @@ defineEmits<{ input: [] }>();
 
 <style lang="scss" scoped>
 .filter-bar {
-  margin-bottom: var(--fluid-spacing-8);
+  margin-bottom: var(--fluid-spacing-8) !important;
   display: flex;
-  gap: 1rem;
-  @media screen and (max-width: 512px) {
-    overflow-x: scroll;
-    margin-inline: calc(var(--fluid-spacing-8) * -1);
-    padding-inline: var(--fluid-spacing-8);
-    padding-block: 0.3rem;
-  }
+  gap: var(--fluid-spacing-4);
 }
 .text-search {
   width: auto;
