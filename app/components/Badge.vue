@@ -6,10 +6,10 @@
 
 <script setup lang="ts">
 withDefaults(
-  defineProps<{ variant: "neutral" | "success" | "error" | "warning" }>(),
-  {
-    variant: "success",
-  }
+  defineProps<{
+    variant: "neutral" | "success" | "error" | "warning";
+  }>(),
+  { variant: "success" }
 );
 </script>
 

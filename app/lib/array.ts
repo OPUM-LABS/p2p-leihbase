@@ -1,3 +1,6 @@
+/**
+ * Compares two array on being equal based on it's values
+ */
 export const equalValues = (arrA: Array<any>, arrB: Array<any>) => {
   const isLengthEqual = arrA.length === arrB.length;
   if (!isLengthEqual) {

@@ -1,5 +1,6 @@
 <template>
   <Drawer :headerOffset="false" inset v-model:open="open">
+    <!-- Header -->
     <header>
       <h2>{{ state === "new" ? t("new") : t("edit") }}</h2>
       <div class="buttons">
@@ -23,9 +24,13 @@
         </Button>
       </div>
     </header>
+
+    <!-- Inactive product warning -->
     <Alert v-if="state === 'edit' && !props.product?.active" variant="warning">
       {{ t("product_is_inactive") }}
     </Alert>
+
+    <!-- Form -->
     <form @submit.prevent="handleSubmit">
       <Switch
         id="product-drawer-active"
@@ -83,6 +88,8 @@
       </footer>
     </form>
   </Drawer>
+
+  <!-- Removal confirmation dialog -->
   <Dialog
     v-model:open="removeDialogOpen"
     inset

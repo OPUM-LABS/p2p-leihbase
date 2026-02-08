@@ -2,6 +2,7 @@
   <Container width="lg" centered>
     <PageAlert class="banner" />
 
+    <!-- Header -->
     <AdminNav v-if="location" :location="location" />
     <AdminHeader v-if="location" :title="t('title')" :location="location">
       <Button @click="handleNewProductClick">
@@ -9,6 +10,7 @@
       </Button>
     </AdminHeader>
 
+    <!-- Filters -->
     <FilterBar
       v-model:status="status"
       v-model:missing="missing"
@@ -16,11 +18,13 @@
       @input="handleFilterInput"
     />
 
+    <!-- Number of results text / loading state -->
     <div v-if="location && products" class="results">
       <p>{{ products.length }} {{ t("results", products.length) }}</p>
       <LoadingSpinner size="sm" v-show="fetchStatus === 'pending'" />
     </div>
 
+    <!-- Products -->
     <div v-if="location && products && products.length > 0" class="products">
       <ProductCard
         v-for="product in products"
