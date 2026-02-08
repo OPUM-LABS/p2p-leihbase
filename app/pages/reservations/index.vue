@@ -92,14 +92,20 @@ const { data, refresh, status } = await useAsyncData<{
     });
     return {
       reservations: structuredClone(reservations) as Reservation[],
-      products: products.reduce((map, p) => {
-        map[p.id] = p as Product;
-        return map;
-      }, {} as { [key: string]: Product }),
-      locations: locations.reduce((map, p) => {
-        map[p.id] = p as Location;
-        return map;
-      }, {} as { [key: string]: Location }),
+      products: products.reduce(
+        (map, p) => {
+          map[p.id] = p as Product;
+          return map;
+        },
+        {} as { [key: string]: Product }
+      ),
+      locations: locations.reduce(
+        (map, p) => {
+          map[p.id] = p as Location;
+          return map;
+        },
+        {} as { [key: string]: Location }
+      ),
     };
   },
   { lazy: true }

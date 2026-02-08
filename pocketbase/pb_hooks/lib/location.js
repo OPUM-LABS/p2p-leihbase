@@ -27,32 +27,30 @@ function sendReminders(location, type) {
   /** @type {typeof import('./date')} */
   const { addDays, startOfDate, endOfDate } = require(`${__hooks}/lib/date`);
   /** @type {typeof import('./reservation')} */
-  const {
-    saveSentEmail,
-    getReminderEmail,
-  } = require(`${__hooks}/lib/reservation`);
+  const { saveSentEmail, getReminderEmail } = require(
+    `${__hooks}/lib/reservation`
+  );
 
   // Get reservations starting or ending tomorrow
   const startOfToday = startOfDate(new Date());
   const startOfTomorrow = startOfDate(addDays(new Date(), 1));
   const endOfTomorrow = endOfDate(addDays(new Date(), 1));
-  const reservations = $app
-    .findRecordsByFilter(
-      "reservations",
-      type === "start"
-        ? `location = {:location} && cancelled != true && user != "" && created < {:startOfToday} && sent_emails !~ "start_reminder" && start >= {:startOfTomorrow} && start <= {:endOfTomorrow}`
-        : `location = {:location} && cancelled != true && user != "" && started = true && ended = false && sent_emails !~ "end_reminder" && end >= {:startOfTomorrow} && end <= {:endOfTomorrow}`,
-      null,
-      100,
-      0,
-      {
-        type,
-        location: location.get("id"),
-        startOfToday,
-        startOfTomorrow,
-        endOfTomorrow,
-      }
-    );
+  const reservations = $app.findRecordsByFilter(
+    "reservations",
+    type === "start"
+      ? `location = {:location} && cancelled != true && user != "" && created < {:startOfToday} && sent_emails !~ "start_reminder" && start >= {:startOfTomorrow} && start <= {:endOfTomorrow}`
+      : `location = {:location} && cancelled != true && user != "" && started = true && ended = false && sent_emails !~ "end_reminder" && end >= {:startOfTomorrow} && end <= {:endOfTomorrow}`,
+    null,
+    100,
+    0,
+    {
+      type,
+      location: location.get("id"),
+      startOfToday,
+      startOfTomorrow,
+      endOfTomorrow,
+    }
+  );
 
   console.log(
     `[location/reservation-reminders] found ${
