@@ -1,36 +1,45 @@
 <template>
   <Container width="lg" centered>
+    <!-- Header -->
     <section>
       <h1>{{ t("reservations") }}</h1>
       <p class="intro">
         {{ t("intro") }}
       </p>
     </section>
+
+    <!-- Active -->
     <section>
       <h2>{{ t("active") }}</h2>
       <ul v-if="current && current.length > 0" class="cards">
-        <li v-for="reservation in current" :key="reservation.id">
-          <ReservationCardButton
-            :reservation="reservation"
-            :product="data?.products[reservation.product]"
-            @click="selectedReservation = reservation"
-          />
-        </li>
+        <template v-for="reservation in current" :key="reservation.id">
+          <li v-if="data?.products[reservation.product]">
+            <ReservationCardButton
+              :reservation="reservation"
+              :product="data.products[reservation.product]"
+              @click="selectedReservation = reservation"
+            />
+          </li>
+        </template>
       </ul>
       <p v-else>
         <i>{{ t("no_active_reservations") }}</i>
       </p>
     </section>
+
+    <!-- Past -->
     <section v-if="past && past.length > 0">
       <h2>{{ t("past") }}</h2>
       <ul class="cards">
-        <li v-for="reservation in past" :key="reservation.id">
-          <ReservationCardButton
-            :reservation="reservation"
-            :product="data?.products[reservation.product]"
-            @click="selectedReservation = reservation"
-          />
-        </li>
+        <template v-for="reservation in past" :key="reservation.id">
+          <li v-if="data?.products[reservation.product]">
+            <ReservationCardButton
+              :reservation="reservation"
+              :product="data.products[reservation.product]"
+              @click="selectedReservation = reservation"
+            />
+          </li>
+        </template>
       </ul>
     </section>
   </Container>
