@@ -1,13 +1,23 @@
 <template>
   <div class="filter-bar">
     <!-- Status filter -->
-    <Select :label="t('status')" hide-label v-model="status" @input="$emit('input')">
+    <Select
+      :label="t('status')"
+      hide-label
+      v-model="status"
+      @input="$emit('input')"
+    >
       <option value="" :aria-label="t('all')">{{ t("status") }}</option>
       <option value="active">{{ t("active") }}</option>
       <option value="inactive">{{ t("inactive") }}</option>
     </Select>
     <!-- Completeness filter -->
-    <Select :label="t('missing_info')" hide-label v-model="missing" @input="$emit('input')">
+    <Select
+      :label="t('missing_info')"
+      hide-label
+      v-model="missing"
+      @input="$emit('input')"
+    >
       <option value="" :aria-label="t('all')">{{ t("missing_info") }}</option>
       <option value="photo">{{ t("no_photo") }}</option>
       <option value="description">{{ t("no_description") }}</option>
@@ -24,24 +34,28 @@
       v-if="status || missing || query"
       variant="secondary"
       class="clear-filters"
-      @click="status = ''; missing = ''; query = ''; $emit('input')"
+      @click="
+        status = '';
+        missing = '';
+        query = '';
+        $emit('input');
+      "
     >
       <Xmark />
-      {{ t('clear_filters') }}
+      {{ t("clear_filters") }}
     </Button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Xmark } from '@iconoir/vue';
+import { Xmark } from "@iconoir/vue";
 const { t } = useI18n({
   useScope: "local",
 });
 const status = defineModel("status");
 const missing = defineModel("missing");
 const query = defineModel("query");
-defineEmits<{ input: [] }>()
-
+defineEmits<{ input: [] }>();
 </script>
 
 <style lang="scss" scoped>

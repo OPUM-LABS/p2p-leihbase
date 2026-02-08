@@ -7,9 +7,9 @@
 
 <script lang="ts" setup>
 const props = defineProps<{
-  for: string
-  label: string
-  required?: boolean
+  for: string;
+  label: string;
+  required?: boolean;
 }>();
 </script>
 

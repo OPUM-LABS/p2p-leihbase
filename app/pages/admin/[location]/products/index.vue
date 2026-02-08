@@ -99,7 +99,7 @@ const { data: products, refresh } = await useAsyncData(async () => {
   const params: Record<string, any> = {};
   if (status.value) {
     filters.push("active = {:active}");
-    params['active'] = status.value === "active" ? true : false;
+    params["active"] = status.value === "active" ? true : false;
   }
   if (missing.value && missing.value === "photo") {
     filters.push("images:length = 0");

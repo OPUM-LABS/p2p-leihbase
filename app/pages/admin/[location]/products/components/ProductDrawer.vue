@@ -23,9 +23,9 @@
         </Button>
       </div>
     </header>
-    <Alert v-if="state === 'edit' && !props.product?.active" variant="warning">{{
-      t("product_is_inactive")
-    }}</Alert>
+    <Alert v-if="state === 'edit' && !props.product?.active" variant="warning">
+      {{ t("product_is_inactive") }}
+    </Alert>
     <form @submit.prevent="handleSubmit">
       <Switch
         id="product-drawer-active"

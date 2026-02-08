@@ -9,10 +9,10 @@
           isLoading
             ? t('loading')
             : records && records.length > 0
-            ? multiple
-              ? records.map((r) => r[search[0]]).join(', ')
-              : records[0][search[0]]
-            : t('none')
+              ? multiple
+                ? records.map((r) => r[search[0]]).join(', ')
+                : records[0][search[0]]
+              : t('none')
         "
         disabled
         readonly
@@ -90,8 +90,8 @@ watch(selected, (newSelected) => {
         ? newSelected?.map((r) => r.id)
         : newSelected[0].id
       : props.multiple
-      ? []
-      : "";
+        ? []
+        : "";
 });
 
 async function refresh() {

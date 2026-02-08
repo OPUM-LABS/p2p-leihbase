@@ -24,14 +24,21 @@ export const useRecordPickerStore = defineStore<"record-picker", State>(
     }),
     getters: {},
     actions: {
-      show({ id, title, collection, columns, selected, multiple }: Omit<State, "open">) {
+      show({
+        id,
+        title,
+        collection,
+        columns,
+        selected,
+        multiple,
+      }: Omit<State, "open">) {
         this.id = id;
         this.open = true;
         this.title = title;
         this.collection = collection;
         this.columns = columns;
         this.selected = selected;
-        this.multiple = multiple
+        this.multiple = multiple;
       },
     },
   }
