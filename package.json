@@ -2,8 +2,8 @@
   "name": "leihbase",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter app run dev",
-    "test": "pnpm --filter tests run test"
+    "dev": "pnpm --filter @leihbase/app run dev",
+    "test": "pnpm --filter @leihbase/tests run test"
   },
   "dependencies": {},
   "devDependencies": {},

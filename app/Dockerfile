@@ -1,29 +1,26 @@
-FROM node:22.13.1-alpine3.21 AS base
+FROM node:22.22.0-alpine3.23 AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 ENV NUXT_PORT=3000
 ENV NITRO_PORT=3000
 ENV NITRO_HOST=0.0.0.0
 ENV NUXT_HOST=0.0.0.0
 
+ENV NODE_ENV=production
+
 WORKDIR /app
 
-RUN npm install -g pnpm
 
-COPY package.json pnpm-lock.yaml ./
-
-FROM base AS dependencies
-ENV NODE_ENV=development
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-
-FROM dependencies AS build
-ENV NODE_ENV=production
+FROM base AS build
 COPY . .
-RUN pnpm run build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm --filter @leihbase/app run build 
 
 FROM base AS prod
 ENV NODE_ENV=production
-COPY --from=build /app/.output /app/.output
+COPY --from=build /app/app/.output /app/.output
 CMD node .output/server/index.mjs
 
-FROM dependencies AS dev
-CMD pnpm run dev
