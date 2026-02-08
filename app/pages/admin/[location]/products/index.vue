@@ -16,9 +16,10 @@
       @input="handleFilterInput"
     />
 
-    <p v-if="location && products">
-      {{ products.length }} {{ t("results", products.length) }}
-    </p>
+    <div v-if="location && products" class="results">
+      <p>{{ products.length }} {{ t("results", products.length) }}</p>
+      <LoadingSpinner size="sm" v-show="fetchStatus === 'pending'" />
+    </div>
 
     <div v-if="location && products && products.length > 0" class="products">
       <ProductCard
@@ -94,7 +95,11 @@ function handleFilterInput() {
   });
 }
 
-const { data: products, refresh } = await useAsyncData(async () => {
+const {
+  data: products,
+  refresh,
+  status: fetchStatus,
+} = await useAsyncData(async () => {
   const filters = [];
   const params: Record<string, any> = {};
   if (status.value) {
@@ -136,6 +141,16 @@ function handleProductUpdate() {
 
 <style lang="scss" scoped>
 @use "~/assets/styles/breakpoints.scss";
+
+.results {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: var(--fluid-spacing-4);
+  p {
+    margin: 0;
+  }
+}
 
 .products {
   --columns: ;
