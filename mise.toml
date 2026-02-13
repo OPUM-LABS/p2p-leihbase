@@ -27,8 +27,8 @@ run = "./.bin/mailpit"
 
 [tasks.'test:e2e']
 description = "Run e2e test"
-run = "docker compose -f docker-compose.dev.yaml run --service-ports --build --remove-orphans app bash -c 'mise run //tests:e2e'"
+run = "docker compose -f docker-compose.test.yaml run --service-ports --build --remove-orphans app bash -c 'mise run //tests:e2e'"
 
 [tasks.'test:e2e:update']
 description = "Run e2e test & update snapshots"
-run = "docker compose -f docker-compose.dev.yaml run --service-ports --build --remove-orphans app bash -c 'mise run //tests:e2e:update'"
+run = "docker compose -f docker-compose.test.yaml run --service-ports --build --remove-orphans app bash -c 'mise run //tests:e2e:update'"
