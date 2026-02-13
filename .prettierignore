@@ -4,3 +4,5 @@ app/.output
 pocketbase/pb_data
 pocketbase/pb_migrations
 pnpm-lock.yaml
+test/playwright-report
+test/test-results
