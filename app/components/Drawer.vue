@@ -14,21 +14,34 @@
 
 <script lang="ts" setup>
 defineProps<{ headerOffset: boolean; inset: boolean }>();
+
 const open = defineModel("open");
 const sidebar = ref<HTMLDivElement>();
+const bodyClass = ref("");
+
+useHead({
+  bodyAttrs: {
+    class: bodyClass,
+  },
+});
+
 watch(open, (isOpening) => {
   if (isOpening) {
     if (sidebar.value) {
       sidebar.value.scrollTop = 0;
     }
+    bodyClass.value = "overflow-hidden";
     document.addEventListener("keydown", handleDocumentKeyDown);
   } else {
     document.removeEventListener("keydown", handleDocumentKeyDown);
+    bodyClass.value = "";
   }
 });
+
 function close() {
   open.value = false;
 }
+
 function handleDocumentKeyDown(e: KeyboardEvent) {
   if (e.key === "Escape") {
     close();
