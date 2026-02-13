@@ -22,6 +22,9 @@
         >
           <Trash />
         </Button>
+        <Button variant="secondary" circle @click="open = false">
+          <Xmark />
+        </Button>
       </div>
     </header>
 
@@ -108,7 +111,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Trash, Eye } from "@iconoir/vue";
+import { Trash, Eye, Xmark } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
 import RecordPickerInput from "~/components/admin/RecordPickerInput.vue";
 import ImageInput from "~/components/ImageInput.vue";
