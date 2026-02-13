@@ -104,7 +104,7 @@ const component = computed(() => {
   line-height: 1;
 }
 .spacing-sm .content {
-  padding: clamp(0.75rem, 4vw, 1.5rem) clamp(0.75rem, 4vw, 1rem);
+  padding: clamp(0.6rem, 4vw, 0.85rem) clamp(0.75rem, 4vw, 1rem);
 }
 .name {
   max-height: 1rem;

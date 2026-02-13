@@ -41,7 +41,7 @@
           </Badge>
         </template>
         <p class="description">
-          <strong>{{ product.name }}</strong>
+          {{ product.name }}
         </p>
       </ProductCard>
     </div>
@@ -157,7 +157,7 @@ function handleProductUpdate() {
 }
 
 .products {
-  --columns: ;
+  --columns: 2;
   display: grid;
   grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
   gap: var(--fluid-spacing-4);
@@ -170,24 +170,34 @@ function handleProductUpdate() {
     width: 100%;
 
     .description {
-      line-height: 1.15;
+      display: block;
+      font-weight: var(--font-weight-bold);
+      font-size: calc(var(--font-size-sm) + 0.05rem);
       margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      align-items: flex-start;
+      max-height: 2.3em;
+      line-height: 1.15;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      hyphens: auto;
     }
   }
 
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
-    --columns: 4;
+    --columns: 3;
   }
 
   @media screen and (min-width: breakpoints.$breakpoint-md) {
-    --columns: 5;
+    --columns: 4;
   }
 
   @media screen and (min-width: breakpoints.$breakpoint-lg) {
+    --columns: 5;
+  }
+
+  @media screen and (min-width: breakpoints.$breakpoint-xl) {
     --columns: 6;
   }
 }
