@@ -14,8 +14,8 @@ Web application to manage Leihladen, also known as Borrow Stores.
 - 🏷️ Product category filtering
 - 🧑‍🤝‍🧑 User sign-up/login
 - 🎫 Product reservations
-- 👷 A back-end to manage reservations
-- 📧 Reservation pickup and return e-mail reminders
+- 👷 A back-end to manage products & reservations
+- 📧 Product pickup and return e-mail reminders
 - 🎨 Themeable
 
 ## Screenshots
@@ -106,9 +106,8 @@ to be able to use the application:
 ### E-mail
 
 When starting the services, [mailpit](https://github.com/axllent/mailpit) also
-starts. In Pocketbase ([localhost:8080/\_/](http://localhost:8080/_/) > Settings
-
-> Mail settings) the following SMTP values can be configured:
+starts. In Pocketbase ([localhost:8080/\_/](http://localhost:8080/_/) >
+Settings > Mail settings) the following SMTP values can be configured:
 
 - SMTP server host: localhost
 - Port: 1025
