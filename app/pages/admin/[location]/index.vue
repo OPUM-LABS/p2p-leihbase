@@ -4,9 +4,9 @@
 
     <AdminNav :location="location" />
     <AdminHeader :title="t('title')" :location="location">
-      <Button @click="handleNewReservationClick">{{
-        t("new_reservation")
-      }}</Button>
+      <Button @click="handleNewReservationClick">
+        {{ t("new_reservation") }}
+      </Button>
     </AdminHeader>
 
     <TabList v-if="location" active="today" class="tablist">
@@ -71,7 +71,8 @@
     :reservation="selectedReservation"
     @update="handleReservationUpdate"
   />
-  <RecordPicker ref="recordPicker" />
+
+  <RecordPicker id="reservations-record-picker" />
 </template>
 
 <script lang="ts" setup>
@@ -99,9 +100,6 @@ const slug = route.params.location;
 
 const reservationDrawerOpen = ref(false);
 const selectedReservation = ref<Reservation | null>(null);
-
-const recordPicker = ref(null);
-provide("recordPicker", recordPicker);
 
 const reservationUpdate = createEventHook();
 

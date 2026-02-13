@@ -2,14 +2,19 @@
   <Drawer :headerOffset="false" inset v-model:open="open">
     <header>
       <h2>{{ state === "new" ? t("new") : t("edit") }}</h2>
-      <Button
-        v-if="state === 'edit'"
-        variant="secondary"
-        circle
-        @click="handleRemoveClick"
-      >
-        <Trash />
-      </Button>
+      <div class="buttons">
+        <Button
+          v-if="state === 'edit'"
+          variant="secondary"
+          circle
+          @click="handleRemoveClick"
+        >
+          <Trash />
+        </Button>
+        <Button variant="secondary" circle @click="open = false">
+          <Xmark />
+        </Button>
+      </div>
     </header>
     <Alert v-if="props.reservation?.cancelled" variant="warning">{{
       t("reservation_is_cancelled")
@@ -104,6 +109,7 @@
       </footer>
     </form>
   </Drawer>
+  <!-- Removal confirmation dialog -->
   <Dialog
     v-model:open="removeDialogOpen"
     inset
@@ -123,7 +129,7 @@
 
 <script lang="ts" setup>
 import RecordPickerInput from "~/components/admin/RecordPickerInput.vue";
-import { Mail, Trash } from "@iconoir/vue";
+import { Mail, Trash, Xmark } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
 import type { Reservation } from "~/models/reservation";
 import { formatCurrency } from "~/lib/currency";
@@ -280,6 +286,10 @@ form {
 header {
   display: flex;
   justify-content: space-between;
+  gap: 1rem;
+}
+header .buttons {
+  display: flex;
   gap: 1rem;
 }
 footer {

@@ -1,12 +1,18 @@
 <template>
-  <FormRow :for="id" :label="label" :required="required">
+  <FormRow :for="id || undefined" :label="label" :required="required">
     <div class="row">
       <input
         type="text"
-        :id="id"
+        :id="id || undefined"
         :name="name"
         :value="
-          isLoading ? t('loading') : record ? record[search[0]] : t('none')
+          isLoading
+            ? t('loading')
+            : records && records.length > 0
+              ? multiple
+                ? records.map((r) => r[search[0]]).join(', ')
+                : records[0][search[0]]
+              : t('none')
         "
         disabled
         readonly
@@ -17,46 +23,101 @@
         {{ t("select") }}
       </button>
     </div>
+    <p v-if="description">
+      <small>{{ description }}</small>
+    </p>
   </FormRow>
 </template>
 
 <script lang="ts" setup>
-import type RecordPicker from "./RecordPicker.vue";
+import { type RecordModel } from "pocketbase";
+import { useRecordPickerStore } from "~/stores/record-picker";
+import { equalValues } from "~/lib/array";
 
 const { t } = useI18n({
   useScope: "local",
 });
 
-const model = defineModel<string>();
+const { pb } = usePocketbase();
+
+const model = defineModel<string | string[]>();
 const props = defineProps<{
   id: string;
   label: string;
+  collection: string;
+  search: string[];
   name?: string;
   required?: boolean;
   disabled?: boolean;
   readonly?: boolean;
   dataTestid?: string;
-  collection: string;
-  search: string[];
+  multiple?: boolean;
+  description?: string;
 }>();
 
-const recordPicker =
-  inject<Ref<InstanceType<typeof RecordPicker>>>("recordPicker");
+const recordPickerStore = useRecordPickerStore();
+const { id, selected } = storeToRefs(recordPickerStore);
 
-const { record, show, isLoading } = await useRecordPicker(model, recordPicker, {
-  title: props.label,
-  collection: props.collection,
-  search: props.search,
-  value: model.value,
+const records = ref<RecordModel[] | null>(null);
+const isLoading = ref(true);
+
+watch(model, (newModelValue) => {
+  const active = (records.value || []).map((record) => record.id);
+  if (!newModelValue) {
+    records.value = [];
+    return;
+  }
+  if (typeof newModelValue === "string" && active.includes(newModelValue)) {
+    return;
+  }
+  if (
+    Array.isArray(newModelValue) &&
+    equalValues(active, newModelValue || [])
+  ) {
+    return;
+  }
+  refresh();
 });
 
-watch(record, (newRecord) => {
-  model.value = newRecord?.id;
+watch(selected, (newSelected) => {
+  if (id.value !== props.id) {
+    return;
+  }
+  records.value = newSelected;
+  model.value =
+    newSelected && newSelected.length > 0
+      ? props.multiple
+        ? newSelected?.map((r) => r.id)
+        : newSelected[0].id
+      : props.multiple
+        ? []
+        : "";
 });
+
+async function refresh() {
+  if (!model.value) {
+    isLoading.value = false;
+    return;
+  }
+  isLoading.value = true;
+  records.value = await pb.collection(props.collection).getFullList({
+    filter: pb.filter(`{:ids} ~ id`, { ids: model.value }),
+  });
+  isLoading.value = false;
+}
 
 function handleClick() {
-  show();
+  recordPickerStore.show({
+    id: props.id,
+    title: props.label,
+    collection: props.collection,
+    selected: records.value,
+    columns: props.search,
+    multiple: props.multiple,
+  });
 }
+
+refresh();
 </script>
 
 <style lang="scss" scoped>

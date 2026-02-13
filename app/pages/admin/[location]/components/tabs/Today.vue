@@ -7,7 +7,7 @@
     </template>
     <div class="title-wrapper">
       <h3>
-        <LoadingSpinner v-if="status === 'pending'" style="--size: 1em" />
+        <LoadingSpinner v-if="status === 'pending'" size="sm" />
         <span v-else>
           {{
             isToday(date) ? t("Today") : formatDate(date, "ddd, DD.MM", locale)

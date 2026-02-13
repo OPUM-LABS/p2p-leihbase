@@ -19,10 +19,10 @@
 
 <script lang="ts" setup>
 import { Check } from "@iconoir/vue";
-const model = defineModel();
+const model = defineModel<boolean>();
 const props = defineProps<{
   id: string;
-  label?: string;
+  label: string;
   name?: string;
   placeholder?: string;
   required?: boolean;

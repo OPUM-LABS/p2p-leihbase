@@ -5,12 +5,12 @@
   </fieldset>
 </template>
 
-<script setup>
-const props = defineProps({
-  for: String,
-  label: String,
-  required: Boolean,
-});
+<script lang="ts" setup>
+const props = defineProps<{
+  for: string;
+  label: string;
+  required?: boolean;
+}>();
 </script>
 
 <style scoped>

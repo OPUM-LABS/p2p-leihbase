@@ -49,6 +49,9 @@ const emit = defineEmits<{ close: [] }>();
 
 const open = defineModel<boolean>("open");
 watch(open, (newValue) => {
+  if (!dialog.value) {
+    throw new Error("Can't open Dialog, no 'dialog' found");
+  }
   if (newValue) {
     dialog.value.showModal();
   } else {
@@ -59,6 +62,9 @@ watch(open, (newValue) => {
 });
 
 onMounted(() => {
+  if (!dialog.value) {
+    throw new Error("No 'dialog' found in Dialog");
+  }
   dialog.value.addEventListener("click", (e: MouseEvent) => {
     if (e.target === dialog.value) {
       open.value = false;

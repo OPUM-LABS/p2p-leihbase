@@ -3,10 +3,9 @@
     :is="component"
     :href="href"
     :to="to"
-    :class="{ root: true, clicked }"
+    :class="{ root: true, [`spacing-${spacing}`]: true }"
     :data-testid="`product-card-${product.id}`"
     :data-client-mounted="isClientMounted"
-    @click="clicked = true"
   >
     <ProductImage
       :src="
@@ -18,7 +17,9 @@
       aspect-ratio="1:1"
       border-radius="top"
       loading="lazy"
-    />
+    >
+      <slot name="image-overlay"></slot>
+    </ProductImage>
     <div class="content">
       <sl-tooltip
         v-if="!!product.ongoingReservation"
@@ -30,40 +31,39 @@
           :available="!product.ongoingReservation"
         />
       </sl-tooltip>
-      <p class="name">
-        {{ product.name }}
-      </p>
+      <slot>
+        <p class="name">
+          {{ product.name }}
+        </p>
+      </slot>
     </div>
   </component>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { RecordModel } from "pocketbase";
+
 if (process.client) {
   await import("@shoelace-style/shoelace/dist/components/tooltip/tooltip.js");
 }
 
 const { t } = useI18n();
 
-const props = defineProps({
-  product: {
-    type: Object,
-  },
-  to: {
-    type: String,
-  },
-  href: {
-    type: String,
-  },
-});
+const props = withDefaults(
+  defineProps<{
+    product: RecordModel;
+    to?: string;
+    href?: string;
+    spacing?: "sm" | "md";
+  }>(),
+  { spacing: "md" }
+);
 
 const {
   product: { thumbs },
 } = useAppConfig();
 
 const config = useRuntimeConfig();
-
-// Has been clicked (for active state)
-const clicked = ref(false);
 
 const { isClientMounted } = useClientMounted();
 
@@ -81,25 +81,30 @@ const component = computed(() => {
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
 }
-a.root:hover,
-a.root:active,
-a.root:focus {
+.root:hover,
+.root:active,
+.root:focus {
   box-shadow: 0 0 0 2px var(--primary-color);
   outline: 0;
   border: 0;
 }
-a.root.clicked {
+.root:active {
   opacity: 0.8;
-  z-index: -1;
 }
 .content {
   padding: clamp(1rem, 4vw, 2rem);
   display: flex;
   width: 100%;
   align-items: center;
-  max-height: 1rem;
   line-height: 1;
+}
+.spacing-sm .content {
+  padding: clamp(0.6rem, 4vw, 0.85rem) clamp(0.75rem, 4vw, 1rem);
 }
 .name {
   max-height: 1rem;

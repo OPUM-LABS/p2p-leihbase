@@ -1,13 +1,11 @@
 <template>
-  <div class="loading-spinner">
+  <div :class="{ 'loading-spinner': true, [size]: true }">
     <div class="spinner"></div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "LoadingSpinner",
-};
+<script lang="ts" setup>
+withDefaults(defineProps<{ size?: "md" | "sm" }>(), { size: "md" });
 </script>
 
 <style scoped>
@@ -17,6 +15,9 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
+}
+.loading-spinner.sm {
+  --size: 1em;
 }
 
 .spinner {

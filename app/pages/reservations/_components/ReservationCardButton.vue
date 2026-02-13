@@ -37,7 +37,7 @@ const { t, locale } = useI18n({
   useScope: "local",
 });
 
-defineProps<{ reservation: Reservation; product?: Product }>();
+defineProps<{ reservation: Reservation; product: Product }>();
 </script>
 
 <style scoped lang="scss">
