@@ -34,7 +34,6 @@
         class="product"
         @click="handleProductClick(product)"
       >
-        <!-- :to="`/l/${location.slug}/p/${product.id}`" -->
         <template #image-overlay>
           <Badge v-if="!product.active" variant="error">
             {{ t("inactive") }}
