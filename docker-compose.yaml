@@ -30,6 +30,8 @@ services:
       # If a reservation needs to have a user, or not
       CONFIG_RESERVATION_REQUIRE_USER: "false"
       CONFIG_LENDING_CONDITIONS_LINK: "https://example.com/lending-conditions"
+    volumes:
+      - ./pocketbase/pb_data:/pb/pb_data
     networks:
       - leihbar
 
