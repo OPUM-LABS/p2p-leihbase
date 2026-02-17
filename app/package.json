@@ -20,14 +20,14 @@
     "@vueuse/core": "^11.3.0",
     "cally": "^0.7.2",
     "luxon": "^3.7.2",
-    "nuxt": "^3.20.2",
+    "nuxt": "^4.3.1",
     "pinia": "^3.0.4",
     "pocketbase": "^0.26.6",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@nuxt/kit": "^3.20.2",
+    "@nuxt/kit": "^4.3.1",
     "@pinia/nuxt": "^0.5.5",
     "sass": "^1.97.1",
     "taze": "^0.18.0",
