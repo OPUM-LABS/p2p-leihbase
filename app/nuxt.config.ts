@@ -1,6 +1,9 @@
+import path from "path";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2025-03-14",
+
   runtimeConfig: {
     public: {
       plausibleTrackingDomain: "", // NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN
@@ -11,6 +14,10 @@ export default defineNuxtConfig({
         clientBaseUrl: "", // NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL
       },
     },
+  },
+
+  alias: {
+    "~": "/<rootDir>/app",
   },
 
   app: {
@@ -24,6 +31,11 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    resolve: {
+      alias: {
+        "~": path.resolve(__dirname),
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {
