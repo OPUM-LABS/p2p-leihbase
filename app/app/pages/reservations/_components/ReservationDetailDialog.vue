@@ -115,13 +115,13 @@ import AccordionTrigger from "@/components/Accordion/AccordionTrigger.vue";
 import {
   ReservationCancellationStatus,
   useReservationCancellation,
-} from "~/composables/useReservationCancellation";
-import { formatDate } from "~/lib/date";
-import { getReservationStatus } from "~/lib/reservation";
-import { formatCurrency } from "~/lib/currency";
-import type { Location } from "~/models/location";
-import type { Product } from "~/models/product";
-import { ReservationStatus, type Reservation } from "~/models/reservation";
+} from "@@/composables/useReservationCancellation";
+import { formatDate } from "@@/lib/date";
+import { getReservationStatus } from "@@/lib/reservation";
+import { formatCurrency } from "@@/lib/currency";
+import type { Location } from "@@/models/location";
+import type { Product } from "@@/models/product";
+import { ReservationStatus, type Reservation } from "@@/models/reservation";
 
 const config = useRuntimeConfig();
 const {

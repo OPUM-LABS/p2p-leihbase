@@ -61,11 +61,11 @@
 </template>
 
 <script setup lang="ts">
-import { ReservationStatus, type Reservation } from "~/models/reservation";
+import { ReservationStatus, type Reservation } from "@@/models/reservation";
 import ReservationDetailDialog from "./_components/ReservationDetailDialog.vue";
-import type { Product } from "~/models/product";
-import { getReservationStatus } from "~/lib/reservation";
-import type { Location } from "~/models/location";
+import type { Product } from "@@/models/product";
+import { getReservationStatus } from "@@/lib/reservation";
+import type { Location } from "@@/models/location";
 import ReservationCardButton from "./_components/ReservationCardButton.vue";
 
 const { pb, isValid, logout } = usePocketbase();

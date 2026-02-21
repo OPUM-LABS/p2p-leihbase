@@ -1,6 +1,6 @@
 <template>
   <fieldset>
-    <label :for="for">{{ label }}{{ required ? " *" : "" }}</label>
+    <label :for="props.for">{{ label }}{{ required ? " *" : "" }}</label>
     <slot></slot>
   </fieldset>
 </template>

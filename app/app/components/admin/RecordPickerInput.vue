@@ -32,7 +32,7 @@
 <script lang="ts" setup>
 import { type RecordModel } from "pocketbase";
 import { useRecordPickerStore } from "@/stores/record-picker";
-import { equalValues } from "~/lib/array";
+import { equalValues } from "@@/lib/array";
 
 const { t } = useI18n({
   useScope: "local",

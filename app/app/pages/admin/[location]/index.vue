@@ -87,7 +87,7 @@ import AdminNav from "./components/AdminNav.vue";
 import AdminHeader from "./components/AdminHeader.vue";
 import TabList from "@/components/TabList/TabList.vue";
 import Tab from "@/components/TabList/Tab.vue";
-import type { Reservation } from "~/models/reservation";
+import type { Reservation } from "@@/models/reservation";
 import { createEventHook } from "@vueuse/core";
 import type { RecordModel } from "pocketbase";
 

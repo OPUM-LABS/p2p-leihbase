@@ -157,14 +157,14 @@
 
 <script setup>
 import Button from "@/components/Button.vue";
-import { isToday } from "~/lib/reservation";
-import { formatCurrency } from "~/lib/currency";
-import { isInOpeningHoursDay, openingHoursToString } from "~/lib/openingHours";
+import { isToday } from "@@/lib/reservation";
+import { formatCurrency } from "@@/lib/currency";
+import { isInOpeningHoursDay, openingHoursToString } from "@@/lib/openingHours";
 import {
   getStartOfDay,
   startOfDate as getStartOfDate,
   isSameDate,
-} from "~/lib/date";
+} from "@@/lib/date";
 import { Lock } from "@iconoir/vue";
 
 if (process.client) {

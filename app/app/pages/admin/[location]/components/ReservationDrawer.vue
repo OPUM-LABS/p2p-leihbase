@@ -131,8 +131,8 @@
 import RecordPickerInput from "@/components/admin/RecordPickerInput.vue";
 import { Mail, Trash, Xmark } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
-import type { Reservation } from "~/models/reservation";
-import { formatCurrency } from "~/lib/currency";
+import type { Reservation } from "@@/models/reservation";
+import { formatCurrency } from "@@/lib/currency";
 
 const { pb } = usePocketbase();
 const { t, locale } = useI18n({

@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import AdminNav from "../components/AdminNav.vue";
 import AdminHeader from "../components/AdminHeader.vue";
-import type { Product } from "~/models/product";
+import type { Product } from "@@/models/product";
 import ProductDrawer from "./components/ProductDrawer.vue";
 import Badge from "@/components/Badge.vue";
 import RecordPicker from "@/components/admin/RecordPicker.vue";

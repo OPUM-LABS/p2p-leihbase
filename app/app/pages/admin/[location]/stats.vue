@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import AdminNav from "./components/AdminNav.vue";
 import AdminHeader from "./components/AdminHeader.vue";
-import { endOfUTCDate, startOfUTCDate, subtractDays } from "~/lib/date";
+import { endOfUTCDate, startOfUTCDate, subtractDays } from "@@/lib/date";
 import type { RecordModel } from "pocketbase";
 
 const { t } = useI18n({

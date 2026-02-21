@@ -25,9 +25,9 @@
 
 <script setup>
 import { DateTime } from "luxon";
-import { formatDate } from "~/lib/date";
+import { formatDate } from "@@/lib/date";
 import { User as UserIcon } from "@iconoir/vue";
-import { isToday } from "~/lib/reservation";
+import { isToday } from "@@/lib/reservation";
 
 const { locale } = useI18n();
 

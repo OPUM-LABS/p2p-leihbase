@@ -83,10 +83,10 @@
 </template>
 
 <script setup lang="ts">
-import { formatDate, isSameDate } from "~/lib/date";
-import type { Reservation } from "~/models/reservation";
+import { formatDate, isSameDate } from "@@/lib/date";
+import type { Reservation } from "@@/models/reservation";
 import { Check, Xmark, MessageText } from "@iconoir/vue";
-import { formatCurrency } from "~/lib/currency";
+import { formatCurrency } from "@@/lib/currency";
 import HorizontalScroll from "../HorizontalScroll.vue";
 
 const { t, locale } = useI18n({

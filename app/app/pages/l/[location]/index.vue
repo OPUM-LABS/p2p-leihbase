@@ -47,7 +47,7 @@
 
 <script setup>
 import ProductGrid from "@/components/modules/ProductGrid.vue";
-import { openingHoursToString } from "~/lib/openingHours";
+import { openingHoursToString } from "@@/lib/openingHours";
 import { MapPin, Internet } from "@iconoir/vue";
 
 const { t, locale } = useI18n({

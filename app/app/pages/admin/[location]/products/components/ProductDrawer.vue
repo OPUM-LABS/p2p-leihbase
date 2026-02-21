@@ -116,7 +116,7 @@ import type { RecordModel } from "pocketbase";
 import RecordPickerInput from "@/components/admin/RecordPickerInput.vue";
 import ImageInput from "@/components/ImageInput.vue";
 import Switch from "@/components/Switch.vue";
-import type { Product } from "~/models/product";
+import type { Product } from "@@/models/product";
 
 const { pb } = usePocketbase();
 const { t, locale } = useI18n({

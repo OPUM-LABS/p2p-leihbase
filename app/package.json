@@ -9,6 +9,7 @@
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
     "postinstall": "nuxt prepare",
+    "typecheck": "npx nuxt typecheck",
     "taze:major": "taze major -wIr",
     "taze:minor": "taze minor -wIr"
   },

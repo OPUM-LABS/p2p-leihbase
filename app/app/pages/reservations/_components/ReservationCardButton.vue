@@ -22,10 +22,10 @@
 
 <script setup lang="ts">
 import { DateTime } from "luxon";
-import { formatDate } from "~/lib/date";
-import { type Reservation } from "~/models/reservation";
-import type { Product } from "~/models/product";
-import { getReservationStatus } from "~/lib/reservation";
+import { formatDate } from "@@/lib/date";
+import { type Reservation } from "@@/models/reservation";
+import type { Product } from "@@/models/product";
+import { getReservationStatus } from "@@/lib/reservation";
 
 const config = useRuntimeConfig();
 

@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { ReservationStatus, type Reservation } from "~/models/reservation";
+import { ReservationStatus, type Reservation } from "../models/reservation";
 
 const startOfToday = DateTime.now().startOf("day");
 const endOfToday = DateTime.now().startOf("day");

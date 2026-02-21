@@ -46,10 +46,10 @@
 
 <script lang="ts" setup>
 import AdminReservationTable from "@/components/admin/AdminReservationsTable.vue";
-import { isToday, startOfUTCDate, endOfUTCDate, formatDate } from "~/lib/date";
+import { isToday, startOfUTCDate, endOfUTCDate, formatDate } from "@@/lib/date";
 import { ArrowRight, ArrowLeft } from "@iconoir/vue";
 import TabHeader from "../TabHeader.vue";
-import type { Reservation } from "~/models/reservation";
+import type { Reservation } from "@@/models/reservation";
 import type { RecordModel } from "pocketbase";
 import type { EventHookOn } from "@vueuse/core";
 

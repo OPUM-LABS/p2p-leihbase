@@ -19,7 +19,7 @@ import type { EventHookOn } from "@vueuse/core";
 import type { RecordModel, ListResult } from "pocketbase";
 import AdminReservationTable from "@/components/admin/AdminReservationsTable.vue";
 import TabHeader from "../TabHeader.vue";
-import type { Reservation } from "~/models/reservation";
+import type { Reservation } from "@@/models/reservation";
 
 const { pb } = usePocketbase();
 const { t } = useI18n({

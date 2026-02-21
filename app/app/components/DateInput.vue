@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { formatDate, toShortISO } from "~/lib/date";
+import { formatDate, toShortISO } from "@@/lib/date";
 import { ArrowLeft, ArrowRight } from "@iconoir/vue";
 
 const { t, locale } = useI18n();
