@@ -41,7 +41,7 @@ RUN mise run mailpit ::: //pocketbase:setup
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 COPY package.json pnpm-* ./
-COPY app/package.json ./app/
+COPY web/package.json ./web/
 COPY tests/package.json ./tests/
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 

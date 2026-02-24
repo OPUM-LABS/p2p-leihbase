@@ -11,16 +11,16 @@ ENV NUXT_HOST=0.0.0.0
 
 ENV NODE_ENV=production
 
-WORKDIR /app
+WORKDIR /web
 
 
 FROM base AS build
 COPY . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm --filter @leihbase/app run build 
+RUN pnpm --filter @leihbase/web run build 
 
 FROM base AS prod
 ENV NODE_ENV=production
-COPY --from=build /app/app/.output /app/.output
+COPY --from=build /web/app/.output /web/.output
 CMD node .output/server/index.mjs
 

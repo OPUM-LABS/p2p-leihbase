@@ -1,5 +1,5 @@
 {
-  "name": "@leihbase/app",
+  "name": "@leihbase/web",
   "private": true,
   "type": "module",
   "scripts": {

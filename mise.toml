@@ -5,7 +5,7 @@ pnpm = "10.29.1"
 node = "22.22.0"
 
 [monorepo]
-config_roots = ["app", "pocketbase", "tests"]
+config_roots = ["web", "pocketbase", "tests"]
 
 [env]
 _.source = "./scripts/env.sh"
