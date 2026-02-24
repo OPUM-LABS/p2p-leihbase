@@ -47,6 +47,12 @@ export default defineNuxtConfig({
 
   modules: ["@pinia/nuxt", "./modules/pocketbase", "@nuxtjs/i18n"],
 
+  i18n: {
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
+  },
+
   devtools: { enabled: true },
 
   vue: {
