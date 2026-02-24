@@ -11,8 +11,7 @@ ENV NUXT_HOST=0.0.0.0
 
 ENV NODE_ENV=production
 
-WORKDIR /web
-
+WORKDIR /app
 
 FROM base AS build
 COPY . .
@@ -21,6 +20,6 @@ RUN pnpm --filter @leihbase/web run build
 
 FROM base AS prod
 ENV NODE_ENV=production
-COPY --from=build /web/app/.output /web/.output
+COPY --from=build /app/web/.output /app/.output
 CMD node .output/server/index.mjs
 
