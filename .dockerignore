@@ -6,9 +6,9 @@ Dockerfile.dev
 docker-compose.dev.yaml
 docker-compose.yaml
 
-app/.nuxt
-app/.output
-app/Dockerfile
+web/.nuxt
+web/.output
+web/Dockerfile
 
 */pb_data
 pocketbase/pocketbase

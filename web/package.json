@@ -1,0 +1,37 @@
+{
+  "name": "@leihbase/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "start": "node .output/server/index.mjs",
+    "postinstall": "nuxt prepare",
+    "typecheck": "npx nuxt typecheck",
+    "taze:major": "taze major -wIr",
+    "taze:minor": "taze minor -wIr"
+  },
+  "dependencies": {
+    "@iconoir/vue": "^7.11.0",
+    "@nuxtjs/i18n": "^9.5.6",
+    "@shoelace-style/shoelace": "^2.20.1",
+    "@vueup/vue-quill": "^1.2.0",
+    "@vueuse/core": "^11.3.0",
+    "cally": "^0.7.2",
+    "luxon": "^3.7.2",
+    "nuxt": "^4.3.1",
+    "pinia": "^3.0.4",
+    "pocketbase": "^0.26.6"
+  },
+  "devDependencies": {
+    "@nuxt/kit": "^4.3.1",
+    "@pinia/nuxt": "^0.5.5",
+    "sass": "^1.97.1",
+    "taze": "^0.18.0",
+    "typescript": "^5.9.3",
+    "vue-tsc": "^2.2.12"
+  },
+  "packageManager": "pnpm@10.26.1"
+}

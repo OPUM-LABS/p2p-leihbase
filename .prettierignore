@@ -1,6 +1,6 @@
 node_modules
-app/.nuxt
-app/.output
+web/.nuxt
+web/.output
 pocketbase/pb_data
 pocketbase/pb_migrations
 pnpm-lock.yaml
