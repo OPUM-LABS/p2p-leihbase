@@ -115,7 +115,7 @@ import AccordionTrigger from "@/components/Accordion/AccordionTrigger.vue";
 import {
   ReservationCancellationStatus,
   useReservationCancellation,
-} from "@@/composables/useReservationCancellation";
+} from "@/composables/useReservationCancellation";
 import { formatDate } from "@@/lib/date";
 import { getReservationStatus } from "@@/lib/reservation";
 import { formatCurrency } from "@@/lib/currency";
