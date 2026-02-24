@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}"
-          file: "app/Dockerfile"
+          file: "web/Dockerfile"
           target: prod
           push: true
           tags: lumocra/leihbase-webapp:latest
