@@ -120,7 +120,7 @@ function saveSentEmail(reservation, type) {
   const sent_emails = reservation.getStringSlice("sent_emails");
   sent_emails.push(type);
   reservation.set("sent_emails", sent_emails);
-  $app.saveRecord(reservation);
+  $app.save(reservation);
 }
 
 /**
@@ -134,7 +134,7 @@ function removeSentEmail(reservation, type) {
     "sent_emails",
     sent_emails.filter((t) => t !== type)
   );
-  $app.saveRecord(reservation);
+  $app.save(reservation);
   return reservation;
 }
 
