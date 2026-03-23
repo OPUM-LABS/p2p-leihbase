@@ -1,0 +1,47 @@
+<template>
+  <component :is="is" class="label">
+    <slot />
+    <span v-if="!required && !hideRequired"> ({{ t("optional") }})</span>
+  </component>
+</template>
+
+<script lang="ts" setup>
+withDefaults(
+  defineProps<{
+    is?: string;
+    required?: boolean;
+    hideRequired?: boolean;
+  }>(),
+  {
+    is: "label",
+    required: false,
+    hideRequired: false,
+  }
+);
+const { t } = useI18n({
+  useScope: "local",
+});
+</script>
+
+<style scoped>
+.label {
+  display: block;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-2);
+}
+.label span {
+  font-weight: var(--font-weight-normal);
+  color: var(--text-color-light);
+}
+</style>
+
+<i18n lang="json">
+{
+  "en": {
+    "optional": "optional"
+  },
+  "de": {
+    "optional": "optional"
+  }
+}
+</i18n>

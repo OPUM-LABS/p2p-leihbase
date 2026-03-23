@@ -1,8 +1,10 @@
 <template>
-  <FormRow :for="id" :label="label" :required="required" class="formrow">
+  <div class="root">
+    <FormLabel :for="id" :required="required">{{ label }}</FormLabel>
     <div class="textarea">
       <ClientOnly>
         <QuillEditor
+          :id="id"
           ref="editor"
           theme="snow"
           v-model:content="model"
@@ -15,10 +17,12 @@
         />
       </ClientOnly>
     </div>
-  </FormRow>
+  </div>
 </template>
 
 <script lang="ts" setup>
+import FormLabel from "./FormLabel.vue";
+
 let QuillEditor;
 if (process.client) {
   ({ QuillEditor } = await import("@vueup/vue-quill"));
@@ -46,13 +50,12 @@ watch(model, (newValue) => {
 </script>
 
 <style scoped>
+.root {
+  width: 100%;
+}
 .lb-input {
   line-height: 1.15;
   padding: var(--spacing-3) var(--spacing-3);
-}
-.formrow {
-  display: flex;
-  flex-direction: column;
 }
 .textarea {
   height: 10rem;
