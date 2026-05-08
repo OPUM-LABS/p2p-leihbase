@@ -11,8 +11,8 @@
             ? t('loading')
             : records && records.length > 0
               ? multiple
-                ? records.map((r) => r[search[0]]).join(', ')
-                : records[0][search[0]]
+                ? records.map((r) => r[columns[0]]).join(', ')
+                : records[0][columns[0]]
               : t('none')
         "
         disabled
@@ -20,7 +20,7 @@
         :data-testid="dataTestid"
         :class="{ 'lb-input': true }"
       />
-      <button @click.prevent="handleClick">
+      <button @click.prevent="showRecordPicker = true">
         {{ t("select") }}
       </button>
     </div>
@@ -28,12 +28,24 @@
       <small>{{ description }}</small>
     </p>
   </div>
+
+  <Teleport to="body">
+    <RecordPicker
+      v-model:open="showRecordPicker"
+      :collection="collection"
+      :columns="columns"
+      :multiple="multiple"
+      :selected="records"
+      :title="label"
+      @select="handleSelect"
+    />
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { type RecordModel } from "pocketbase";
-import { useRecordPickerStore } from "@/stores/record-picker";
+import type { RecordModel } from "pocketbase";
 import { equalValues } from "@@/lib/array";
+import RecordPicker from "./RecordPicker.vue";
 
 const { t } = useI18n({
   useScope: "local",
@@ -46,7 +58,7 @@ const props = defineProps<{
   id: string;
   label: string;
   collection: string;
-  search: string[];
+  columns: string[];
   name?: string;
   required?: boolean;
   disabled?: boolean;
@@ -56,12 +68,13 @@ const props = defineProps<{
   description?: string;
 }>();
 
-const recordPickerStore = useRecordPickerStore();
-const { id, selected } = storeToRefs(recordPickerStore);
-
+const showRecordPicker = ref(false);
 const records = ref<RecordModel[] | null>(null);
-const isLoading = ref(true);
+const isLoading = ref(false);
 
+/**
+ * On input value change, decide if displayed value should be refetched
+ */
 watch(model, (newModelValue) => {
   const active = (records.value || []).map((record) => record.id);
   if (!newModelValue) {
@@ -80,21 +93,9 @@ watch(model, (newModelValue) => {
   refresh();
 });
 
-watch(selected, (newSelected) => {
-  if (id.value !== props.id) {
-    return;
-  }
-  records.value = newSelected;
-  model.value =
-    newSelected && newSelected.length > 0
-      ? props.multiple
-        ? newSelected?.map((r) => r.id)
-        : newSelected[0].id
-      : props.multiple
-        ? []
-        : "";
-});
-
+/**
+ * Refetches active entries, to render readable values in the input
+ */
 async function refresh() {
   if (!model.value) {
     isLoading.value = false;
@@ -107,18 +108,20 @@ async function refresh() {
   isLoading.value = false;
 }
 
-function handleClick() {
-  recordPickerStore.show({
-    id: props.id,
-    title: props.label,
-    collection: props.collection,
-    selected: records.value,
-    columns: props.search,
-    multiple: props.multiple,
-  });
+/**
+ * Update model based on selected records in the RecordPicker
+ */
+function handleSelect(selectedRecords: RecordModel[]) {
+  records.value = selectedRecords;
+  model.value =
+    selectedRecords && selectedRecords.length > 0
+      ? props.multiple
+        ? selectedRecords.map((r) => r.id)
+        : selectedRecords[0].id
+      : props.multiple
+        ? []
+        : "";
 }
-
-refresh();
 </script>
 
 <style lang="scss" scoped>

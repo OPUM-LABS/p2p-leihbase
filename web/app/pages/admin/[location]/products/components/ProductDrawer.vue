@@ -45,7 +45,7 @@
         id="product-drawer-categories-input"
         :label="t('categories')"
         collection="categories"
-        :search="['name_' + locale]"
+        :columns="['name_' + locale]"
         v-model="categories"
         multiple
       />
@@ -78,7 +78,7 @@
         id="product-drawer-user-input"
         :label="t('user')"
         collection="users"
-        :search="['name', 'email']"
+        :columns="['name', 'email']"
         v-model="user"
         :description="t('user_description')"
       />

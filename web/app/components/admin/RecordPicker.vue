@@ -23,46 +23,59 @@
 
 <script lang="ts" setup>
 import type { RecordModel } from "pocketbase";
-import { useRecordPickerStore } from "@/stores/record-picker";
 import { Check } from "@iconoir/vue";
 
-const props = defineProps<{ id: string }>();
+const props = defineProps<{
+  collection: string;
+  columns: string[];
+  multiple: boolean;
+  selected: RecordModel[] | null;
+  title: string;
+}>();
+
+const open = defineModel<boolean>("open");
+
+const emit = defineEmits<{
+  (e: "select", records: RecordModel[]): void;
+}>();
 
 const { pb } = usePocketbase();
 
-const { open, title, collection, columns, selected, multiple } = storeToRefs(
-  useRecordPickerStore()
-);
-
 // Search query
 const query = ref("");
+
+/**
+ * Reset query when closing dialog
+ */
 watch(open, () => {
-  query.value = "";
+  if (!open.value) {
+    query.value = "";
+  }
 });
 
 const selectedIds = computed(() => {
-  if (!selected.value) {
+  if (!props.selected) {
     return [];
   }
-  return selected.value.map((s) => s.id);
+  return props.selected.map((s) => s.id);
 });
 
 /**
- * Fetches all documents for the current active collection
+ * Fetches all documents for the current collection
  */
 const { data: documents, refresh } = await useAsyncData(
-  props.id,
+  `record-picker-${props.collection}`,
   async () => {
-    if (!collection.value || !columns.value) {
+    if (!props.collection || !props.columns) {
       throw new Error(
         "[RecordPicker] no `collection` or `columns` parameter set"
       );
     }
-    const records = await pb.collection(collection.value).getFullList(
+    const records = await pb.collection(props.collection).getFullList(
       query.value
         ? {
             filter: pb.filter(
-              columns.value.map((s) => `${s} ~ {:query}`).join(" || "),
+              props.columns.map((s) => `${s} ~ {:query}`).join(" || "),
               {
                 query: query.value,
               }
@@ -72,7 +85,7 @@ const { data: documents, refresh } = await useAsyncData(
     );
     return structuredClone(records);
   },
-  { watch: [open, query] }
+  { watch: [query] }
 );
 
 function handleQueryInput() {
@@ -81,26 +94,26 @@ function handleQueryInput() {
 
 function handleRecordClick(_record: RecordModel) {
   // Multiple
-  if (multiple.value) {
+  if (props.multiple) {
+    let newSelected: RecordModel[];
     if (selectedIds.value.includes(_record.id)) {
       // If already active, remove
-      selected.value = (selected.value || []).filter(
-        (s) => s.id !== _record.id
-      );
+      newSelected = (props.selected || []).filter((s) => s.id !== _record.id);
     } else {
       // If not already active, add
-      selected.value = [...(selected.value || []), _record];
+      newSelected = [...(props.selected || []), _record];
     }
+    emit("select", newSelected);
   } else {
     // Singular
     if (
-      selected.value &&
-      selected.value.length > 0 &&
-      selected.value[0].id === _record.id
+      props.selected &&
+      props.selected.length > 0 &&
+      props.selected[0].id === _record.id
     ) {
-      selected.value = [];
+      emit("select", []);
     } else {
-      selected.value = [_record];
+      emit("select", [_record]);
     }
     open.value = false;
   }

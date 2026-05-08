@@ -72,11 +72,9 @@
     @update="handleReservationUpdate"
   />
 
-  <RecordPicker id="reservations-record-picker" />
 </template>
 
 <script lang="ts" setup>
-import RecordPicker from "@/components/admin/RecordPicker.vue";
 import ReservationDrawer from "./components/ReservationDrawer.vue";
 import TodayTab from "./components/tabs/Today.vue";
 import OngoingTab from "./components/tabs/Ongoing.vue";

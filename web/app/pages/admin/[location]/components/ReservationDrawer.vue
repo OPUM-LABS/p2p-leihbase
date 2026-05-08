@@ -24,14 +24,14 @@
         id="reservation-drawer-product-input"
         :label="t('product')"
         collection="products"
-        :search="['name']"
+        :columns="['name']"
         v-model="productId"
       />
       <RecordPickerInput
         id="reservation-drawer-user-input"
         :label="t('user')"
         collection="users"
-        :search="['name', 'email']"
+        :columns="['name', 'email']"
         v-model="userId"
       />
       <DateInput
