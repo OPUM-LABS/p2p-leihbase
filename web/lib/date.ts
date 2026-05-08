@@ -19,7 +19,7 @@ const FORMATS = {
 
 export function formatDate(
   date: string | Date,
-  format: string,
+  format: keyof typeof FORMATS,
   locale: string
 ) {
   return DateTime.fromJSDate(new Date(date))
