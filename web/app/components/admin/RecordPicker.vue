@@ -8,7 +8,7 @@
         @input="handleQueryInput"
       />
     </template>
-    <table cellspacing="0">
+    <table v-if="documents && documents.length > 0" cellspacing="0">
       <tr v-for="d in documents" :key="d.id">
         <td width="36">
           <Check v-if="selectedIds?.includes(d.id)" />
@@ -18,12 +18,21 @@
         </td>
       </tr>
     </table>
+    <table v-else cellspacing="0">
+      <tr>
+        <td>{{ t("no_results") }}</td>
+      </tr>
+    </table>
   </Dialog>
 </template>
 
 <script lang="ts" setup>
 import type { RecordModel } from "pocketbase";
 import { Check } from "@iconoir/vue";
+
+const { t } = useI18n({
+  useScope: "local",
+});
 
 const props = defineProps<{
   collection: string;
@@ -137,3 +146,14 @@ table td {
   padding: 0.25rem 0.5rem;
 }
 </style>
+
+<i18n lang="json">
+{
+  "en": {
+    "no_results": "No search results"
+  },
+  "de": {
+    "no_results": "Keine Suchergebnisse"
+  }
+}
+</i18n>
