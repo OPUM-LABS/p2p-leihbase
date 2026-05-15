@@ -1,49 +1,66 @@
 <template>
-  <FormRow :for="id" :label="label">
-    <div class="row">
-      <input
-        type="checkbox"
-        :id="id"
-        :name="name"
-        :data-testid="dataTestid"
-        :disabled="disabled"
-        :readonly="readonly"
-        v-model="model"
-      />
-      <label :for="id" role="switch" :aria-checked="model">
+  <div :class="{ root: true, ['orientation-' + orientation]: true }">
+    <input
+      type="checkbox"
+      :id="id"
+      :name="name"
+      :data-testid="dataTestid"
+      :disabled="disabled"
+      :readonly="readonly"
+      v-model="model"
+    />
+    <label :for="id" role="switch" :aria-checked="model">
+      <span class="switch">
         <Check class="check" />
-      </label>
-    </div>
-  </FormRow>
+      </span>
+      <FormLabel is="span" hide-required>{{ label }}</FormLabel>
+    </label>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { Check } from "@iconoir/vue";
+import FormLabel from "./FormLabel.vue";
+
 const model = defineModel<boolean>();
-const props = defineProps<{
-  id: string;
-  label: string;
-  name?: string;
-  placeholder?: string;
-  required?: boolean;
-  disabled?: boolean;
-  readonly?: boolean;
-  type?: string;
-  dataTestid?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    id: string;
+    label: string;
+    name?: string;
+    placeholder?: string;
+    required?: boolean;
+    disabled?: boolean;
+    readonly?: boolean;
+    type?: string;
+    dataTestid?: string;
+    orientation?: "vertical" | "horizontal";
+  }>(),
+  { orientation: "vertical" }
+);
 </script>
 
 <style scoped>
-.row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.root {
+  width: 100%;
+}
+.root.orientation-vertical label {
+  flex-direction: column-reverse;
+}
+label span {
+  font-weight: var(--font-weight-bold);
+  color: var(--text-color);
 }
 input {
   opacity: 0;
   position: absolute;
 }
 label {
+  display: inline-flex;
+  gap: var(--spacing-2);
+  cursor: pointer;
+}
+label .switch {
   --margin: 0.2rem;
   --knob-size: 1.1rem;
   display: inline-block;
@@ -59,7 +76,7 @@ label {
   color: white;
   position: relative;
 }
-label .check {
+label .switch .check {
   display: none;
   position: absolute;
   width: calc(var(--knob-size) - 4px);
@@ -69,7 +86,7 @@ label .check {
   transform: translateY(-50%);
   stroke-width: 3px;
 }
-label:after {
+label .switch:before {
   content: "";
   display: block;
   height: var(--knob-size);
@@ -80,13 +97,13 @@ label:after {
   margin-left: 0.2rem;
   transition: all 300ms;
 }
-input:checked + label {
+input:checked + label .switch {
   background: #4bd865;
 }
-input:checked + label .check {
+input:checked + label .switch .check {
   display: block;
 }
-input:checked + label:after {
+input:checked + label .switch:before {
   transform: translate3d(100%, 0, 0);
 }
 </style>

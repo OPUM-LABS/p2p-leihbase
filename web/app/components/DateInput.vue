@@ -1,5 +1,6 @@
 <template>
-  <FormRow :for="id" :label="label" :required="required">
+  <div class="root">
+    <FormLabel :for="id" :required="required">{{ label }}</FormLabel>
     <Popup v-model:open="showPopup">
       <input
         :id="id"
@@ -28,12 +29,13 @@
         </ClientOnly>
       </template>
     </Popup>
-  </FormRow>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { formatDate, toShortISO } from "@@/lib/date";
 import { ArrowLeft, ArrowRight } from "@iconoir/vue";
+import FormLabel from "./FormLabel.vue";
 
 const { t, locale } = useI18n();
 
@@ -81,6 +83,14 @@ function handleDateChange() {
 </script>
 
 <style scoped>
+.root {
+  width: 100%;
+}
+label {
+  display: block;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-2);
+}
 calendar-date::part(previous),
 calendar-date::part(next) {
   background: transparent;

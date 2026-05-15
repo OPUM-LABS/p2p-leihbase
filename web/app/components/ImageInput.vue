@@ -1,5 +1,6 @@
 <template>
-  <FormRow :for="id" :label="label" :required="required">
+  <div class="root">
+    <FormLabel :for="id" :required="required">{{ label }}</FormLabel>
     <div class="images">
       <!-- Existing images -->
       <div v-for="image in images" class="image">
@@ -36,7 +37,7 @@
     <p v-if="description">
       <small>{{ description }}</small>
     </p>
-  </FormRow>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -85,6 +86,9 @@ function createObjectURL(file: File) {
 </script>
 
 <style scoped>
+.root {
+  width: 100%;
+}
 .images {
   display: flex;
   align-items: center;

@@ -1,6 +1,9 @@
 <template>
-  <FormRow :for="id" :label="label" :required="required">
-    <div class="row">
+  <div class="root">
+    <FormLabel v-if="label" :for="id" :required="required">
+      {{ label }}
+    </FormLabel>
+    <div class="wrapper">
       <div v-if="!!$slots.prefix" class="prefix">
         <slot name="prefix"></slot>
       </div>
@@ -13,17 +16,20 @@
         :disabled="disabled"
         :readonly="readonly"
         :data-testid="dataTestid"
+        :aria-describedby="`${id}-description`"
         v-model="model"
         :class="{ 'lb-input': true, 'has-prefix': !!$slots.prefix }"
       />
     </div>
-    <p v-if="description">
+    <p v-if="description" :id="`${id}-description`">
       <small>{{ description }}</small>
     </p>
-  </FormRow>
+  </div>
 </template>
 
 <script lang="ts" setup>
+import FormLabel from "./FormLabel.vue";
+
 const model = defineModel();
 defineProps<{
   id?: string;
@@ -40,9 +46,13 @@ defineProps<{
 </script>
 
 <style scoped>
-.row {
+.root {
+  width: 100%;
+}
+.wrapper {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 .prefix {
   display: block;

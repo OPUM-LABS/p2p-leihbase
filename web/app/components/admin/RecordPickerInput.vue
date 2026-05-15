@@ -1,9 +1,10 @@
 <template>
-  <FormRow :for="id || undefined" :label="label" :required="required">
+  <div class="root">
+    <FormLabel :for="id" :required="required">{{ label }}</FormLabel>
     <div class="row">
       <input
         type="text"
-        :id="id || undefined"
+        :id="id"
         :name="name"
         :value="
           isLoading
@@ -26,7 +27,7 @@
     <p v-if="description">
       <small>{{ description }}</small>
     </p>
-  </FormRow>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -121,6 +122,9 @@ refresh();
 </script>
 
 <style lang="scss" scoped>
+.root {
+  width: 100%;
+}
 .row {
   display: flex;
   border: 1px solid var(--input-border-color);

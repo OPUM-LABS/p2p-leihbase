@@ -1,11 +1,13 @@
 <template>
   <TabHeader fixed-width>
     <template #prefix>
+      <!-- Previous day button -->
       <button class="change-date-button" @click="handleDayBackward">
         <ArrowLeft class="icon" />
       </button>
     </template>
     <div class="title-wrapper">
+      <!-- Title & loading state -->
       <h3>
         <LoadingSpinner v-if="status === 'pending'" size="sm" />
         <span v-else>
@@ -16,9 +18,19 @@
       </h3>
     </div>
     <template #suffix>
+      <!-- Next day button -->
       <button class="change-date-button" @click="handleDayForward">
         <ArrowRight class="icon" />
       </button>
+      <!-- Show cancelled switch -->
+      <Switch
+        id="show-cancelled"
+        class="show-cancelled"
+        :label="t('show_cancelled')"
+        orientation="horizontal"
+        v-model="showCancelled"
+        @change="refresh()"
+      />
     </template>
   </TabHeader>
 
@@ -52,6 +64,7 @@ import TabHeader from "../TabHeader.vue";
 import type { Reservation } from "@@/models/reservation";
 import type { RecordModel } from "pocketbase";
 import type { EventHookOn } from "@vueuse/core";
+import Switch from "@/components/Switch.vue";
 
 const { pb } = usePocketbase();
 const { locale } = useI18n();
@@ -71,6 +84,7 @@ props.reservationUpdateHook(() => {
 });
 
 const date = ref(new Date(Date.now()));
+const showCancelled = ref(false);
 
 const {
   data: reservations,
@@ -81,7 +95,7 @@ const {
   async () => {
     const reservations = await pb.collection("reservations").getFullList({
       filter: pb.filter(
-        "location = {:location} && ((start >= {:dateStart} && start <= {:dateEnd}) || (end >= {:dateStart} && end <= {:dateEnd}))",
+        `location = {:location} ${showCancelled.value ? "" : "&& cancelled = false"} && ((start >= {:dateStart} && start <= {:dateEnd}) || (end >= {:dateStart} && end <= {:dateEnd}))`,
         {
           location: props.location.id,
           dateStart: startOfUTCDate(date.value),
@@ -128,6 +142,10 @@ h3 {
     height: 1em;
   }
 }
+.show-cancelled {
+  margin-left: auto;
+  width: auto;
+}
 </style>
 
 <i18n lang="json">
@@ -136,13 +154,15 @@ h3 {
     "today": "today",
     "Today": "Today",
     "no_reservations_on_date": "No reservations starting or ending {date}",
-    "on": "at"
+    "on": "at",
+    "show_cancelled": "Show cancelled"
   },
   "de": {
     "today": "heute",
     "Today": "Heute",
     "no_reservations_on_date": "Es gibt keine Reservierungen, die {date} starten oder enden",
-    "on": "am"
+    "on": "am",
+    "show_cancelled": "Stornierungen anzeigen"
   }
 }
 </i18n>

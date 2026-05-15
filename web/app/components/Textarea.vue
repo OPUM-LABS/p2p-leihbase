@@ -1,5 +1,6 @@
 <template>
-  <FormRow :for="id" :label="label" :required="required">
+  <div class="root">
+    <FormLabel :for="id" :required="required">{{ label }}</FormLabel>
     <textarea
       :id="id"
       :name="name"
@@ -13,7 +14,10 @@
       class="lb-input"
     >
     </textarea>
-  </FormRow>
+    <p v-if="description" :id="`${id}-description`">
+      <small>{{ description }}</small>
+    </p>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -26,11 +30,15 @@ const props = defineProps<{
   required?: boolean;
   disabled?: boolean;
   readonly?: boolean;
+  description?: string;
   dataTestid?: string;
 }>();
 </script>
 
 <style scoped>
+.root {
+  width: 100%;
+}
 .lb-input {
   line-height: 1.15;
   padding: var(--spacing-3) var(--spacing-3);

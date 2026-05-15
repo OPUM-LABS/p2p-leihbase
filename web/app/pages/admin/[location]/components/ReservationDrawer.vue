@@ -38,11 +38,13 @@
         id="reservation-drawer-start-input"
         :label="t('start')"
         v-model="start"
+        required
       />
       <DateInput
         id="reservation-drawer-end-input"
         :label="t('end')"
         v-model="end"
+        required
       />
       <Switch
         id="reservation-drawer-started-input"
