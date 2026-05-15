@@ -19,9 +19,9 @@
     "taze:minor": "taze minor -wIr"
   },
   "devDependencies": {
-    "@nuxt/test-utils": "^3.18.0",
-    "@playwright/test": "^1.51.0",
-    "@types/node": "^20.17.24",
+    "@nuxt/test-utils": "^3.23.0",
+    "@playwright/test": "^1.58.0",
+    "@types/node": "^20.19.30",
     "taze": "^0.18.0"
   },
   "dependencies": {
