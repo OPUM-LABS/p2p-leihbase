@@ -8,8 +8,6 @@
         :name="name"
         :value="value"
         :placeholder="placeholder"
-        disabled
-        readonly
         :required="required"
         :data-testid="dataTestid"
         :class="{ 'lb-input': true }"
@@ -29,7 +27,7 @@
       v-model:open="showRecordPicker"
       :collection="collection"
       :columns="columns"
-      :multiple="multiple"
+      :multiple="multiple || false"
       :selected="records"
       :title="label"
       @select="handleSelect"
@@ -151,6 +149,7 @@ function handleSelect(selectedRecords: RecordModel[]) {
 input {
   border: 0;
   color: var(--text-color);
+  pointer-events: none;
 }
 button {
   border-radius: 0 var(--input-border-radius) var(--input-border-radius) 0;
