@@ -29,9 +29,6 @@ SHELL ["/bin/sh", "-c"]
 COPY mise.toml mise.toml
 RUN mise trust mise.toml && mise install
 
-# setup playwright
-RUN npx playwright install chromium webkit --with-deps
-
 # setup mailpit and pocketbase
 COPY scripts ./scripts
 COPY pocketbase/mise.toml ./pocketbase/
@@ -44,6 +41,11 @@ COPY package.json pnpm-* ./
 COPY web/package.json ./web/
 COPY tests/package.json ./tests/
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+# setup playwright
+WORKDIR /leihbase/tests
+RUN npx playwright install chromium webkit --with-deps
+WORKDIR /leihbase
 
 COPY . .
 
