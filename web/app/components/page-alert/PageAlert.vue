@@ -28,7 +28,7 @@ const { t } = useI18n({
 const userStore = useUserStore();
 
 const show = ref(false);
-const type = ref(null);
+const type = ref<string | null>(null);
 
 // If a banner should be shown
 if (userStore.banner) {

@@ -6,21 +6,13 @@
         type="text"
         :id="id"
         :name="name"
-        :value="
-          isLoading
-            ? t('loading')
-            : records && records.length > 0
-              ? multiple
-                ? records.map((r) => r[search[0]]).join(', ')
-                : records[0][search[0]]
-              : t('none')
-        "
-        disabled
-        readonly
+        :value="value"
+        :placeholder="placeholder"
+        :required="required"
         :data-testid="dataTestid"
         :class="{ 'lb-input': true }"
       />
-      <button @click.prevent="handleClick">
+      <button @click.prevent="showRecordPicker = true">
         {{ t("select") }}
       </button>
     </div>
@@ -28,12 +20,25 @@
       <small>{{ description }}</small>
     </p>
   </div>
+
+  <Teleport to="body">
+    <RecordPicker
+      :id="`${id}-record-picker`"
+      v-model:open="showRecordPicker"
+      :collection="collection"
+      :columns="columns"
+      :multiple="multiple || false"
+      :selected="records"
+      :title="label"
+      @select="handleSelect"
+    />
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { type RecordModel } from "pocketbase";
-import { useRecordPickerStore } from "@/stores/record-picker";
+import type { RecordModel } from "pocketbase";
 import { equalValues } from "@@/lib/array";
+import RecordPicker from "./RecordPicker.vue";
 
 const { t } = useI18n({
   useScope: "local",
@@ -46,7 +51,7 @@ const props = defineProps<{
   id: string;
   label: string;
   collection: string;
-  search: string[];
+  columns: [string, ...string[]];
   name?: string;
   required?: boolean;
   disabled?: boolean;
@@ -56,12 +61,30 @@ const props = defineProps<{
   description?: string;
 }>();
 
-const recordPickerStore = useRecordPickerStore();
-const { id, selected } = storeToRefs(recordPickerStore);
-
+const showRecordPicker = ref(false);
 const records = ref<RecordModel[] | null>(null);
-const isLoading = ref(true);
+const isLoading = ref(false);
 
+const value = computed(() => {
+  if (!records.value || records.value.length === 0 || !records.value[0]) {
+    return undefined;
+  }
+  if (props.multiple) {
+    return records.value.map((r) => r[props.columns[0]]).join(", ");
+  }
+  return records.value[0][props.columns[0]];
+});
+
+const placeholder = computed(() => {
+  if (isLoading.value) {
+    return t("loading");
+  }
+  return t("none");
+});
+
+/**
+ * On input value change, decide if displayed value should be refetched
+ */
 watch(model, (newModelValue) => {
   const active = (records.value || []).map((record) => record.id);
   if (!newModelValue) {
@@ -80,21 +103,9 @@ watch(model, (newModelValue) => {
   refresh();
 });
 
-watch(selected, (newSelected) => {
-  if (id.value !== props.id) {
-    return;
-  }
-  records.value = newSelected;
-  model.value =
-    newSelected && newSelected.length > 0
-      ? props.multiple
-        ? newSelected?.map((r) => r.id)
-        : newSelected[0].id
-      : props.multiple
-        ? []
-        : "";
-});
-
+/**
+ * Refetches active entries, to render readable values in the input
+ */
 async function refresh() {
   if (!model.value) {
     isLoading.value = false;
@@ -107,18 +118,23 @@ async function refresh() {
   isLoading.value = false;
 }
 
-function handleClick() {
-  recordPickerStore.show({
-    id: props.id,
-    title: props.label,
-    collection: props.collection,
-    selected: records.value,
-    columns: props.search,
-    multiple: props.multiple,
-  });
-}
+/**
+ * Update model based on selected records in the RecordPicker
+ */
+function handleSelect(selectedRecords: RecordModel[]) {
+  records.value = selectedRecords;
 
-refresh();
+  // No value
+  if (!selectedRecords || selectedRecords.length === 0 || !selectedRecords[0]) {
+    model.value = props.multiple ? [] : "";
+    return;
+  }
+
+  // Map records to ids/id
+  model.value = props.multiple
+    ? selectedRecords.map((r) => r.id)
+    : selectedRecords[0].id;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -132,6 +148,8 @@ refresh();
 }
 input {
   border: 0;
+  color: var(--text-color);
+  pointer-events: none;
 }
 button {
   border-radius: 0 var(--input-border-radius) var(--input-border-radius) 0;
