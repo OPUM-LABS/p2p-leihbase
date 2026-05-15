@@ -6,17 +6,11 @@
         type="text"
         :id="id"
         :name="name"
-        :value="
-          isLoading
-            ? t('loading')
-            : records && records.length > 0
-              ? multiple
-                ? records.map((r) => r[columns[0]]).join(', ')
-                : records[0][columns[0]]
-              : t('none')
-        "
+        :value="value"
+        :placeholder="placeholder"
         disabled
         readonly
+        :required="required"
         :data-testid="dataTestid"
         :class="{ 'lb-input': true }"
       />
@@ -31,6 +25,7 @@
 
   <Teleport to="body">
     <RecordPicker
+      :id="`${id}-record-picker`"
       v-model:open="showRecordPicker"
       :collection="collection"
       :columns="columns"
@@ -58,7 +53,7 @@ const props = defineProps<{
   id: string;
   label: string;
   collection: string;
-  columns: string[];
+  columns: [string, ...string[]];
   name?: string;
   required?: boolean;
   disabled?: boolean;
@@ -71,6 +66,23 @@ const props = defineProps<{
 const showRecordPicker = ref(false);
 const records = ref<RecordModel[] | null>(null);
 const isLoading = ref(false);
+
+const value = computed(() => {
+  if (!records.value || records.value.length === 0 || !records.value[0]) {
+    return undefined;
+  }
+  if (props.multiple) {
+    return records.value.map((r) => r[props.columns[0]]).join(", ");
+  }
+  return records.value[0][props.columns[0]];
+});
+
+const placeholder = computed(() => {
+  if (isLoading.value) {
+    return t("loading");
+  }
+  return t("none");
+});
 
 /**
  * On input value change, decide if displayed value should be refetched
@@ -113,14 +125,17 @@ async function refresh() {
  */
 function handleSelect(selectedRecords: RecordModel[]) {
   records.value = selectedRecords;
-  model.value =
-    selectedRecords && selectedRecords.length > 0
-      ? props.multiple
-        ? selectedRecords.map((r) => r.id)
-        : selectedRecords[0].id
-      : props.multiple
-        ? []
-        : "";
+
+  // No value
+  if (!selectedRecords || selectedRecords.length === 0 || !selectedRecords[0]) {
+    model.value = props.multiple ? [] : "";
+    return;
+  }
+
+  // Map records to ids/id
+  model.value = props.multiple
+    ? selectedRecords.map((r) => r.id)
+    : selectedRecords[0].id;
 }
 </script>
 
@@ -135,6 +150,7 @@ function handleSelect(selectedRecords: RecordModel[]) {
 }
 input {
   border: 0;
+  color: var(--text-color);
 }
 button {
   border-radius: 0 var(--input-border-radius) var(--input-border-radius) 0;
