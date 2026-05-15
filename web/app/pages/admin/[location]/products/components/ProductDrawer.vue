@@ -189,12 +189,16 @@ async function handleSubmit() {
     emit("update");
   } catch (err) {
     isSubmitting.value = false;
-    switch (err?.message) {
-      case "Overlapping_reservation.":
-        error.value = t("errors.overlapping_reservation");
-        break;
-      default:
-        error.value = t("errors.general");
+    if (err instanceof Error) {
+      switch (err?.message) {
+        case "Overlapping_reservation.":
+          error.value = t("errors.overlapping_reservation");
+          break;
+        default:
+          error.value = t("errors.general");
+      }
+    } else {
+      error.value = t("errors.general");
     }
   }
 }

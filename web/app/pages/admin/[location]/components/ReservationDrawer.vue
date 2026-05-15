@@ -26,6 +26,7 @@
         collection="products"
         :columns="['name']"
         v-model="productId"
+        required
       />
       <RecordPickerInput
         id="reservation-drawer-user-input"
@@ -222,24 +223,28 @@ async function handleSubmit() {
     emit("update");
   } catch (err) {
     isSubmitting.value = false;
-    switch (err?.message) {
-      case "Overlapping_reservation.":
-        error.value = t("errors.overlapping_reservation");
-        break;
-      case "Start_before_today.":
-        error.value = t("errors.start_before_today");
-        break;
-      case "End_before_today.":
-        error.value = t("errors.end_before_today");
-        break;
-      case "Start_and_end_equal.":
-        error.value = t("errors.start_and_end_equal");
-        break;
-      case "End_before_start.":
-        error.value = t("errors.end_before_start");
-        break;
-      default:
-        error.value = t("errors.general");
+    if (err instanceof Error) {
+      switch (err?.message) {
+        case "Overlapping_reservation.":
+          error.value = t("errors.overlapping_reservation");
+          break;
+        case "Start_before_today.":
+          error.value = t("errors.start_before_today");
+          break;
+        case "End_before_today.":
+          error.value = t("errors.end_before_today");
+          break;
+        case "Start_and_end_equal.":
+          error.value = t("errors.start_and_end_equal");
+          break;
+        case "End_before_start.":
+          error.value = t("errors.end_before_start");
+          break;
+        default:
+          error.value = t("errors.general");
+      }
+    } else {
+      error.value = t("errors.general");
     }
   }
 }
