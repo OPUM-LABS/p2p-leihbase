@@ -111,6 +111,7 @@
                 type="text"
                 :label="t('product')"
                 v-model="product.name"
+                required
                 disabled
                 readonly
               />
@@ -120,6 +121,7 @@
                 :is-date-disallowed="isDateDisallowed"
                 :show-outside-days="false"
                 data-testid="start-input"
+                required
               />
               <DateInput
                 :label="t('end')"
@@ -127,6 +129,7 @@
                 :is-date-disallowed="isDateDisallowed"
                 :show-outside-days="false"
                 data-testid="end-input"
+                required
               />
               <Textarea :label="t('message')" v-model="message" />
 
