@@ -5,7 +5,6 @@
         placeholder="Enter search query..."
         class="input"
         v-model="query"
-        @input="handleQueryInput"
       />
     </template>
     <table v-if="documents && documents.length > 0" cellspacing="0">
@@ -35,6 +34,7 @@ const { t } = useI18n({
 });
 
 const props = defineProps<{
+  id: string;
   collection: string;
   columns: string[];
   multiple: boolean;
@@ -73,7 +73,7 @@ const selectedIds = computed(() => {
  * Fetches all documents for the current collection
  */
 const { data: documents, refresh } = await useAsyncData(
-  `record-picker-${props.collection}`,
+  `record-picker-${props.id}-${props.collection}`,
   async () => {
     if (!props.collection || !props.columns) {
       throw new Error(
@@ -94,12 +94,8 @@ const { data: documents, refresh } = await useAsyncData(
     );
     return structuredClone(records);
   },
-  { watch: [query] }
+  { server: false, watch: [query] }
 );
-
-function handleQueryInput() {
-  refresh();
-}
 
 function handleRecordClick(_record: RecordModel) {
   // Multiple
@@ -118,10 +114,13 @@ function handleRecordClick(_record: RecordModel) {
     if (
       props.selected &&
       props.selected.length > 0 &&
+      props.selected[0] &&
       props.selected[0].id === _record.id
     ) {
+      // When clicking the active record, deselect it
       emit("select", []);
     } else {
+      // Otherwise select it
       emit("select", [_record]);
     }
     open.value = false;
