@@ -53,7 +53,7 @@ export const useUserStore = defineStore<"user", State>("user", {
       if (pb.authStore?.model?.id) {
         const reservations = await pb.collection("reservations").getFullList({
           filter: pb.filter("user = {:user}", {
-            user: pb.authStore.record.id,
+            user: pb.authStore?.record?.id,
           }),
         });
         this.reservations = reservations;
@@ -61,7 +61,7 @@ export const useUserStore = defineStore<"user", State>("user", {
     },
     async fetchUserLocations() {
       const { pb } = usePocketbase();
-      if (pb.authStore?.model?.id) {
+      if (pb.authStore?.record?.id) {
         const locations = await pb.collection("location").getFullList();
         this.locations = locations;
       }

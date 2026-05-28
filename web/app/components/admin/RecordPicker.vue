@@ -8,14 +8,16 @@
       />
     </template>
     <table v-if="documents && documents.length > 0" cellspacing="0">
-      <tr v-for="d in documents" :key="d.id">
-        <td width="36">
-          <Check v-if="selectedIds?.includes(d.id)" />
-        </td>
-        <td v-for="s in columns" @click="handleRecordClick(d)">
-          {{ d[s] }}
-        </td>
-      </tr>
+      <tbody>
+        <tr v-for="d in documents" :key="d.id">
+          <td width="36">
+            <Check v-if="selectedIds?.includes(d.id)" />
+          </td>
+          <td v-for="s in columns" @click="handleRecordClick(d)">
+            {{ d[s] }}
+          </td>
+        </tr>
+      </tbody>
     </table>
     <table v-else cellspacing="0">
       <tr>
