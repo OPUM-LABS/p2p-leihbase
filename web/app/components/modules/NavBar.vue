@@ -52,6 +52,11 @@
                 {{ t("admin") }}
               </DropdownMenuItem>
             </li>
+            <li v-if="isValid">
+              <DropdownMenuItem as="button" @click.prevent="handleLogout">
+                {{ t("logout") }}
+              </DropdownMenuItem>
+            </li>
           </ul>
         </DropdownMenuPopover>
       </DropdownMenu>
@@ -71,13 +76,20 @@ import { NuxtLink } from "#components";
 const { t } = useI18n({
   useScope: "local",
 });
-const { isValid } = usePocketbase();
+const { isValid, logout } = usePocketbase();
 const userStore = useUserStore();
 const { leihbase } = storeToRefs(useLeihbase());
 
 const header = ref();
 
 const { isSticky } = useIsSticky(header);
+
+function handleLogout() {
+  logout();
+  setTimeout(() => {
+    window.location.href = "/";
+  });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -166,13 +178,18 @@ header {
       margin: 0;
       padding: 0;
       li {
-        a {
+        a,
+        button {
           display: block;
+          background: none;
+          border: 0;
+          text-align: left;
           color: var(--text-color);
           padding: 0.5rem 1rem;
           text-decoration: none;
           width: 100%;
           font-weight: var(--font-weight-semibold);
+          cursor: pointer;
           &:hover,
           &:active {
             background-color: var(--secondary-color);
@@ -192,7 +209,8 @@ header {
     "login": "Login",
     "profile": "Profile",
     "reservations": "Reservations",
-    "admin": "Admin"
+    "admin": "Admin",
+    "logout": "Logout"
   },
   "de": {
     "menu": "Menu",
@@ -200,7 +218,8 @@ header {
     "login": "Einloggen",
     "profile": "Profil",
     "reservations": "Reservierungen",
-    "admin": "Admin"
+    "admin": "Admin",
+    "logout": "Ausloggen"
   }
 }
 </i18n>

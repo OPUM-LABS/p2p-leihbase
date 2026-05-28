@@ -166,7 +166,7 @@ footer {
     "title": "Einloggen",
     "text": "Noch kein Konto? {0}, um ein Konto zu erstellen.",
     "signup_text": "Registriere dich",
-    "password": "Kennwort",
+    "password": "Passwort",
     "error": "Einloggen nicht erfolgreich, bitte überprüfe deine Kontodaten, oder {0} um ein Konto zu erstellen",
     "error_signup": "melde dich an",
     "submit": "Einloggen",

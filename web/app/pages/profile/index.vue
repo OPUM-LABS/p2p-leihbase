@@ -24,7 +24,6 @@ const { pb, isValid, logout } = usePocketbase();
 const router = useRouter();
 
 const user = ref(null);
-const loggingOut = ref(false);
 
 const { t } = useI18n({
   useScope: "local",
@@ -39,12 +38,6 @@ if (!isValid.value) {
   router.push("/login");
 } else {
   user.value = await pb.collection("users").getOne(pb.authStore.record.id);
-}
-
-function onLogout() {
-  loggingOut.value = true;
-  logout();
-  window.location.href = "/";
 }
 </script>
 
