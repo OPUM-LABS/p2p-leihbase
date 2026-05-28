@@ -19,7 +19,7 @@
           "
           required
         />
-        <Divider class="divider" />
+        <Divider spacing="md" />
         <!-- New password -->
         <Input
           id="profile-edit-new-password-input"
@@ -107,10 +107,6 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.divider {
-  margin-block: 0.5rem;
 }
 
 .button-row {
