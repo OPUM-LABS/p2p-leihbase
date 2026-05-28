@@ -10,8 +10,9 @@
       <KeyValue :title="t('email')" :value="user?.email" />
       <Alert v-if="!user?.verified" variant="warning" size="sm">
         <span>
-          Your e-mail address is unverified.
-          <Link to="/profile/verify-email">More info</Link>.
+          {{ t("unverified") }}
+          <Link to="/profile/verify-email">{{ t("more_info") }}</Link
+          >.
         </span>
       </Alert>
       <Divider spacing="md" />
@@ -94,6 +95,8 @@ h1 {
     "name": "Name",
     "email": "E-mail",
     "password": "Password",
+    "unverified": "Your email address hasn't been confirmed yet.",
+    "more_info": "More info",
     "change_email": "Update e-mail",
     "change_password": "Update password",
     "logout": "Logout"
@@ -104,6 +107,8 @@ h1 {
     "name": "Name",
     "email": "E-Mail Address",
     "password": "Passwort",
+    "unverified": "Deine E-Mail-Adresse wurde noch nicht bestätigt.",
+    "more_info": "Mehr Infos",
     "change_email": "E-Mail Address ändern",
     "change_password": "Passwort ändern",
     "logout": "Ausloggen"

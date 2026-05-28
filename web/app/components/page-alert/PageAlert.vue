@@ -9,7 +9,11 @@
     {{ t("success_signup") }}
   </Alert>
   <Alert v-else-if="type === AFTER_SIGNUP_RESERVATION_INTENT">
-    {{ t("success_signup_with_intent") }}
+    <span>
+      <strong>{{ t("success_signup_with_intent_bold") }}</strong>
+      <br />
+      {{ t("success_signup_with_intent") }}
+    </span>
   </Alert>
 </template>
 
@@ -45,14 +49,16 @@ if (userStore.banner) {
   "en": {
     "success_login": "Logged in successfully!",
     "success_login_with_intent": "Logged in successfully! You can now continue reserving the product.",
-    "success_signup": "Signed up successfully!",
-    "success_signup_with_intent": "Signed up successfully! You can now continue reserving the product."
+    "success_signup": "Signed up successfully! A confirmation e-mail has been sent to your e-mail address.",
+    "success_signup_with_intent_bold": "Signed up successfully! A confirmation e-mail has been sent to your e-mail address.",
+    "success_signup_with_intent": "Reserve the product after confirming your e-mail address."
   },
   "de": {
     "success_login": "Erfolgreich eingeloggt!",
     "success_login_with_intent": "Erfolgreich eingeloggt! Der Gegenstand kann nun reserviert werden.",
-    "success_signup": "Erfolgreich registriert!",
-    "success_signup_with_intent": "Erfolgreich registriert! Der Gegenstand kann nun reserviert werden."
+    "success_signup": "Erfolgreich registriert! Eine Bestätigungs-E-Mail wurde an deine E-Mail-Adresse gesendet.",
+    "success_signup_with_intent_bold": "Erfolgreich registriert! Eine Bestätigungs-E-Mail wurde an deine E-Mail-Adresse gesendet.",
+    "success_signup_with_intent": "Reserviere den Gegenstand, nachdem du deine E-Mail-Adresse bestätigt hast."
   }
 }
 </i18n>

@@ -131,13 +131,13 @@ h1 {
     "success": "A new verification e-mail has been sent!"
   },
   "de": {
-    "title": "E-Mail verifizieren",
-    "already_verified": "Deine E-Mail-Adresse ist bereits verifiziert!",
-    "not_verified": "Deine E-Mail-Adresse ist noch nicht verifiziert. Du findest eine Verifizierungs-E-Mail in deinem Posteingang, oder fordere eine neue Verifizierungs-E-Mail über den untenstehenden Button an.",
-    "resend": "Verifizierungs-E-Mail erneut senden",
+    "title": "E-Mail bestätigen",
+    "already_verified": "Deine E-Mail-Adresse ist bereits bestätigt!",
+    "not_verified": "Deine E-Mail-Adresse ist noch nicht bestätigt. Du findest eine Bestätigungs-E-Mail in deinem Posteingang, oder fordere eine neue Bestätigungs-E-Mail über den untenstehenden Button an.",
+    "resend": "Bestätigungs-E-Mail erneut senden",
     "return": "Zurück zum Profil",
-    "general_error": "Beim Verschicken der Verifizierungs-Mail gab es ein Problem. Versuch es später erneut, oder kontaktiere uns um das Problem zu beheben.",
-    "success": "Eine neue Verifizierungs-Mail wurde gesendet!"
+    "general_error": "Beim Verschicken der Bestätigungs-Mail gab es ein Problem. Versuch es später erneut, oder kontaktiere uns um das Problem zu beheben.",
+    "success": "Eine neue Bestätigungs-Mail wurde gesendet!"
   }
 }
 </i18n>

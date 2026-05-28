@@ -12,9 +12,9 @@
       <Alert v-if="success" variant="success">
         {{ t("success") }}
       </Alert>
-      <Button v-if="success" to="/profile" variant="secondary">{{
-        t("to_profile")
-      }}</Button>
+      <Button v-if="success" to="/profile" variant="secondary">
+        {{ t("to_profile") }}
+      </Button>
     </Card>
   </Container>
 </template>
@@ -74,7 +74,7 @@ async function handleConfirm() {
     "title": "E-Mail Address bestätigen",
     "text": "Bestätige deine E-Mail-Adresse mit dem untenstehenden Button.",
     "confirm": "E-Mail bestätigen",
-    "success": "Deine E-Mail-Adresse ist verifiziert!",
+    "success": "Deine E-Mail-Adresse ist bestätigt!",
     "to_profile": "Profil öffnen",
     "errors": {
       "no_token": "Wir können deine E-Mail-Adresse nicht bestätigen, da kein Verifizierungs-Token bereitgestellt wurde. Versuche es erneut oder kontaktiere uns, um das Problem zu lösen.",

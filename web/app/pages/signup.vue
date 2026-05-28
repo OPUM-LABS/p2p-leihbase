@@ -225,7 +225,7 @@ fieldset.checkbox {
     "login_text": "Einloggen",
     "name": "Name",
     "email": "E-Mail",
-    "password": "Kennwort",
+    "password": "Passwort",
     "terms_and_conditions": "Ich habe die {0}, zur Nutzung meiner personenbezogenen Daten gelesen und bin damit einverstanden.",
     "terms_and_conditions_link": "Datenschutzhinweisen",
     "submit": "Registrieren",
