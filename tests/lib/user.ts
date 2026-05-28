@@ -13,6 +13,7 @@ export async function createUser(
       passwordConfirm: password,
       terms: true,
     });
+    await pb.collection("users").update(user.id, { verified: true });
     return user;
   } catch (err) {
     console.log("Error creating test user", err.response.data);
