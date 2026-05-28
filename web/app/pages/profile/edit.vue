@@ -15,15 +15,6 @@
           :error="errors.fields['name'] ? t(errors.fields['name']) : undefined"
           required
         />
-        <Input
-          id="profile-edit-password-input"
-          :label="t('password')"
-          name="password"
-          :error="
-            errors.fields['password'] ? t(errors.fields['password']) : undefined
-          "
-          required
-        />
         <!-- Buttons -->
         <div class="button-row">
           <Button to="/profile" variant="secondary">

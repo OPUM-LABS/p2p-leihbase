@@ -8,10 +8,17 @@
       </div>
       <KeyValue :title="t('name')" :value="user?.name" />
       <KeyValue :title="t('email')" :value="user?.email" />
+      <Alert v-if="!user?.verified" variant="warning" size="sm">
+        <span>
+          Your e-mail address is unverified.
+          <Link to="/profile/verify-email">More info</Link>.
+        </span>
+      </Alert>
+      <Divider spacing="md" />
       <p>
-        <Link href="/profile/change-email">{{ t("change_email") }}</Link>
-        <br />
-        <Link href="/profile/change-password">{{ t("change_password") }}</Link>
+        <!-- <Link href="/profile/change-email">{{ t("change_email") }}</Link> -->
+        <!-- <br /> -->
+        <Link to="/profile/change-password">{{ t("change_password") }}</Link>
       </p>
     </Card>
   </Container>
