@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ alert: true, [variant]: true }">
+  <div :class="{ alert: true, [variant]: true, [`size-${size}`]: true }">
     <ThumbsUp v-if="variant === 'success'" />
     <WarningTriangle v-else-if="variant === 'warning'" />
     <slot></slot>
@@ -9,9 +9,16 @@
 <script setup lang="ts">
 import { ThumbsUp } from "@iconoir/vue";
 import { WarningTriangle } from "@iconoir/vue";
-withDefaults(defineProps<{ variant?: "success" | "error" | "warning" }>(), {
-  variant: "success",
-});
+withDefaults(
+  defineProps<{
+    variant?: "success" | "error" | "warning";
+    size?: "sm" | "md";
+  }>(),
+  {
+    variant: "success",
+    size: "md",
+  }
+);
 </script>
 
 <style lang="scss" scoped>
@@ -29,6 +36,13 @@ withDefaults(defineProps<{ variant?: "success" | "error" | "warning" }>(), {
   }
   &.error {
     background-color: var(--surface-error-color);
+  }
+  &.size-sm {
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+    svg {
+      width: 1.25em;
+    }
   }
 }
 </style>
