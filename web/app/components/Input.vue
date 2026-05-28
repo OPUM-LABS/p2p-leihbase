@@ -16,12 +16,23 @@
         :disabled="disabled"
         :readonly="readonly"
         :data-testid="dataTestid"
-        :aria-describedby="`${id}-description`"
+        :aria-invalid="!!error"
+        :aria-describedby="
+          [
+            error ? `${id}-error` : null,
+            description ? `${id}-description` : null,
+          ]
+            .filter((v) => !!v)
+            .join(' ')
+        "
         v-model="model"
         :class="{ 'lb-input': true, 'has-prefix': !!$slots.prefix }"
       />
     </div>
-    <p v-if="description" :id="`${id}-description`">
+    <p v-if="error" :id="`${id}-error`" class="error">
+      <small>{{ error }}</small>
+    </p>
+    <p v-if="description" :id="`${id}-description`" class="descrption">
       <small>{{ description }}</small>
     </p>
   </div>
@@ -31,18 +42,23 @@
 import FormLabel from "./FormLabel.vue";
 
 const model = defineModel();
-defineProps<{
-  id?: string;
+const props = defineProps<{
+  id: string;
   label?: string;
   name?: string;
+  value?: string;
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
   readonly?: boolean;
   type?: string;
   description?: string;
+  error?: string;
   dataTestid?: string;
 }>();
+if (props.value) {
+  model.value = props.value;
+}
 </script>
 
 <style scoped>
@@ -66,6 +82,9 @@ defineProps<{
 }
 .lb-input.has-prefix {
   border-radius: 0 var(--input-border-radius) var(--input-border-radius) 0;
+}
+.error {
+  color: #d55136;
 }
 p {
   margin: 0;
