@@ -3,7 +3,7 @@
     <PageAlert class="alert" />
     <Card class="card">
       <div class="heading row">
-        <h1>{{ t("profile") }}</h1>
+        <h1 data-testid="profile-h1">{{ t("profile") }}</h1>
         <Button to="/profile/edit">{{ t("edit_profile") }}</Button>
       </div>
       <KeyValue :title="t('name')" :value="user?.name" />
