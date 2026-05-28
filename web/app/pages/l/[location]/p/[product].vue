@@ -106,7 +106,7 @@
                 v-html="openingHoursToString(location?.opening_hours)"
               ></span>
             </p>
-            <form ref="form" @submit.prevent="onSubmit">
+            <form @submit.prevent="onSubmit">
               <Input
                 type="text"
                 :label="t('product')"
@@ -184,12 +184,10 @@ const {
 } = useAppConfig();
 
 const route = useRoute();
-const router = useRouter();
 const userStore = useUserStore();
 const { locale } = useI18n();
 
 const showDialog = ref(false);
-const form = ref(null);
 const imageIndex = ref(0);
 
 const reservationCreationError = ref(null);
@@ -304,7 +302,7 @@ function onReserve() {
       "reservation",
       `/l/${location.value.slug}/p/${product.value.id}`
     );
-    router.push("/signup");
+    navigateTo("/signup");
     return;
   }
   showDialog.value = true;

@@ -94,7 +94,6 @@ if (process.client) {
 const { t } = useI18n({
   useScope: "local",
 });
-const router = useRouter();
 const userStore = useUserStore();
 const { pb, login } = usePocketbase();
 
@@ -142,10 +141,10 @@ async function onSignup() {
       } else {
         userStore.showBanner(AFTER_SIGNUP);
       }
-      router.push(path);
+      navigateTo(path);
     } else {
       userStore.showBanner(AFTER_SIGNUP);
-      router.push("/profile");
+      navigateTo("/profile");
     }
   } catch (e) {
     console.log(e);

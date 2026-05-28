@@ -3,24 +3,44 @@
     <PageAlert class="alert" />
     <Card class="card">
       <!-- Title -->
-      <h1>{{ t("edit_profile") }}</h1>
+      <h1>{{ t("change_password") }}</h1>
       <!-- Form -->
       <form @submit.prevent="handleSubmit">
-        <!-- Name -->
+        <!-- Current password -->
         <Input
-          id="profile-edit-name-input"
-          :label="t('name')"
-          name="name"
-          :value="user!.name"
-          :error="errors.fields['name'] ? t(errors.fields['name']) : undefined"
+          id="profile-edit-current-password-input"
+          :label="t('current_password')"
+          name="oldPassword"
+          type="password"
+          :error="
+            errors.fields['oldPassword']
+              ? t(errors.fields['oldPassword'])
+              : undefined
+          "
           required
         />
+        <Divider class="divider" />
+        <!-- New password -->
         <Input
-          id="profile-edit-password-input"
-          :label="t('password')"
+          id="profile-edit-new-password-input"
+          :label="t('new_password')"
           name="password"
+          type="password"
           :error="
             errors.fields['password'] ? t(errors.fields['password']) : undefined
+          "
+          required
+        />
+        <!-- Confirm new password -->
+        <Input
+          id="profile-edit-confirm-password-input"
+          :label="t('confirm_password')"
+          name="passwordConfirm"
+          type="password"
+          :error="
+            errors.fields['passwordConfirm']
+              ? t(errors.fields['passwordConfirm'])
+              : undefined
           "
           required
         />
@@ -39,6 +59,7 @@
 </template>
 
 <script lang="ts" setup>
+import Divider from "@/components/Divider.vue";
 import { ClientResponseError, type RecordModel } from "pocketbase";
 
 const { pb, isValid, logout } = usePocketbase();
@@ -49,7 +70,7 @@ const { t } = useI18n({
 });
 
 useHead({
-  title: t("edit_profile"),
+  title: t("change_password"),
 });
 
 if (!isValid.value || !pb.authStore.record) {
@@ -61,10 +82,10 @@ if (!isValid.value || !pb.authStore.record) {
 
 async function handleSubmit(e: SubmitEvent) {
   const data = new FormData(e.target as HTMLFormElement);
-  console.log(data);
   try {
     await update(user.value!.id, data);
-    navigateTo("/profile");
+    logout();
+    navigateTo("/login");
   } catch (e) {
     if (e instanceof ClientResponseError) {
       console.log(e.response);
@@ -86,6 +107,10 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.divider {
+  margin-block: 0.5rem;
 }
 
 .button-row {
@@ -110,14 +135,18 @@ form {
 <i18n lang="json">
 {
   "en": {
-    "edit_profile": "Edit profile",
-    "name": "Name",
+    "change_password": "Change password",
+    "current_password": "Current password",
+    "new_password": "New password",
+    "confirm_password": "Confirm new password",
     "cancel": "Cancel",
     "save": "Save"
   },
   "de": {
-    "edit_profile": "Profil bearbeiten",
-    "name": "Name",
+    "change_password": "Passwort ändern",
+    "current_password": "Aktuelles Passwort",
+    "new_password": "Neues Passwort",
+    "confirm_password": "Neues Passwort bestätigen",
     "cancel": "Annulieren",
     "save": "Speichern"
   }

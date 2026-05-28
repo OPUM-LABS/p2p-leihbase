@@ -150,7 +150,7 @@ useHead({
 
 if (!isValid.value) {
   logout();
-  router.push("/login");
+  navigateTo("/login");
 }
 </script>
 

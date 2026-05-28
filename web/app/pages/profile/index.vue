@@ -6,8 +6,8 @@
         <h1>{{ t("profile") }}</h1>
         <Button to="/profile/edit">{{ t("edit_profile") }}</Button>
       </div>
-      <KeyValue :title="t('name')" :value="user.name" />
-      <KeyValue :title="t('email')" :value="user.email" />
+      <KeyValue :title="t('name')" :value="user?.name" />
+      <KeyValue :title="t('email')" :value="user?.email" />
       <p>
         <Link href="/profile/change-email">{{ t("change_email") }}</Link>
         <br />
@@ -17,14 +17,13 @@
   </Container>
 </template>
 
-<script setup>
-import { KeyValue } from "#components";
+<script setup lang="ts">
+import type { RecordModel } from "pocketbase";
+import KeyValue from "../../components/KeyValue.vue";
 import Link from "../../components/Link.vue";
+
 const { pb, isValid, logout } = usePocketbase();
-const router = useRouter();
-
-const user = ref(null);
-
+const user = ref<RecordModel>();
 const { t } = useI18n({
   useScope: "local",
 });
@@ -33,9 +32,9 @@ useHead({
   title: t("profile"),
 });
 
-if (!isValid.value) {
+if (!isValid.value || !pb.authStore?.record?.id) {
   logout();
-  router.push("/login");
+  navigateTo("/login");
 } else {
   user.value = await pb.collection("users").getOne(pb.authStore.record.id);
 }

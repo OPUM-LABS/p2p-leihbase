@@ -64,18 +64,17 @@ import {
   AFTER_LOGIN_RESERVATION_INTENT,
 } from "@/components/page-alert/PageAlert.model";
 
+useHead({
+  title: `Login`,
+});
+
 const { t } = useI18n({
   useScope: "local",
 });
 
-const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
 const { login, isValid } = usePocketbase();
-
-useHead({
-  title: `Login`,
-});
 
 const email = ref(null);
 const password = ref(null);
@@ -111,10 +110,10 @@ async function onLogin() {
       } else {
         userStore.showBanner(AFTER_LOGIN);
       }
-      router.push(path);
+      navigateTo(path);
     } else {
       userStore.showBanner(AFTER_LOGIN);
-      router.push("/profile");
+      navigateTo("/profile");
     }
   }
 }
