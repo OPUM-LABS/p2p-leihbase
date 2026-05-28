@@ -11,6 +11,9 @@ defineProps<{ title: string; value?: string }>();
 </script>
 
 <style scoped>
+p {
+  margin: 0;
+}
 .key {
   font-weight: var(--font-weight-bold);
 }
