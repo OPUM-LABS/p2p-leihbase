@@ -2,12 +2,12 @@
   <div>
     <header>
       <Heading is="h2" size="lg">{{ props.title || t("products") }}</Heading>
-      <InputField
+      <Input
+        id="product-grid-input"
         :placeholder="`${t('search')}...`"
+        v-model="query"
         @input="onSearchInput"
         @blur="onSearchBlur"
-        v-model="query"
-        class="lb-input"
       />
     </header>
     <div class="filters">
@@ -70,7 +70,7 @@
 import { ArrowLeft, ArrowRight, NavArrowDown } from "@iconoir/vue";
 import Button from "../core/Button.vue";
 import Heading from "../core/Heading.vue";
-import InputField from "../InputField.vue";
+import Input from "../core/Input.vue";
 import ProductCard from "../ProductCard.vue";
 
 const { t } = useI18n({

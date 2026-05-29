@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import FormLabel from "./core/FormLabel.vue";
+import FormLabel from "./FormLabel.vue";
 
 const model = defineModel();
 const props = defineProps<{

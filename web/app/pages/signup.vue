@@ -85,7 +85,7 @@ import Button from "@/components/core/Button.vue";
 import Card from "@/components/core/Card.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
-import Input from "@/components/Input.vue";
+import Input from "@/components/core/Input.vue";
 import {
   AFTER_SIGNUP,
   AFTER_SIGNUP_RESERVATION_INTENT,

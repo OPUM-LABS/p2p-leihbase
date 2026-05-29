@@ -32,7 +32,7 @@
 import { Check } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
 import Dialog from "../core/Dialog.vue";
-import Input from "../Input.vue";
+import Input from "../core/Input.vue";
 
 const { t } = useI18n({
   useScope: "local",

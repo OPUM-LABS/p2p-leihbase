@@ -142,9 +142,9 @@ import DateInput from "@/components/core/DateInput.vue";
 import Dialog from "@/components/core/Dialog.vue";
 import Drawer from "@/components/core/Drawer.vue";
 import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/core/Input.vue";
 import RichTextarea from "@/components/core/RichTextarea.vue";
 import Switch from "@/components/core/Switch.vue";
-import Input from "@/components/Input.vue";
 import { Mail, Trash, Xmark } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
 

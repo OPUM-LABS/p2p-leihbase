@@ -66,7 +66,7 @@ import Card from "@/components/core/Card.vue";
 import Container from "@/components/core/Container.vue";
 import Divider from "@/components/core/Divider.vue";
 import Heading from "@/components/core/Heading.vue";
-import Input from "@/components/Input.vue";
+import Input from "@/components/core/Input.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { ClientResponseError, type RecordModel } from "pocketbase";
 
