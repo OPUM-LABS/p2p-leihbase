@@ -42,7 +42,12 @@
         :label="t('active')"
         v-model="active"
       />
-      <Input id="product-drawer-name-input" :label="t('name')" v-model="name" />
+      <Input
+        id="product-drawer-name-input"
+        :label="t('name')"
+        v-model="name"
+        required
+      />
       <RecordPickerInput
         id="product-drawer-categories-input"
         :label="t('categories')"
