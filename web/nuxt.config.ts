@@ -48,6 +48,8 @@ export default defineNuxtConfig({
   modules: ["@pinia/nuxt", "./modules/pocketbase", "@nuxtjs/i18n"],
 
   i18n: {
+    strategy: "no_prefix",
+    detectBrowserLanguage: false,
     bundle: {
       optimizeTranslationDirective: false,
     },
