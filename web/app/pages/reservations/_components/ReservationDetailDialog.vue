@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <Accordion v-if="reservation" :single="true">
+    <Accordion v-if="reservation" :single="true" class="accordion">
       <AccordionItem id="reservation-dialog-cancel">
         <AccordionTrigger
           :disabled="
@@ -107,21 +107,24 @@
 </template>
 
 <script setup lang="ts">
-import { DateTime } from "luxon";
-import Accordion from "@/components/Accordion/Accordion.vue";
-import AccordionContent from "@/components/Accordion/AccordionContent.vue";
-import AccordionItem from "@/components/Accordion/AccordionItem.vue";
-import AccordionTrigger from "@/components/Accordion/AccordionTrigger.vue";
+import { formatCurrency } from "@@/lib/currency";
+import { formatDate } from "@@/lib/date";
+import { getReservationStatus } from "@@/lib/reservation";
+import type { Location } from "@@/models/location";
+import type { Product } from "@@/models/product";
+import { ReservationStatus, type Reservation } from "@@/models/reservation";
+import Accordion from "@/components/core/accordion/Accordion.vue";
+import AccordionContent from "@/components/core/accordion/AccordionContent.vue";
+import AccordionItem from "@/components/core/accordion/AccordionItem.vue";
+import AccordionTrigger from "@/components/core/accordion/AccordionTrigger.vue";
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Dialog from "@/components/core/Dialog.vue";
 import {
   ReservationCancellationStatus,
   useReservationCancellation,
 } from "@/composables/useReservationCancellation";
-import { formatDate } from "@@/lib/date";
-import { getReservationStatus } from "@@/lib/reservation";
-import { formatCurrency } from "@@/lib/currency";
-import type { Location } from "@@/models/location";
-import type { Product } from "@@/models/product";
-import { ReservationStatus, type Reservation } from "@@/models/reservation";
+import { DateTime } from "luxon";
 
 const config = useRuntimeConfig();
 const {
@@ -140,7 +143,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ update: [] }>();
 
-const open = ref(false);
+const open = ref<boolean>(false);
 watch(
   () => props.reservation,
   (newValue) => {
@@ -184,6 +187,9 @@ const {
   p:last-child {
     margin: 0;
   }
+}
+.accordion p:not(:last-child) {
+  margin-bottom: 1rem;
 }
 </style>
 

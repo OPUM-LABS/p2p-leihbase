@@ -57,10 +57,13 @@
   </Container>
 </template>
 
-<script setup>
-import Container from "@/components/Container";
-import Input from "@/components/Input";
-import Card from "@/components/Card";
+<script lang="ts" setup>
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Card from "@/components/core/Card.vue";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/Input.vue";
 import {
   AFTER_LOGIN,
   AFTER_LOGIN_RESERVATION_INTENT,

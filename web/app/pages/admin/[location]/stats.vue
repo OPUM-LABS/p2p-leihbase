@@ -54,10 +54,14 @@
 </template>
 
 <script setup lang="ts">
-import AdminNav from "./components/AdminNav.vue";
-import AdminHeader from "./components/AdminHeader.vue";
 import { endOfUTCDate, startOfUTCDate, subtractDays } from "@@/lib/date";
+import Container from "@/components/core/Container.vue";
+import DateInput from "@/components/core/DateInput.vue";
+import Heading from "@/components/core/Heading.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
 import type { RecordModel } from "pocketbase";
+import AdminHeader from "./components/AdminHeader.vue";
+import AdminNav from "./components/AdminNav.vue";
 
 const { t } = useI18n({
   useScope: "local",

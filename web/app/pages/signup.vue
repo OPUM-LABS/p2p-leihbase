@@ -80,13 +80,17 @@
   </Container>
 </template>
 
-<script setup>
-import Container from "@/components/Container";
-import Card from "@/components/Card";
+<script lang="ts" setup>
+import Button from "@/components/core/Button.vue";
+import Card from "@/components/core/Card.vue";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/Input.vue";
 import {
   AFTER_SIGNUP,
   AFTER_SIGNUP_RESERVATION_INTENT,
 } from "@/components/page-alert/PageAlert.model";
+import { ClientResponseError } from "pocketbase";
 
 if (process.client) {
   await import("@shoelace-style/shoelace/dist/components/alert/alert.js");
@@ -99,7 +103,7 @@ const { t } = useI18n({
 const userStore = useUserStore();
 const { pb, login } = usePocketbase();
 
-const signupError = ref(null);
+const signupError = ref<string>();
 const loading = ref(false);
 
 useHead({
@@ -151,13 +155,25 @@ async function onSignup() {
   } catch (e) {
     console.log(e);
     loading.value = false;
-    if (e.data?.data?.password?.code === "validation_length_out_of_range") {
+    if (
+      e instanceof ClientResponseError &&
+      e.data?.data?.password?.code === "validation_length_out_of_range"
+    ) {
       signupError.value = t("errors.password_length");
-    } else if (e.data?.data?.email?.code === "validation_invalid_email") {
+    } else if (
+      e instanceof ClientResponseError &&
+      e.data?.data?.email?.code === "validation_invalid_email"
+    ) {
       signupError.value = t("errors.invalid_email");
-    } else if (e.data?.data?.email?.code === "validation_not_unique") {
+    } else if (
+      e instanceof ClientResponseError &&
+      e.data?.data?.email?.code === "validation_not_unique"
+    ) {
       signupError.value = t("errors.email_in_use");
-    } else if (e.data?.data?.terms?.code === "validation_required") {
+    } else if (
+      e instanceof ClientResponseError &&
+      e.data?.data?.terms?.code === "validation_required"
+    ) {
       signupError.value = t("errors.terms_required");
     } else {
       signupError.value = t("errors.general");

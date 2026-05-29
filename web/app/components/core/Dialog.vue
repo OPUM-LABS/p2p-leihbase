@@ -30,6 +30,7 @@
 <script lang="ts" setup>
 import { Xmark } from "@iconoir/vue";
 import { templateRef } from "@vueuse/core";
+import Heading from "./Heading.vue";
 
 const { t } = useI18n({
   useScope: "local",

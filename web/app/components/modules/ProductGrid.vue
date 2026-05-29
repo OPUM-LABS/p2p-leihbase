@@ -66,10 +66,12 @@
   </div>
 </template>
 
-<script setup>
-import { ArrowDown, ArrowRight, NavArrowDown } from "@iconoir/vue";
-import { ArrowLeft } from "@iconoir/vue";
-import ProductCard from "@/components/ProductCard.vue";
+<script lang="ts" setup>
+import { ArrowLeft, ArrowRight, NavArrowDown } from "@iconoir/vue";
+import Button from "../core/Button.vue";
+import Heading from "../core/Heading.vue";
+import InputField from "../InputField.vue";
+import ProductCard from "../ProductCard.vue";
 
 const { t } = useI18n({
   useScope: "local",

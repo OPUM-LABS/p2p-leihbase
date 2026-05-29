@@ -71,23 +71,25 @@
     :reservation="selectedReservation"
     @update="handleReservationUpdate"
   />
-
 </template>
 
 <script lang="ts" setup>
-import ReservationDrawer from "./components/ReservationDrawer.vue";
-import TodayTab from "./components/tabs/Today.vue";
-import OngoingTab from "./components/tabs/Ongoing.vue";
-import FutureTab from "./components/tabs/Future.vue";
-import PastTab from "./components/tabs/Past.vue";
-import OverdueTab from "./components/tabs/Overdue.vue";
-import AdminNav from "./components/AdminNav.vue";
-import AdminHeader from "./components/AdminHeader.vue";
-import TabList from "@/components/TabList/TabList.vue";
-import Tab from "@/components/TabList/Tab.vue";
 import type { Reservation } from "@@/models/reservation";
+import Button from "@/components/core/Button.vue";
+import Container from "@/components/core/Container.vue";
+import Tab from "@/components/core/tab-list/Tab.vue";
+import TabList from "@/components/core/tab-list/TabList.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { createEventHook } from "@vueuse/core";
 import type { RecordModel } from "pocketbase";
+import AdminHeader from "./components/AdminHeader.vue";
+import AdminNav from "./components/AdminNav.vue";
+import ReservationDrawer from "./components/ReservationDrawer.vue";
+import FutureTab from "./components/tabs/Future.vue";
+import OngoingTab from "./components/tabs/Ongoing.vue";
+import OverdueTab from "./components/tabs/Overdue.vue";
+import PastTab from "./components/tabs/Past.vue";
+import TodayTab from "./components/tabs/Today.vue";
 
 const route = useRoute();
 const { t } = useI18n({

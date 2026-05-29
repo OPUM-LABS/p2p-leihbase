@@ -35,8 +35,14 @@
 </template>
 
 <script setup lang="ts">
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Card from "@/components/core/Card.vue";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
+import Link from "@/components/core/Link.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
 import type { RecordModel } from "pocketbase";
-import Link from "../../components/Link.vue";
 
 const { pb, isValid, logout } = usePocketbase();
 const { t } = useI18n({

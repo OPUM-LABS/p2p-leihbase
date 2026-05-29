@@ -28,6 +28,13 @@
 </template>
 
 <script lang="ts" setup>
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Card from "@/components/core/Card.vue";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/Input.vue";
+
 const { t } = useI18n({
   useScope: "local",
 });

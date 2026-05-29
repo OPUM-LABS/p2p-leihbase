@@ -21,11 +21,12 @@
 </template>
 
 <script setup lang="ts">
-import { DateTime } from "luxon";
 import { formatDate } from "@@/lib/date";
-import { type Reservation } from "@@/models/reservation";
-import type { Product } from "@@/models/product";
 import { getReservationStatus } from "@@/lib/reservation";
+import type { Product } from "@@/models/product";
+import { type Reservation } from "@@/models/reservation";
+import Button from "@/components/core/Button.vue";
+import { DateTime } from "luxon";
 
 const config = useRuntimeConfig();
 

@@ -65,13 +65,13 @@
 </template>
 
 <script setup>
-import { User, Menu } from "@iconoir/vue";
-import DropdownMenu from "../DropdownMenu/DropdownMenu.vue";
-import DropdownMenuTrigger from "../DropdownMenu/DropdownMenuTrigger.vue";
-import DropdownMenuPopover from "../DropdownMenu/DropdownMenuPopover.vue";
-import Button from "../Button.vue";
-import DropdownMenuItem from "../DropdownMenu/DropdownMenuItem.vue";
+import { Menu, User } from "@iconoir/vue";
 import { NuxtLink } from "#components";
+import Button from "../core/Button.vue";
+import DropdownMenu from "../core/dropdown-menu/DropdownMenu.vue";
+import DropdownMenuItem from "../core/dropdown-menu/DropdownMenuItem.vue";
+import DropdownMenuPopover from "../core/dropdown-menu/DropdownMenuPopover.vue";
+import DropdownMenuTrigger from "../core/dropdown-menu/DropdownMenuTrigger.vue";
 
 const { t } = useI18n({
   useScope: "local",

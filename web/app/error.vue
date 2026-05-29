@@ -18,9 +18,9 @@
 
 <script setup lang="ts">
 import "@/assets/styles/main.scss";
-import NavBar from "./components/modules/NavBar.vue";
-import Link from "./components/Link.vue";
 import type { NuxtError } from "#app";
+import Link from "./components/core/Link.vue";
+import NavBar from "./components/modules/NavBar.vue";
 
 const {
   public: { plausibleTrackingDomain, locale: defaultLocale },

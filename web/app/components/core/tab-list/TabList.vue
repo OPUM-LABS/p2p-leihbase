@@ -18,9 +18,9 @@
 </template>
 
 <script setup lang="ts">
+import { WarningTriangle } from "@iconoir/vue";
 import type { TabProps } from "./Tab.model";
 import type Tab from "./Tab.vue";
-import { WarningTriangle } from "@iconoir/vue";
 
 const props = defineProps<{ active: string }>();
 

@@ -113,12 +113,19 @@
 </template>
 
 <script lang="ts" setup>
-import { Trash, Eye, Xmark } from "@iconoir/vue";
-import type { RecordModel } from "pocketbase";
-import RecordPickerInput from "@/components/admin/RecordPickerInput.vue";
-import ImageInput from "@/components/ImageInput.vue";
-import Switch from "@/components/Switch.vue";
 import type { Product } from "@@/models/product";
+import RecordPickerInput from "@/components/admin/RecordPickerInput.vue";
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Dialog from "@/components/core/Dialog.vue";
+import Drawer from "@/components/core/Drawer.vue";
+import Heading from "@/components/core/Heading.vue";
+import RichTextarea from "@/components/core/RichTextarea.vue";
+import Switch from "@/components/core/Switch.vue";
+import ImageInput from "@/components/ImageInput.vue";
+import Input from "@/components/Input.vue";
+import { Eye, Trash, Xmark } from "@iconoir/vue";
+import type { RecordModel } from "pocketbase";
 
 const { pb } = usePocketbase();
 const { t, locale } = useI18n({

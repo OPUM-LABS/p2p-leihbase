@@ -13,8 +13,9 @@
 </template>
 
 <script setup lang="ts">
+import Button from "@/components/core/Button.vue";
+import HorizontalScroll from "@/components/core/HorizontalScroll.vue";
 import type { RecordModel } from "pocketbase";
-import HorizontalScroll from "@/components/HorizontalScroll.vue";
 
 const { t } = useI18n({
   useScope: "local",

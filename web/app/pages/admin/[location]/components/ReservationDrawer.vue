@@ -133,11 +133,20 @@
 </template>
 
 <script lang="ts" setup>
+import { formatCurrency } from "@@/lib/currency";
+import type { Reservation } from "@@/models/reservation";
 import RecordPickerInput from "@/components/admin/RecordPickerInput.vue";
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import DateInput from "@/components/core/DateInput.vue";
+import Dialog from "@/components/core/Dialog.vue";
+import Drawer from "@/components/core/Drawer.vue";
+import Heading from "@/components/core/Heading.vue";
+import RichTextarea from "@/components/core/RichTextarea.vue";
+import Switch from "@/components/core/Switch.vue";
+import Input from "@/components/Input.vue";
 import { Mail, Trash, Xmark } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
-import type { Reservation } from "@@/models/reservation";
-import { formatCurrency } from "@@/lib/currency";
 
 const { pb } = usePocketbase();
 const { t, locale } = useI18n({

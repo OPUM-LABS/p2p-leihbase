@@ -21,6 +21,8 @@
 </template>
 
 <script lang="ts" setup>
+import FormLabel from "./FormLabel.vue";
+
 const model = defineModel();
 const props = defineProps<{
   id?: string;

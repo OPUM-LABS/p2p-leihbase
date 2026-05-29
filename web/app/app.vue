@@ -12,11 +12,11 @@
 <script setup>
 import "@/assets/styles/main.scss";
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.js";
-import { useUserStore } from "@/stores/user";
-import NavBar from "./components/modules/NavBar.vue";
-import Footer from "./components/modules/Footer.vue";
 import { useLeihbase } from "@/stores/leihbase";
+import { useUserStore } from "@/stores/user";
+import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.js";
+import Footer from "./components/modules/Footer.vue";
+import NavBar from "./components/modules/NavBar.vue";
 
 setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/"

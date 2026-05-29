@@ -7,8 +7,8 @@
 </template>
 
 <script setup lang="ts">
-import { ThumbsUp } from "@iconoir/vue";
-import { WarningTriangle } from "@iconoir/vue";
+import { ThumbsUp, WarningTriangle } from "@iconoir/vue";
+
 withDefaults(
   defineProps<{
     variant?: "success" | "error" | "warning";

@@ -157,16 +157,29 @@
   </Container>
 </template>
 
-<script setup>
-import Button from "@/components/Button.vue";
-import { isToday } from "@@/lib/reservation";
+<script lang="ts" setup>
 import { formatCurrency } from "@@/lib/currency";
-import { isInOpeningHoursDay, openingHoursToString } from "@@/lib/openingHours";
 import {
-  getStartOfDay,
   startOfDate as getStartOfDate,
+  getStartOfDay,
   isSameDate,
 } from "@@/lib/date";
+import { isInOpeningHoursDay, openingHoursToString } from "@@/lib/openingHours";
+import { isToday } from "@@/lib/reservation";
+import AvailabilityBadge from "@/components/AvailabilityBadge.vue";
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Container from "@/components/core/Container.vue";
+import DateInput from "@/components/core/DateInput.vue";
+import Dialog from "@/components/core/Dialog.vue";
+import Heading from "@/components/core/Heading.vue";
+import KeyValue from "@/components/core/KeyValue.vue";
+import Textarea from "@/components/core/Textarea.vue";
+import Tooltip from "@/components/core/Tooltip.vue";
+import Input from "@/components/Input.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
+import ProductImage from "@/components/ProductImage.vue";
+import ReservationsBox from "@/components/ReservationsBox.vue";
 import { Lock } from "@iconoir/vue";
 
 if (process.client) {

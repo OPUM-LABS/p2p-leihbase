@@ -45,10 +45,13 @@
   </Container>
 </template>
 
-<script setup>
-import ProductGrid from "@/components/modules/ProductGrid.vue";
+<script lang="ts" setup>
 import { openingHoursToString } from "@@/lib/openingHours";
-import { MapPin, Internet } from "@iconoir/vue";
+import Button from "@/components/core/Button.vue";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
+import ProductGrid from "@/components/modules/ProductGrid.vue";
+import { Internet, MapPin } from "@iconoir/vue";
 
 const { t, locale } = useI18n({
   useScope: "local",

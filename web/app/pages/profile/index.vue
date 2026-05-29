@@ -28,9 +28,16 @@
 </template>
 
 <script setup lang="ts">
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Card from "@/components/core/Card.vue";
+import Container from "@/components/core/Container.vue";
+import Divider from "@/components/core/Divider.vue";
+import Heading from "@/components/core/Heading.vue";
+import KeyValue from "@/components/core/KeyValue.vue";
+import Link from "@/components/core/Link.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
 import type { RecordModel } from "pocketbase";
-import KeyValue from "../../components/KeyValue.vue";
-import Link from "../../components/Link.vue";
 
 const { pb, isValid, logout } = usePocketbase();
 const user = ref<RecordModel>();

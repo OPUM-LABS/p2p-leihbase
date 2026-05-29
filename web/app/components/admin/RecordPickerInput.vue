@@ -36,8 +36,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { RecordModel } from "pocketbase";
 import { equalValues } from "@@/lib/array";
+import type { RecordModel } from "pocketbase";
+import FormLabel from "../core/FormLabel.vue";
 import RecordPicker from "./RecordPicker.vue";
 
 const { t } = useI18n({

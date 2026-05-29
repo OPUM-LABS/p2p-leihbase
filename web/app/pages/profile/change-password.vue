@@ -61,7 +61,13 @@
 </template>
 
 <script lang="ts" setup>
-import Divider from "@/components/Divider.vue";
+import Button from "@/components/core/Button.vue";
+import Card from "@/components/core/Card.vue";
+import Container from "@/components/core/Container.vue";
+import Divider from "@/components/core/Divider.vue";
+import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/Input.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { ClientResponseError, type RecordModel } from "pocketbase";
 
 const { pb, isValid, logout } = usePocketbase();

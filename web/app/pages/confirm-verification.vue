@@ -20,6 +20,11 @@
 </template>
 
 <script setup lang="ts">
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Card from "@/components/core/Card.vue";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
 import { ClientResponseError } from "pocketbase";
 
 const route = useRoute();

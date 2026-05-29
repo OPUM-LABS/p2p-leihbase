@@ -5,6 +5,8 @@
 </template>
 
 <script lang="ts" setup>
+import Container from "@/components/core/Container.vue";
+
 const { pb, isValid } = usePocketbase();
 
 if (!isValid.value) {

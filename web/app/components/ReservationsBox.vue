@@ -24,10 +24,11 @@
 </template>
 
 <script setup>
-import { DateTime } from "luxon";
 import { formatDate } from "@@/lib/date";
-import { User as UserIcon } from "@iconoir/vue";
 import { isToday } from "@@/lib/reservation";
+import { User as UserIcon } from "@iconoir/vue";
+import { DateTime } from "luxon";
+import Heading from "./core/Heading.vue";
 
 const { locale } = useI18n();
 

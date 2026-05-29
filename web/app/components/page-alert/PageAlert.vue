@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import Alert from "../core/Alert.vue";
 import {
   AFTER_LOGIN,
   AFTER_LOGIN_RESERVATION_INTENT,

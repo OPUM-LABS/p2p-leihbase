@@ -41,8 +41,9 @@
 </template>
 
 <script lang="ts" setup>
-import { templateRef } from "@vueuse/core";
 import { Trash } from "@iconoir/vue";
+import { templateRef } from "@vueuse/core";
+import FormLabel from "./core/FormLabel.vue";
 
 const config = useRuntimeConfig();
 

@@ -9,6 +9,8 @@
 </template>
 
 <script setup lang="ts">
+import Heading from "@/components/core/Heading.vue";
+
 defineProps<{ title?: string }>();
 </script>
 

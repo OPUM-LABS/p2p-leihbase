@@ -11,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+import Heading from "@/components/core/Heading.vue";
 import type { RecordModel } from "pocketbase";
 
 defineProps<{ title: string; location: RecordModel }>();

@@ -48,8 +48,11 @@
 </template>
 
 <script lang="ts" setup>
+import Button from "@/components/core/Button.vue";
+import HorizontalScroll from "@/components/core/HorizontalScroll.vue";
+import Select from "@/components/core/Select.vue";
+import InputField from "@/components/InputField.vue";
 import { Xmark } from "@iconoir/vue";
-import HorizontalScroll from "@/components/HorizontalScroll.vue";
 
 const { t } = useI18n({
   useScope: "local",

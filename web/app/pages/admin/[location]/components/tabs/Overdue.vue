@@ -16,11 +16,12 @@
 </template>
 
 <script lang="ts" setup>
+import type { Reservation } from "@@/models/reservation";
+import AdminReservationTable from "@/components/admin/AdminReservationsTable.vue";
+import LoadingSpinner from "@/components/core/LoadingSpinner.vue";
 import type { EventHookOn } from "@vueuse/core";
 import type { RecordModel } from "pocketbase";
-import AdminReservationTable from "@/components/admin/AdminReservationsTable.vue";
 import TabHeader from "../TabHeader.vue";
-import type { Reservation } from "@@/models/reservation";
 
 const { t } = useI18n({
   useScope: "local",

@@ -61,12 +61,14 @@
 </template>
 
 <script setup lang="ts">
-import { ReservationStatus, type Reservation } from "@@/models/reservation";
-import ReservationDetailDialog from "./_components/ReservationDetailDialog.vue";
-import type { Product } from "@@/models/product";
 import { getReservationStatus } from "@@/lib/reservation";
 import type { Location } from "@@/models/location";
+import type { Product } from "@@/models/product";
+import { ReservationStatus, type Reservation } from "@@/models/reservation";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
 import ReservationCardButton from "./_components/ReservationCardButton.vue";
+import ReservationDetailDialog from "./_components/ReservationDetailDialog.vue";
 
 const { pb, isValid, logout } = usePocketbase();
 const router = useRouter();
