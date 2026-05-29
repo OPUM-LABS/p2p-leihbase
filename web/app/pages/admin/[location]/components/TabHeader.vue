@@ -2,7 +2,7 @@
   <header>
     <slot name="prefix" />
     <slot>
-      <h3>{{ title }}</h3>
+      <Heading is="h3" size="md" cap>{{ title }}</Heading>
     </slot>
     <slot name="suffix" />
   </header>
@@ -17,10 +17,6 @@ header {
   display: flex;
   margin-bottom: 1rem;
   gap: var(--fluid-spacing-8);
-}
-
-header > h3 {
-  margin: 0;
 }
 
 header > button {

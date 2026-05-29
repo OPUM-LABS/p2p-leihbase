@@ -1,9 +1,9 @@
 <template>
-  <Container width="sm" centered class="container">
-    <PageAlert class="alert" />
-    <Card class="card">
+  <Container width="sm" centered>
+    <PageAlert />
+    <Card class="lb-stack">
       <!-- Title -->
-      <h1>{{ t("edit_profile") }}</h1>
+      <Heading is="h1" size="xl" cap>{{ t("edit_profile") }}</Heading>
       <!-- Form -->
       <form @submit.prevent="handleSubmit">
         <!-- Name -->
@@ -67,34 +67,16 @@ async function handleSubmit(e: SubmitEvent) {
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
 
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--fluid-spacing-6);
 }
 
 .button-row {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-}
-
-@media (min-width: breakpoints.$breakpoint-md) {
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding-top: 3rem;
-  }
-  .alert {
-    margin: 0;
-  }
+  gap: var(--fluid-spacing-4);
 }
 </style>
 

@@ -1,11 +1,13 @@
 <template>
-  <Container width="sm" centered class="container">
-    <PageAlert class="alert" />
-    <Card class="card">
+  <Container width="sm" centered>
+    <PageAlert />
+    <Card class="lb-stack">
       <!-- Title -->
-      <h1>{{ t("change_password") }}</h1>
+      <Heading is="h1" size="xl" cap>
+        {{ t("change_password") }}
+      </Heading>
       <!-- Form -->
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" class="lb-stack">
         <!-- Current password -->
         <Input
           id="profile-edit-current-password-input"
@@ -97,34 +99,10 @@ async function handleSubmit(e: SubmitEvent) {
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
 
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .button-row {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-}
-
-@media (min-width: breakpoints.$breakpoint-md) {
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding-top: 3rem;
-  }
-  .alert {
-    margin: 0;
-  }
 }
 </style>
 

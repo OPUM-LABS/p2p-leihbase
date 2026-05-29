@@ -1,9 +1,18 @@
 <template>
-  <div :class="{ padding }"><slot></slot></div>
+  <div :class="{ padding }">
+    <slot />
+  </div>
 </template>
 
 <script lang="ts" setup>
-withDefaults(defineProps<{ padding?: boolean }>(), { padding: true });
+withDefaults(
+  defineProps<{
+    padding?: boolean;
+  }>(),
+  {
+    padding: true,
+  }
+);
 </script>
 
 <style scoped>

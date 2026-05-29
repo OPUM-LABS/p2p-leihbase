@@ -44,6 +44,12 @@ if (userStore.banner) {
 }
 </script>
 
+<style scoped>
+.alert {
+  margin-bottom: var(--fluid-spacing-4);
+}
+</style>
+
 <i18n lang="json">
 {
   "en": {

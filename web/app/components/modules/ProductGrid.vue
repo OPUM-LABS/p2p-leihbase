@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <h2>{{ props.title || t("products") }}</h2>
+      <Heading is="h2" size="lg">{{ props.title || t("products") }}</Heading>
       <InputField
         :placeholder="`${t('search')}...`"
         @input="onSearchInput"
@@ -200,9 +200,6 @@ header {
   align-items: center;
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    h2 {
-      margin: 0;
-    }
   }
 }
 .filters {

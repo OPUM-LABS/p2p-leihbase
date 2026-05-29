@@ -22,9 +22,9 @@
           {{ link.text }}
         </Button>
       </section>
-      <h1>
+      <Heading is="h1" size="xl" class="heading">
         {{ location?.name || t("no_location_found") }}
-      </h1>
+      </Heading>
       <!-- Description -->
       <div
         v-if="location?.description"
@@ -83,11 +83,8 @@ header {
     margin-bottom: var(--fluid-spacing-8);
     flex-wrap: wrap;
   }
-  h1 {
+  .heading {
     margin-bottom: var(--fluid-spacing-8);
-    display: flex;
-    align-items: center;
-    line-height: 1.15;
   }
   .description {
     max-width: var(--max-text-width);

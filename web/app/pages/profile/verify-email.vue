@@ -1,10 +1,8 @@
 <template>
-  <Container width="sm" centered class="container">
-    <PageAlert class="alert" />
-    <Card class="card">
-      <div class="heading">
-        <h1>{{ t("title") }}</h1>
-      </div>
+  <Container width="sm" centered>
+    <PageAlert />
+    <Card class="lb-stack">
+      <Heading is="h1" size="xl" cap>{{ t("title") }}</Heading>
 
       <!-- Already verified -->
       <p v-if="user?.verified">{{ t("already_verified") }}</p>
@@ -77,45 +75,8 @@ async function handleRequest() {
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
 
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-h1 {
+p {
   margin: 0;
-}
-
-@media (min-width: breakpoints.$breakpoint-md) {
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding-top: 3rem;
-  }
-
-  .card {
-    gap: 2rem;
-  }
-
-  .heading {
-    margin-top: -1em;
-    margin-bottom: -0.75em;
-  }
-  .alert {
-    margin: 0;
-  }
-  p {
-    margin: 0;
-  }
 }
 </style>
 

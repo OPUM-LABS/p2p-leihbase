@@ -46,32 +46,31 @@
               </span>
             </li>
           </ul>
-          <h3></h3>
         </header>
 
         <div class="info-header">
-          <h1 data-testid="product-page-h1">{{ product?.name }}</h1>
+          <Heading is="h1" size="xl" data-testid="product-page-h1" cap>
+            {{ product?.name }}
+          </Heading>
           <AvailabilityBadge :available="available" />
         </div>
 
-        <div class="info-body">
+        <div class="info-body lb-stack">
           <!-- Description -->
-          <div v-html="product?.description"></div>
+          <div class="lb-richtext" v-html="product?.description"></div>
           <!-- Deposit -->
-          <p v-if="product?.deposit">
-            <strong>{{ t("deposit") }}</strong>
-            <br />
+          <KeyValue v-if="product?.deposit" :title="t('deposit')">
             {{ formatCurrency(product.deposit, locale) }}
-          </p>
+          </KeyValue>
         </div>
 
         <div v-if="userStore.isAdmin" class="info-admin">
-          <h2 class="h4">
+          <Heading is="h2" size="sm">
             {{ t("admin_notes") }}
             <Tooltip :html="t('admin_notes_tooltip')">
               <Lock />
             </Tooltip>
-          </h2>
+          </Heading>
           <span v-if="product?.notes" v-html="product?.notes" />
           <span v-else>
             <i>{{ t("admin_notes_none") }}</i>
@@ -389,7 +388,7 @@ section {
   gap: 0.5rem;
   margin: 0;
   padding: 0;
-  margin-bottom: var(--fluid-spacing-4);
+  margin-bottom: var(--fluid-spacing-8);
   & > li:not(:last-child)::after {
     content: ">";
     margin-left: 0.5rem;
@@ -528,6 +527,7 @@ section {
   padding: 1rem;
   background-color: #ecf4fe;
   border-radius: var(--border-radius);
+  margin-bottom: 1rem;
 }
 </style>
 

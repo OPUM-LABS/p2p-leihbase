@@ -2,7 +2,9 @@
   <Drawer :headerOffset="false" inset v-model:open="open">
     <!-- Header -->
     <header>
-      <h2>{{ state === "new" ? t("new") : t("edit") }}</h2>
+      <Heading is="h2" size="lg">{{
+        state === "new" ? t("new") : t("edit")
+      }}</Heading>
       <div class="buttons">
         <Button
           v-if="state === 'edit'"
@@ -248,6 +250,7 @@ header {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  margin-bottom: var(--fluid-spacing-4);
 }
 header .buttons {
   display: flex;

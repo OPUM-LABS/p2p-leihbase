@@ -1,7 +1,7 @@
 <template>
   <Container width="sm" centered>
-    <Card>
-      <h1>{{ t("title") }}</h1>
+    <Card class="lb-stack">
+      <Heading is="h1" size="lg" cap>{{ t("title") }}</Heading>
       <p v-if="!success">
         {{ t("text") }}
       </p>
@@ -55,6 +55,12 @@ async function handleConfirm() {
   }
 }
 </script>
+
+<style scoped>
+p {
+  margin: 0;
+}
+</style>
 
 <i18n lang="json">
 {

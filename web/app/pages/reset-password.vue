@@ -1,20 +1,20 @@
 <template>
-  <Container width="sm" centered no-padding class="container">
+  <Container width="sm" centered class="container">
     <Alert v-if="success" class="alert">{{ t("submit_success") }}</Alert>
     <Alert v-else-if="error" variant="error" class="alert">{{
       t("submit_general_error")
     }}</Alert>
-    <Card class="card">
-      <h1>{{ t("title") }}</h1>
+    <Card class="lb-stack">
+      <Heading is="h1" size="xl" cap>{{ t("title") }}</Heading>
       <p>{{ t("text") }}</p>
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" class="lb-stack">
         <Input
           label="E-mail"
           type="email"
           id="email"
           name="email"
-          required
           v-model="email"
+          required
         />
         <Button size="lg" type="submit">{{ t("submit") }}</Button>
       </form>
@@ -38,11 +38,13 @@ useHead({
   title: t("page_title"),
 });
 
-const email = ref(null);
+const email = ref<string>();
 const error = ref(false);
 const success = ref(false);
 
 async function handleSubmit() {
+  if (!email.value) return;
+
   error.value = false;
 
   try {
@@ -60,29 +62,20 @@ async function handleSubmit() {
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
 
-@media (min-width: breakpoints.$breakpoint-md) {
-  .container {
-    padding-top: 2rem;
-  }
-  .card {
-    margin-top: 1rem;
-  }
-  h1 {
-    margin-top: -1rem;
-  }
+p {
+  margin: 0;
 }
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-}
+
 footer {
   width: 100%;
   margin-block: 1rem;
   text-align: center;
   color: var(--text-color-light);
   font-size: var(--font-size-sm);
+}
+
+button {
+  align-self: flex-start;
 }
 </style>
 

@@ -10,6 +10,7 @@
 </template>
 
 <script setup>
+import "@/assets/styles/main.scss";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.js";
 import { useUserStore } from "@/stores/user";
@@ -66,10 +67,6 @@ if (isValid.value) {
   userStore.logout();
 }
 </script>
-
-<style lang="scss">
-@use "@/assets/styles/main.scss";
-</style>
 
 <style lang="scss" scoped>
 .grid {

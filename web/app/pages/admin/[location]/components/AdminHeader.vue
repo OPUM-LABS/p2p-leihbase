@@ -2,8 +2,8 @@
   <header>
     <div>
       <h1>
-        <span class="h2">{{ location?.name }}</span>
-        <span class="h1">{{ title }}</span>
+        <Heading is="span" size="lg">{{ location?.name }}</Heading>
+        <Heading is="span" size="xl">{{ title }}</Heading>
       </h1>
     </div>
     <slot></slot>
@@ -28,11 +28,12 @@ header {
   h1 {
     margin: 0;
   }
-  .h1,
-  .h2 {
+  span {
     display: block;
   }
-  @media screen and (min-width: breakpoints.$breakpoint-sm) {
+}
+@media screen and (min-width: breakpoints.$breakpoint-sm) {
+  header {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;

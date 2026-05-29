@@ -10,41 +10,44 @@
         id="date-start"
         :label="t('from')"
         v-model="dateStart"
+        required
         @input="() => refresh()"
       />
       <DateInput
         id="date-end"
         :label="t('to')"
         v-model="dateEnd"
+        required
         @input="() => refresh()"
       />
     </div>
 
     <div class="cols">
-      <div>
-        <h3>{{ t("reservations") }}</h3>
+      <div class="lb-stack">
+        <Heading is="h3" size="md">{{ t("reservations") }}</Heading>
         <p>
           {{ reservations?.length }} {{ t("created_reservations") }}<br />
           {{ borrowings?.length }} {{ t("borrowings") }}<br />
           {{ cancelled?.length || 0 }} {{ t("cancellations") }}
         </p>
 
-        <h3>{{ t("Users") }}</h3>
+        <Heading is="h3" size="md">{{ t("Users") }}</Heading>
         <p>
           {{ borrowingsWithUser?.length }} {{ t("borrowings_with_user") }}<br />
           {{ accounts }} {{ t("users") }}
         </p>
       </div>
 
-      <div>
-        <h3>{{ t("most_borrowed_products") }}</h3>
-        <div v-for="(product, index) in products">
-          {{ index + 1 }}.
-          <a target="_blank" :href="`/link/product/${product.product.id}`">
-            {{ product.product.name }}
-          </a>
-          ({{ product.count }}x)<br />
-        </div>
+      <div class="lb-stack">
+        <Heading is="h3" size="md">{{ t("most_borrowed_products") }}</Heading>
+        <ol>
+          <li v-for="(product, index) in products">
+            <a target="_blank" :href="`/link/product/${product.product.id}`">
+              {{ product.product.name }}
+            </a>
+            ({{ product.count }}x)<br />
+          </li>
+        </ol>
       </div>
     </div>
   </Container>
@@ -148,6 +151,9 @@ const accounts = computed(
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
     grid-template-columns: 1fr 1fr;
   }
+}
+ol {
+  padding-left: 2rem;
 }
 </style>
 

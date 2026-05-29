@@ -1,10 +1,12 @@
 <template>
-  <Container width="sm" centered class="container">
-    <PageAlert class="alert" />
-    <Card class="card">
+  <Container width="sm" centered>
+    <PageAlert />
+    <Card class="lb-stack">
       <div class="heading row">
-        <h1 data-testid="profile-h1">{{ t("profile") }}</h1>
-        <Button to="/profile/edit">{{ t("edit_profile") }}</Button>
+        <Heading is="h1" size="xl" cap data-testid="profile-h1">
+          {{ t("profile") }}
+        </Heading>
+        <Button to="/profile/edit" size="md">{{ t("edit_profile") }}</Button>
       </div>
       <KeyValue :title="t('name')" :value="user?.name" />
       <KeyValue :title="t('email')" :value="user?.email" />
@@ -51,39 +53,14 @@ if (!isValid.value || !pb.authStore?.record?.id) {
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
 
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-h1 {
+p:last-child {
   margin: 0;
-}
-
-@media (min-width: breakpoints.$breakpoint-md) {
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding-top: 3rem;
-  }
-
-  .heading {
-    margin-top: -1em;
-  }
-  .alert {
-    margin: 0;
-  }
-  p:last-child {
-    margin: 0;
-  }
 }
 </style>
 

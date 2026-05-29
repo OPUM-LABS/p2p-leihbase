@@ -49,6 +49,7 @@ defineProps<{ reservation: Reservation; product: Product }>();
   width: 100%;
   align-items: stretch;
   h2 {
+    font-weight: var(--font-weight-bold);
     font-size: 1rem;
     margin: 0;
   }

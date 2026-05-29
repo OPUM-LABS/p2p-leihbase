@@ -13,7 +13,7 @@
   >
     <header>
       <div class="title">
-        <h2 :id="id + '-title'">{{ title }}</h2>
+        <Heading is="h2" size="lg" :id="id + '-title'" gap>{{ title }}</Heading>
         <button @click="close">
           <span class="sr-only">{{ t("close") }}</span>
           <Xmark />

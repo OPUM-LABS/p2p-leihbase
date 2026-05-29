@@ -29,7 +29,7 @@ const props = withDefaults(
     to?: string;
     href?: string;
     variant?: "primary" | "secondary";
-    size?: "lg" | "md";
+    size?: "lg" | "md" | "sm";
     circle?: boolean;
     type?: "submit" | "reset" | "button" | undefined;
     loading?: boolean;
@@ -82,10 +82,15 @@ button {
     }
   }
 
+  &.size-sm {
+    padding: 0.333rem 0.666rem;
+    gap: 0.35rem;
+    font-size: var(--font-size-sm);
+  }
   &.size-md {
     padding: 0.5rem 1rem;
     gap: 0.5rem;
-    font-size: 1rem;
+    font-size: var(--font-size-md);
   }
   &.size-lg {
     padding: 0.666rem 1.5rem;

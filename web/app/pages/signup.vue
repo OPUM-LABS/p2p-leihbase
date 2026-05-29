@@ -1,7 +1,9 @@
 <template>
   <Container width="sm" centered>
-    <Card class="card">
-      <h1 data-testid="signup-h1">{{ t("title") }}</h1>
+    <Card class="card lb-stack">
+      <Heading is="h1" size="xl" cap data-testid="signup-h1">
+        {{ t("title") }}
+      </Heading>
       <i18n-t keypath="text" tag="p" for="login_text">
         <NuxtLink to="/login">{{ t("login_text") }}</NuxtLink>
       </i18n-t>
@@ -166,11 +168,6 @@ async function onSignup() {
 
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
-
-h1 {
-  margin-top: -0.4em;
-  margin-bottom: var(--fluid-spacing-4);
-}
 
 form {
   max-width: var(--max-text-width);

@@ -27,7 +27,6 @@ withDefaults(
   border-radius: var(--border-radius);
   display: flex;
   gap: 1rem;
-  margin-bottom: 2rem;
   &.success {
     background-color: var(--surface-success-color);
   }
@@ -43,6 +42,9 @@ withDefaults(
     svg {
       width: 1.25em;
     }
+  }
+  svg {
+    flex-shrink: 0;
   }
 }
 </style>

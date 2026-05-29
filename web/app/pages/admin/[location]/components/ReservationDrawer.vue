@@ -1,7 +1,9 @@
 <template>
   <Drawer :headerOffset="false" inset v-model:open="open">
     <header>
-      <h2>{{ state === "new" ? t("new") : t("edit") }}</h2>
+      <Heading is="h2" size="lg" cap>{{
+        state === "new" ? t("new") : t("edit")
+      }}</Heading>
       <div class="buttons">
         <Button
           v-if="state === 'edit'"
@@ -293,7 +295,9 @@ form {
 header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
+  margin-bottom: var(--fluid-spacing-4);
 }
 header .buttons {
   display: flex;
