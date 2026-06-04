@@ -134,7 +134,7 @@ const { reservations, refresh: refreshReservations } =
 
 const breadcrumb = computed<BreadcrumbList[]>(() => [
   { label: location.value?.name, href: `/l/${location.value?.slug}` },
-  product.value?.expand?.categories.map((category) => ({
+  (product.value?.expand?.categories ?? []).map((category) => ({
     label: category.name_de,
     href: `/l/${location.value?.slug}?category=${category.id}`,
   })),
