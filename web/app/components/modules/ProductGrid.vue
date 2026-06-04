@@ -145,11 +145,12 @@ const currentPage = computed(() => productsData.value?.page);
 const totalPages = computed(() => productsData.value?.totalPages);
 
 function onSearchInput() {
+  navigateTo(getUrl({ page: null, query: null }));
   refreshProducts();
 }
 
 function onSearchBlur() {
-  router.push(getUrl({ query: query.value || null }));
+  navigateTo(getUrl({ query: query.value || null, page: null }));
 }
 
 function getFilter() {
