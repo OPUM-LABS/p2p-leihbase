@@ -43,6 +43,10 @@ export default defineI18nConfig(() => ({
       cancellation_success_message: "Your reservation has been cancelled.",
       cancellation_unknown_error_message:
         "Something went wrong while cancelling your reservation. Please try again, or send an e-mail to {0}.",
+      // pocketbase
+      validation_required: "This field is required.",
+      validation_invalid_old_password: "Wrong password.",
+      validation_values_mismatch: "The two fields do not match."
     },
     de: {
       week_days: {
@@ -86,6 +90,10 @@ export default defineI18nConfig(() => ({
         "Deine Reservierung ist erfolgreich storniert.",
       cancellation_unknown_error_message:
         "Beim stornieren deine Reservierung ist was schief gelaufen. Bitte versuche es erneut, oder schicke eine E-Mail an {0}.",
+      // pocketbase
+      validation_required: "Dieses Feld ist erforderlich.",
+      validation_invalid_old_password: "Falsches Passwort.",
+      validation_values_mismatch: "Die zwei Felder stimmen nicht überein."
     },
   },
 }));

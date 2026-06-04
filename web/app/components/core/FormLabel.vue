@@ -1,5 +1,5 @@
 <template>
-  <component :is="is" class="label">
+  <component :is="is" class="label" :for="for">
     <slot />
     <span v-if="!required && !hideRequired"> ({{ t("optional") }})</span>
   </component>
@@ -9,6 +9,7 @@
 withDefaults(
   defineProps<{
     is?: string;
+    for?: string;
     required?: boolean;
     hideRequired?: boolean;
   }>(),

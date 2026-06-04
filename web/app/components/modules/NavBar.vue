@@ -1,7 +1,9 @@
 <template>
   <header ref="header" :class="{ 'is-sticky': isSticky }">
     <div>
-      <NuxtLink to="/" class="logo">{{ leihbase?.name || "" }}</NuxtLink>
+      <NuxtLink to="/" class="logo">
+        <span v-html="(leihbase?.name || '').replace('\n', '<br />')" />
+      </NuxtLink>
       <DropdownMenu class="dropdown">
         <DropdownMenuTrigger
           :as="Button"
@@ -52,6 +54,11 @@
                 {{ t("admin") }}
               </DropdownMenuItem>
             </li>
+            <li v-if="isValid">
+              <DropdownMenuItem as="button" @click.prevent="handleLogout">
+                {{ t("logout") }}
+              </DropdownMenuItem>
+            </li>
           </ul>
         </DropdownMenuPopover>
       </DropdownMenu>
@@ -60,24 +67,32 @@
 </template>
 
 <script setup>
-import { User, Menu } from "@iconoir/vue";
-import DropdownMenu from "../DropdownMenu/DropdownMenu.vue";
-import DropdownMenuTrigger from "../DropdownMenu/DropdownMenuTrigger.vue";
-import DropdownMenuPopover from "../DropdownMenu/DropdownMenuPopover.vue";
-import Button from "../Button.vue";
-import DropdownMenuItem from "../DropdownMenu/DropdownMenuItem.vue";
+import { Menu, User } from "@iconoir/vue";
 import { NuxtLink } from "#components";
+import Button from "../core/Button.vue";
+import DropdownMenu from "../core/dropdown-menu/DropdownMenu.vue";
+import DropdownMenuItem from "../core/dropdown-menu/DropdownMenuItem.vue";
+import DropdownMenuPopover from "../core/dropdown-menu/DropdownMenuPopover.vue";
+import DropdownMenuTrigger from "../core/dropdown-menu/DropdownMenuTrigger.vue";
+import { PageAlertType } from "../page-alert/PageAlert.model.js";
 
 const { t } = useI18n({
   useScope: "local",
 });
-const { isValid } = usePocketbase();
+const { isValid, logout } = usePocketbase();
 const userStore = useUserStore();
 const { leihbase } = storeToRefs(useLeihbase());
 
 const header = ref();
 
 const { isSticky } = useIsSticky(header);
+
+function handleLogout() {
+  logout();
+  userStore.logout();
+  userStore.showBanner(PageAlertType.AFTER_LOGOUT);
+  navigateTo("/");
+}
 </script>
 
 <style lang="scss" scoped>
@@ -122,7 +137,6 @@ header {
     font-weight: var(--font-weight-black);
     line-height: 1;
     text-decoration: none;
-    white-space: pre;
   }
 
   nav {
@@ -166,13 +180,18 @@ header {
       margin: 0;
       padding: 0;
       li {
-        a {
+        a,
+        button {
           display: block;
+          background: none;
+          border: 0;
+          text-align: left;
           color: var(--text-color);
           padding: 0.5rem 1rem;
           text-decoration: none;
           width: 100%;
           font-weight: var(--font-weight-semibold);
+          cursor: pointer;
           &:hover,
           &:active {
             background-color: var(--secondary-color);
@@ -192,7 +211,8 @@ header {
     "login": "Login",
     "profile": "Profile",
     "reservations": "Reservations",
-    "admin": "Admin"
+    "admin": "Admin",
+    "logout": "Logout"
   },
   "de": {
     "menu": "Menu",
@@ -200,7 +220,8 @@ header {
     "login": "Einloggen",
     "profile": "Profil",
     "reservations": "Reservierungen",
-    "admin": "Admin"
+    "admin": "Admin",
+    "logout": "Ausloggen"
   }
 }
 </i18n>

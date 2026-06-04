@@ -1,6 +1,5 @@
 import path from "path";
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2025-03-14",
 
@@ -18,6 +17,10 @@ export default defineNuxtConfig({
 
   alias: {
     "~": "/<rootDir>/app",
+  },
+
+  components: {
+    dirs: [],
   },
 
   app: {
@@ -48,6 +51,8 @@ export default defineNuxtConfig({
   modules: ["@pinia/nuxt", "./modules/pocketbase", "@nuxtjs/i18n"],
 
   i18n: {
+    strategy: "no_prefix",
+    detectBrowserLanguage: false,
     bundle: {
       optimizeTranslationDirective: false,
     },
@@ -64,4 +69,13 @@ export default defineNuxtConfig({
   },
 
   experimental: { appManifest: false },
+
+  typescript: {
+    tsConfig: {
+      vueCompilerOptions: {
+        strictTemplates: true,
+        fallthroughAttributes: true
+      }
+    }
+  }
 });

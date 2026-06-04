@@ -4,7 +4,10 @@ import { ReservationStatus, type Reservation } from "../models/reservation";
 const startOfToday = DateTime.now().startOf("day");
 const endOfToday = DateTime.now().startOf("day");
 
-export function isToday(reservation: { start: string; end: string }): boolean {
+export function isToday(reservation: {
+  start: string | Date;
+  end: string | Date;
+}): boolean {
   return (
     DateTime.fromJSDate(new Date(reservation.start)).startOf("day") <=
       startOfToday &&

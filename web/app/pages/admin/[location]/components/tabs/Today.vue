@@ -8,14 +8,14 @@
     </template>
     <div class="title-wrapper">
       <!-- Title & loading state -->
-      <h3>
+      <Heading is="h3" size="md">
         <LoadingSpinner v-if="status === 'pending'" size="sm" />
-        <span v-else>
+        <template v-else>
           {{
             isToday(date) ? t("Today") : formatDate(date, "ddd, DD.MM", locale)
           }}
-        </span>
-      </h3>
+        </template>
+      </Heading>
     </div>
     <template #suffix>
       <!-- Next day button -->
@@ -57,14 +57,16 @@
 </template>
 
 <script lang="ts" setup>
-import AdminReservationTable from "@/components/admin/AdminReservationsTable.vue";
-import { isToday, startOfUTCDate, endOfUTCDate, formatDate } from "@@/lib/date";
-import { ArrowRight, ArrowLeft } from "@iconoir/vue";
-import TabHeader from "../TabHeader.vue";
+import { endOfUTCDate, formatDate, isToday, startOfUTCDate } from "@@/lib/date";
 import type { Reservation } from "@@/models/reservation";
-import type { RecordModel } from "pocketbase";
+import AdminReservationTable from "@/components/admin/AdminReservationsTable.vue";
+import Heading from "@/components/core/Heading.vue";
+import LoadingSpinner from "@/components/core/LoadingSpinner.vue";
+import Switch from "@/components/core/Switch.vue";
+import { ArrowLeft, ArrowRight } from "@iconoir/vue";
 import type { EventHookOn } from "@vueuse/core";
-import Switch from "@/components/Switch.vue";
+import type { RecordModel } from "pocketbase";
+import TabHeader from "../TabHeader.vue";
 
 const { pb } = usePocketbase();
 const { locale } = useI18n();
@@ -127,6 +129,7 @@ function handleDayForward() {
   min-width: 10rem;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 h3 {
   text-align: center;

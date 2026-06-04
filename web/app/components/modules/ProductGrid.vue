@@ -1,13 +1,13 @@
 <template>
   <div>
     <header>
-      <h2>{{ props.title || t("products") }}</h2>
-      <InputField
+      <Heading is="h2" size="lg">{{ props.title || t("products") }}</Heading>
+      <Input
+        id="product-grid-input"
         :placeholder="`${t('search')}...`"
+        v-model="query"
         @input="onSearchInput"
         @blur="onSearchBlur"
-        v-model="query"
-        class="lb-input"
       />
     </header>
     <div class="filters">
@@ -66,10 +66,12 @@
   </div>
 </template>
 
-<script setup>
-import { ArrowDown, ArrowRight, NavArrowDown } from "@iconoir/vue";
-import { ArrowLeft } from "@iconoir/vue";
-import ProductCard from "@/components/ProductCard.vue";
+<script lang="ts" setup>
+import { ArrowLeft, ArrowRight, NavArrowDown } from "@iconoir/vue";
+import Button from "../core/Button.vue";
+import Heading from "../core/Heading.vue";
+import Input from "../core/Input.vue";
+import ProductCard from "../ProductCard.vue";
 
 const { t } = useI18n({
   useScope: "local",
@@ -143,11 +145,12 @@ const currentPage = computed(() => productsData.value?.page);
 const totalPages = computed(() => productsData.value?.totalPages);
 
 function onSearchInput() {
+  navigateTo(getUrl({ page: null, query: null }));
   refreshProducts();
 }
 
 function onSearchBlur() {
-  router.push(getUrl({ query: query.value || null }));
+  navigateTo(getUrl({ query: query.value || null, page: null }));
 }
 
 function getFilter() {
@@ -200,9 +203,6 @@ header {
   align-items: center;
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    h2 {
-      margin: 0;
-    }
   }
 }
 .filters {

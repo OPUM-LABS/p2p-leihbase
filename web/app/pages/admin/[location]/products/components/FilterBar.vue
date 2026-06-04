@@ -23,10 +23,11 @@
       <option value="description">{{ t("no_description") }}</option>
     </Select>
     <!-- Text filter -->
-    <InputField
-      v-model="query"
+    <Input
+      id="admin-product-input"
       :placeholder="`${t('search')}...`"
-      class="text-search lb-input"
+      v-model="query"
+      class="text-search"
       @input="$emit('input')"
     />
     <!-- Clear filter button -->
@@ -48,8 +49,11 @@
 </template>
 
 <script lang="ts" setup>
+import Button from "@/components/core/Button.vue";
+import HorizontalScroll from "@/components/core/HorizontalScroll.vue";
+import Input from "@/components/core/Input.vue";
+import Select from "@/components/core/Select.vue";
 import { Xmark } from "@iconoir/vue";
-import HorizontalScroll from "@/components/HorizontalScroll.vue";
 
 const { t } = useI18n({
   useScope: "local",
@@ -67,7 +71,7 @@ defineEmits<{ input: [] }>();
   gap: var(--fluid-spacing-4);
 }
 .text-search {
-  width: auto;
+  width: auto !important;
 }
 .no-photos {
   width: auto;

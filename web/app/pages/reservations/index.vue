@@ -1,16 +1,16 @@
 <template>
   <Container width="lg" centered>
     <!-- Header -->
-    <section>
-      <h1>{{ t("reservations") }}</h1>
+    <section class="lb-stack">
+      <Heading is="h1" size="xl">{{ t("reservations") }}</Heading>
       <p class="intro">
         {{ t("intro") }}
       </p>
     </section>
 
     <!-- Active -->
-    <section>
-      <h2>{{ t("active") }}</h2>
+    <section class="lb-stack">
+      <Heading is="h2" size="lg">{{ t("active") }}</Heading>
       <ul v-if="current && current.length > 0" class="cards">
         <template v-for="reservation in current" :key="reservation.id">
           <li v-if="data?.products[reservation.product]">
@@ -28,8 +28,8 @@
     </section>
 
     <!-- Past -->
-    <section v-if="past && past.length > 0">
-      <h2>{{ t("past") }}</h2>
+    <section v-if="past && past.length > 0" class="lb-stack">
+      <Heading is="h2" size="lg">{{ t("past") }}</Heading>
       <ul class="cards">
         <template v-for="reservation in past" :key="reservation.id">
           <li v-if="data?.products[reservation.product]">
@@ -61,15 +61,17 @@
 </template>
 
 <script setup lang="ts">
-import { ReservationStatus, type Reservation } from "@@/models/reservation";
-import ReservationDetailDialog from "./_components/ReservationDetailDialog.vue";
-import type { Product } from "@@/models/product";
 import { getReservationStatus } from "@@/lib/reservation";
 import type { Location } from "@@/models/location";
+import type { Product } from "@@/models/product";
+import { ReservationStatus, type Reservation } from "@@/models/reservation";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
 import ReservationCardButton from "./_components/ReservationCardButton.vue";
+import ReservationDetailDialog from "./_components/ReservationDetailDialog.vue";
 
 const { pb, isValid, logout } = usePocketbase();
-const router = useRouter();
+const userStore = useUserStore();
 
 const selectedReservation = ref<Reservation>();
 
@@ -150,7 +152,8 @@ useHead({
 
 if (!isValid.value) {
   logout();
-  router.push("/login");
+  userStore.logout();
+  navigateTo("/login");
 }
 </script>
 

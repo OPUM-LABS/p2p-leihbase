@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { toggleKey, openKey } from "./Accordion.model";
+import { openKey, toggleKey } from "./Accordion.model";
 
 const { single } = defineProps<{
   // If only one accordion item can be open at the same time

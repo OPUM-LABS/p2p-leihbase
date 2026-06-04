@@ -42,6 +42,8 @@
 
 <script setup lang="ts">
 import type { RecordModel } from "pocketbase";
+import AvailabilityCircle from "./AvailabilityCircle.vue";
+import ProductImage from "./ProductImage.vue";
 
 if (process.client) {
   await import("@shoelace-style/shoelace/dist/components/tooltip/tooltip.js");

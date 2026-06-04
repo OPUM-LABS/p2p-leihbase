@@ -7,7 +7,6 @@
         :name="name"
         :required="required"
         :value="model ? formatDate(model, 'DD.MM.YYYY', locale) : ''"
-        ref="input"
         class="lb-input"
         :data-testid="dataTestid"
         @click="handleInputFocus"
@@ -36,20 +35,15 @@
 import { formatDate, toShortISO } from "@@/lib/date";
 import { ArrowLeft, ArrowRight } from "@iconoir/vue";
 import FormLabel from "./FormLabel.vue";
+import Popup from "./Popup.vue";
 
 const { t, locale } = useI18n();
 
-const datepicker = ref();
-
-if (process.client) {
-  await import("cally");
-}
-
-const model = defineModel<Date | null>();
+const model = defineModel<Date>();
 const emit = defineEmits<{ input: [Date] }>();
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    id: string;
+    id?: string;
     label: string;
     name?: string;
     required?: boolean;
@@ -60,7 +54,8 @@ withDefaults(
   { showOutsideDays: true }
 );
 
-const input = ref(null);
+const id = props.id || useId();
+const datepicker = ref();
 const showPopup = ref(false);
 
 watch(model, (value) => {
@@ -79,6 +74,10 @@ function handleDateChange() {
   model.value = new Date(datepicker.value.value);
   showPopup.value = false;
   emit("input", model.value);
+}
+
+if (import.meta.client) {
+  await import("cally");
 }
 </script>
 

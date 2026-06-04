@@ -83,11 +83,12 @@
 </template>
 
 <script setup lang="ts">
+import { formatCurrency } from "@@/lib/currency";
 import { formatDate, isSameDate } from "@@/lib/date";
 import type { Reservation } from "@@/models/reservation";
-import { Check, Xmark, MessageText } from "@iconoir/vue";
-import { formatCurrency } from "@@/lib/currency";
-import HorizontalScroll from "../HorizontalScroll.vue";
+import { Check, MessageText, Xmark } from "@iconoir/vue";
+import HorizontalScroll from "../core/HorizontalScroll.vue";
+import Tooltip from "../core/Tooltip.vue";
 
 const { t, locale } = useI18n({
   useScope: "local",

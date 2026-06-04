@@ -7,6 +7,8 @@
 </template>
 
 <script setup>
+import AvailabilityCircle from "./AvailabilityCircle.vue";
+
 const { t } = useI18n({
   useScope: "local",
 });

@@ -2,7 +2,9 @@
   <Drawer :headerOffset="false" inset v-model:open="open">
     <!-- Header -->
     <header>
-      <h2>{{ state === "new" ? t("new") : t("edit") }}</h2>
+      <Heading is="h2" size="lg">{{
+        state === "new" ? t("new") : t("edit")
+      }}</Heading>
       <div class="buttons">
         <Button
           v-if="state === 'edit'"
@@ -40,7 +42,12 @@
         :label="t('active')"
         v-model="active"
       />
-      <Input id="product-drawer-name-input" :label="t('name')" v-model="name" />
+      <Input
+        id="product-drawer-name-input"
+        :label="t('name')"
+        v-model="name"
+        required
+      />
       <RecordPickerInput
         id="product-drawer-categories-input"
         :label="t('categories')"
@@ -111,12 +118,19 @@
 </template>
 
 <script lang="ts" setup>
-import { Trash, Eye, Xmark } from "@iconoir/vue";
-import type { RecordModel } from "pocketbase";
-import RecordPickerInput from "@/components/admin/RecordPickerInput.vue";
-import ImageInput from "@/components/ImageInput.vue";
-import Switch from "@/components/Switch.vue";
 import type { Product } from "@@/models/product";
+import RecordPickerInput from "@/components/admin/RecordPickerInput.vue";
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Dialog from "@/components/core/Dialog.vue";
+import Drawer from "@/components/core/Drawer.vue";
+import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/core/Input.vue";
+import RichTextarea from "@/components/core/RichTextarea.vue";
+import Switch from "@/components/core/Switch.vue";
+import ImageInput from "@/components/ImageInput.vue";
+import { Eye, Trash, Xmark } from "@iconoir/vue";
+import type { RecordModel } from "pocketbase";
 
 const { pb } = usePocketbase();
 const { t, locale } = useI18n({
@@ -248,6 +262,7 @@ header {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  margin-bottom: var(--fluid-spacing-4);
 }
 header .buttons {
   display: flex;

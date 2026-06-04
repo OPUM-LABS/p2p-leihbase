@@ -10,51 +10,58 @@
         id="date-start"
         :label="t('from')"
         v-model="dateStart"
+        required
         @input="() => refresh()"
       />
       <DateInput
         id="date-end"
         :label="t('to')"
         v-model="dateEnd"
+        required
         @input="() => refresh()"
       />
     </div>
 
     <div class="cols">
-      <div>
-        <h3>{{ t("reservations") }}</h3>
+      <div class="lb-stack">
+        <Heading is="h3" size="md">{{ t("reservations") }}</Heading>
         <p>
           {{ reservations?.length }} {{ t("created_reservations") }}<br />
           {{ borrowings?.length }} {{ t("borrowings") }}<br />
           {{ cancelled?.length || 0 }} {{ t("cancellations") }}
         </p>
 
-        <h3>{{ t("Users") }}</h3>
+        <Heading is="h3" size="md">{{ t("Users") }}</Heading>
         <p>
           {{ borrowingsWithUser?.length }} {{ t("borrowings_with_user") }}<br />
           {{ accounts }} {{ t("users") }}
         </p>
       </div>
 
-      <div>
-        <h3>{{ t("most_borrowed_products") }}</h3>
-        <div v-for="(product, index) in products">
-          {{ index + 1 }}.
-          <a target="_blank" :href="`/link/product/${product.product.id}`">
-            {{ product.product.name }}
-          </a>
-          ({{ product.count }}x)<br />
-        </div>
+      <div class="lb-stack">
+        <Heading is="h3" size="md">{{ t("most_borrowed_products") }}</Heading>
+        <ol>
+          <li v-for="(product, index) in products">
+            <a target="_blank" :href="`/link/product/${product.product.id}`">
+              {{ product.product.name }}
+            </a>
+            ({{ product.count }}x)<br />
+          </li>
+        </ol>
       </div>
     </div>
   </Container>
 </template>
 
 <script setup lang="ts">
-import AdminNav from "./components/AdminNav.vue";
-import AdminHeader from "./components/AdminHeader.vue";
 import { endOfUTCDate, startOfUTCDate, subtractDays } from "@@/lib/date";
+import Container from "@/components/core/Container.vue";
+import DateInput from "@/components/core/DateInput.vue";
+import Heading from "@/components/core/Heading.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
 import type { RecordModel } from "pocketbase";
+import AdminHeader from "./components/AdminHeader.vue";
+import AdminNav from "./components/AdminNav.vue";
 
 const { t } = useI18n({
   useScope: "local",
@@ -64,8 +71,8 @@ const { pb } = usePocketbase();
 
 const slug = route.params.location;
 
-const dateStart = ref(subtractDays(new Date(Date.now()), 30));
-const dateEnd = ref(new Date(Date.now()));
+const dateStart = ref<Date | undefined>(subtractDays(new Date(Date.now()), 30));
+const dateEnd = ref<Date | undefined>(new Date(Date.now()));
 
 const location = await useLocation({
   slug: Array.isArray(slug) ? slug[0] : slug,
@@ -79,6 +86,7 @@ if (!location.value || !location.value.id) {
 }
 
 const { data: reservations, refresh } = await useAsyncData(async () => {
+  if (!dateStart.value || !dateEnd.value) return;
   const reservations = await pb.collection("reservations").getFullList({
     filter: pb.filter("start >= {:dateStart} && end <= {:dateEnd}", {
       dateStart: startOfUTCDate(dateStart.value),
@@ -148,6 +156,9 @@ const accounts = computed(
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
     grid-template-columns: 1fr 1fr;
   }
+}
+ol {
+  padding-left: 2rem;
 }
 </style>
 

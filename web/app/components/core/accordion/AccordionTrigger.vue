@@ -14,8 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import { toggleKey, idKey, isOpenKey } from "./Accordion.model";
 import { NavArrowDown } from "@iconoir/vue";
+import Button from "../Button.vue";
+import { idKey, isOpenKey, toggleKey } from "./Accordion.model";
 
 defineProps<{
   // If the accordion trigger is disabled, not interactable

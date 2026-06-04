@@ -1,7 +1,9 @@
 <template>
   <Container width="sm" centered>
-    <Card class="card">
-      <h1 data-testid="login-h1">{{ t("title") }}</h1>
+    <Card class="card lb-stack">
+      <Heading is="h1" size="xl" cap data-testid="login-h1">
+        {{ t("title") }}
+      </Heading>
       <i18n-t keypath="text" tag="p" for="signup_text">
         <NuxtLink to="/signup" data-testid="signup-link">
           {{ t("signup_text") }}
@@ -55,27 +57,26 @@
   </Container>
 </template>
 
-<script setup>
-import Container from "@/components/Container";
-import Input from "@/components/Input";
-import Card from "@/components/Card";
-import {
-  AFTER_LOGIN,
-  AFTER_LOGIN_RESERVATION_INTENT,
-} from "@/components/page-alert/PageAlert.model";
+<script lang="ts" setup>
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import Card from "@/components/core/Card.vue";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/core/Input.vue";
+import { PageAlertType } from "@/components/page-alert/PageAlert.model";
+
+useHead({
+  title: `Login`,
+});
 
 const { t } = useI18n({
   useScope: "local",
 });
 
-const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
 const { login, isValid } = usePocketbase();
-
-useHead({
-  title: `Login`,
-});
 
 const email = ref(null);
 const password = ref(null);
@@ -107,14 +108,14 @@ async function onLogin() {
     const { path, intent } = userStore.$state.authenticationIntent;
     if (path) {
       if (intent && intent === "reservation") {
-        userStore.showBanner(AFTER_LOGIN_RESERVATION_INTENT);
+        userStore.showBanner(PageAlertType.AFTER_LOGIN_RESERVATION_INTENT);
       } else {
-        userStore.showBanner(AFTER_LOGIN);
+        userStore.showBanner(PageAlertType.AFTER_LOGIN);
       }
-      router.push(path);
+      navigateTo(path);
     } else {
-      userStore.showBanner(AFTER_LOGIN);
-      router.push("/profile");
+      userStore.showBanner(PageAlertType.AFTER_LOGIN);
+      navigateTo("/profile");
     }
   }
 }
@@ -122,11 +123,6 @@ async function onLogin() {
 
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
-
-h1 {
-  margin-top: -0.4em;
-  margin-bottom: var(--fluid-spacing-4);
-}
 
 form {
   display: flex;
@@ -166,7 +162,7 @@ footer {
     "title": "Einloggen",
     "text": "Noch kein Konto? {0}, um ein Konto zu erstellen.",
     "signup_text": "Registriere dich",
-    "password": "Kennwort",
+    "password": "Passwort",
     "error": "Einloggen nicht erfolgreich, bitte überprüfe deine Kontodaten, oder {0} um ein Konto zu erstellen",
     "error_signup": "melde dich an",
     "submit": "Einloggen",

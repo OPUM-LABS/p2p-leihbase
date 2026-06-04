@@ -2,6 +2,7 @@
   <Dialog v-model:open="open" inset :title="title || ''">
     <template #header>
       <Input
+        :id="`${id}-input`"
         placeholder="Enter search query..."
         class="input"
         v-model="query"
@@ -28,8 +29,10 @@
 </template>
 
 <script lang="ts" setup>
-import type { RecordModel } from "pocketbase";
 import { Check } from "@iconoir/vue";
+import type { RecordModel } from "pocketbase";
+import Dialog from "../core/Dialog.vue";
+import Input from "../core/Input.vue";
 
 const { t } = useI18n({
   useScope: "local",

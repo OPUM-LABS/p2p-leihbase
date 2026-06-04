@@ -7,6 +7,7 @@ import {
   navigateToProductPage,
   updateLastProductReservation,
 } from "../lib/product";
+import { pocketbase } from "../services/pocketbase";
 
 async function reserve(page, startIndex, endIndex, navigateToNextMonth = true) {
   // Click reserve
@@ -64,14 +65,20 @@ test.describe("reservation", () => {
     await expect(page).toHaveURL("/signup");
 
     // Signup
+    const email = `john${Math.round(Math.random() * 100)}@example.com`;
     await page.getByTestId("name-input").fill("John2");
     await page
       .getByTestId("email-input")
-      .fill(`john${Math.round(Math.random() * 100)}@example.com`);
+      .fill(email);
     await page.getByTestId("password-input").fill("123456789");
     await page.getByTestId("tac-checkbox").check();
     await page.getByTestId("submit-button").click();
     await page.waitForURL(/\/l\/test-store\/p\/(.+)/);
+
+    // Set user as verified
+    const pb = await pocketbase();
+    const user = await pb.collection("users").getFirstListItem(`email="${email}"`);
+    await pb.collection("users").update(user.id, { verified: true });
 
     // Reserve
     await expect(page.url()).toContain("/l/test-store/p/");

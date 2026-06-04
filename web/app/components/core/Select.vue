@@ -12,6 +12,7 @@
 
 <script lang="ts" setup>
 import { NavArrowDown } from "@iconoir/vue";
+
 defineOptions({
   inheritAttrs: false,
 });

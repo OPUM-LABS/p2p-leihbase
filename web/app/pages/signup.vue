@@ -1,7 +1,9 @@
 <template>
   <Container width="sm" centered>
-    <Card class="card">
-      <h1 data-testid="signup-h1">{{ t("title") }}</h1>
+    <Card class="card lb-stack">
+      <Heading is="h1" size="xl" cap data-testid="signup-h1">
+        {{ t("title") }}
+      </Heading>
       <i18n-t keypath="text" tag="p" for="login_text">
         <NuxtLink to="/login">{{ t("login_text") }}</NuxtLink>
       </i18n-t>
@@ -78,13 +80,14 @@
   </Container>
 </template>
 
-<script setup>
-import Container from "@/components/Container";
-import Card from "@/components/Card";
-import {
-  AFTER_SIGNUP,
-  AFTER_SIGNUP_RESERVATION_INTENT,
-} from "@/components/page-alert/PageAlert.model";
+<script lang="ts" setup>
+import Button from "@/components/core/Button.vue";
+import Card from "@/components/core/Card.vue";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/core/Input.vue";
+import { PageAlertType } from "@/components/page-alert/PageAlert.model";
+import { ClientResponseError } from "pocketbase";
 
 if (process.client) {
   await import("@shoelace-style/shoelace/dist/components/alert/alert.js");
@@ -94,11 +97,10 @@ if (process.client) {
 const { t } = useI18n({
   useScope: "local",
 });
-const router = useRouter();
 const userStore = useUserStore();
 const { pb, login } = usePocketbase();
 
-const signupError = ref(null);
+const signupError = ref<string>();
 const loading = ref(false);
 
 useHead({
@@ -138,25 +140,37 @@ async function onSignup() {
     const { path, intent } = userStore.$state.authenticationIntent;
     if (path) {
       if (intent && intent === "reservation") {
-        userStore.showBanner(AFTER_SIGNUP_RESERVATION_INTENT);
+        userStore.showBanner(PageAlertType.AFTER_SIGNUP_RESERVATION_INTENT);
       } else {
-        userStore.showBanner(AFTER_SIGNUP);
+        userStore.showBanner(PageAlertType.AFTER_SIGNUP);
       }
-      router.push(path);
+      navigateTo(path);
     } else {
-      userStore.showBanner(AFTER_SIGNUP);
-      router.push("/profile");
+      userStore.showBanner(PageAlertType.AFTER_SIGNUP);
+      navigateTo("/profile");
     }
   } catch (e) {
     console.log(e);
     loading.value = false;
-    if (e.data?.data?.password?.code === "validation_length_out_of_range") {
+    if (
+      e instanceof ClientResponseError &&
+      e.data?.data?.password?.code === "validation_length_out_of_range"
+    ) {
       signupError.value = t("errors.password_length");
-    } else if (e.data?.data?.email?.code === "validation_invalid_email") {
+    } else if (
+      e instanceof ClientResponseError &&
+      e.data?.data?.email?.code === "validation_invalid_email"
+    ) {
       signupError.value = t("errors.invalid_email");
-    } else if (e.data?.data?.email?.code === "validation_not_unique") {
+    } else if (
+      e instanceof ClientResponseError &&
+      e.data?.data?.email?.code === "validation_not_unique"
+    ) {
       signupError.value = t("errors.email_in_use");
-    } else if (e.data?.data?.terms?.code === "validation_required") {
+    } else if (
+      e instanceof ClientResponseError &&
+      e.data?.data?.terms?.code === "validation_required"
+    ) {
       signupError.value = t("errors.terms_required");
     } else {
       signupError.value = t("errors.general");
@@ -167,11 +181,6 @@ async function onSignup() {
 
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
-
-h1 {
-  margin-top: -0.4em;
-  margin-bottom: var(--fluid-spacing-4);
-}
 
 form {
   max-width: var(--max-text-width);
@@ -226,7 +235,7 @@ fieldset.checkbox {
     "login_text": "Einloggen",
     "name": "Name",
     "email": "E-Mail",
-    "password": "Kennwort",
+    "password": "Passwort",
     "terms_and_conditions": "Ich habe die {0}, zur Nutzung meiner personenbezogenen Daten gelesen und bin damit einverstanden.",
     "terms_and_conditions_link": "Datenschutzhinweisen",
     "submit": "Registrieren",

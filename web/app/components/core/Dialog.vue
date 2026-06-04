@@ -7,13 +7,14 @@
       open,
       'was-open': wasOpen,
       inset,
+      [`size-${size}`]: true,
     }"
     :aria-labelledby="id + '-title'"
     @close="close"
   >
     <header>
       <div class="title">
-        <h2 :id="id + '-title'">{{ title }}</h2>
+        <Heading is="h2" size="lg" :id="id + '-title'" gap>{{ title }}</Heading>
         <button @click="close">
           <span class="sr-only">{{ t("close") }}</span>
           <Xmark />
@@ -30,6 +31,7 @@
 <script lang="ts" setup>
 import { Xmark } from "@iconoir/vue";
 import { templateRef } from "@vueuse/core";
+import Heading from "./Heading.vue";
 
 const { t } = useI18n({
   useScope: "local",
@@ -40,10 +42,23 @@ const id = useId();
 const wasOpen = ref(false);
 const dialog = templateRef("dialog");
 
-defineProps<{
-  inset: boolean;
-  title: string;
-}>();
+withDefaults(
+  defineProps<{
+    /**
+     * Title of dialog
+     */
+    title: string;
+    /**
+     * Add padding around dialog content
+     */
+    inset: boolean;
+    /**
+     * Dialog size
+     */
+    size?: "sm" | "md";
+  }>(),
+  { size: "md" }
+);
 
 const emit = defineEmits<{ close: [] }>();
 
@@ -84,7 +99,6 @@ dialog {
   left: 50%;
   top: -100%;
   transform: translate(-50%, -50%);
-  width: min(600px, 100%);
   height: 100%;
   max-height: 100%;
   max-width: 100%;
@@ -130,6 +144,14 @@ dialog {
       padding-bottom: 2rem;
     }
   }
+
+  &.size-md {
+    width: min(600px, 100%);
+  }
+  &.size-sm {
+    width: min(400px, 100%);
+  }
+
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
     height: min-content;
     max-height: 95vh;
@@ -178,7 +200,7 @@ header {
   }
 }
 .body {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 </style>
 

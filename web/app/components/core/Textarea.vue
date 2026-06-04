@@ -12,8 +12,7 @@
       v-model="model"
       rows="3"
       class="lb-input"
-    >
-    </textarea>
+    ></textarea>
     <p v-if="description" :id="`${id}-description`">
       <small>{{ description }}</small>
     </p>
@@ -21,6 +20,8 @@
 </template>
 
 <script lang="ts" setup>
+import FormLabel from "./FormLabel.vue";
+
 const model = defineModel();
 const props = defineProps<{
   id?: string;

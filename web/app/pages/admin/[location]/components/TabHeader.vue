@@ -2,13 +2,15 @@
   <header>
     <slot name="prefix" />
     <slot>
-      <h3>{{ title }}</h3>
+      <Heading is="h3" size="md" cap>{{ title }}</Heading>
     </slot>
     <slot name="suffix" />
   </header>
 </template>
 
 <script setup lang="ts">
+import Heading from "@/components/core/Heading.vue";
+
 defineProps<{ title?: string }>();
 </script>
 
@@ -17,10 +19,6 @@ header {
   display: flex;
   margin-bottom: 1rem;
   gap: var(--fluid-spacing-8);
-}
-
-header > h3 {
-  margin: 0;
 }
 
 header > button {

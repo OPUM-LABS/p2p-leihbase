@@ -1,7 +1,9 @@
 <template>
   <Drawer :headerOffset="false" inset v-model:open="open">
     <header>
-      <h2>{{ state === "new" ? t("new") : t("edit") }}</h2>
+      <Heading is="h2" size="lg" cap>{{
+        state === "new" ? t("new") : t("edit")
+      }}</Heading>
       <div class="buttons">
         <Button
           v-if="state === 'edit'"
@@ -131,11 +133,20 @@
 </template>
 
 <script lang="ts" setup>
+import { formatCurrency } from "@@/lib/currency";
+import type { Reservation } from "@@/models/reservation";
 import RecordPickerInput from "@/components/admin/RecordPickerInput.vue";
+import Alert from "@/components/core/Alert.vue";
+import Button from "@/components/core/Button.vue";
+import DateInput from "@/components/core/DateInput.vue";
+import Dialog from "@/components/core/Dialog.vue";
+import Drawer from "@/components/core/Drawer.vue";
+import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/core/Input.vue";
+import RichTextarea from "@/components/core/RichTextarea.vue";
+import Switch from "@/components/core/Switch.vue";
 import { Mail, Trash, Xmark } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
-import type { Reservation } from "@@/models/reservation";
-import { formatCurrency } from "@@/lib/currency";
 
 const { pb } = usePocketbase();
 const { t, locale } = useI18n({
@@ -152,8 +163,8 @@ const emit = defineEmits(["update"]);
 
 const productId = ref<string>();
 const userId = ref<string>();
-const start = ref<Date | null>(null);
-const end = ref<Date | null>(null);
+const start = ref<Date>();
+const end = ref<Date>();
 const started = ref<boolean>(false);
 const ended = ref<boolean>(false);
 const cancelled = ref<boolean>(false);
@@ -168,8 +179,10 @@ watch(open, (isOpening) => {
   userId.value = props.reservation?.user || undefined;
   start.value = props.reservation?.start
     ? new Date(props.reservation.start)
-    : null;
-  end.value = props.reservation?.end ? new Date(props.reservation.end) : null;
+    : undefined;
+  end.value = props.reservation?.end
+    ? new Date(props.reservation.end)
+    : undefined;
   started.value = props.reservation?.started || false;
   ended.value = props.reservation?.ended || false;
   cancelled.value = props.reservation?.cancelled || false;
@@ -293,7 +306,9 @@ form {
 header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
+  margin-bottom: var(--fluid-spacing-4);
 }
 header .buttons {
   display: flex;

@@ -1,5 +1,6 @@
 <template>
   <Container width="lg" centered>
+    <PageAlert />
     <header>
       <section class="links">
         <Button
@@ -22,9 +23,9 @@
           {{ link.text }}
         </Button>
       </section>
-      <h1>
+      <Heading is="h1" size="xl" class="heading">
         {{ location?.name || t("no_location_found") }}
-      </h1>
+      </Heading>
       <!-- Description -->
       <div
         v-if="location?.description"
@@ -45,10 +46,14 @@
   </Container>
 </template>
 
-<script setup>
-import ProductGrid from "@/components/modules/ProductGrid.vue";
+<script lang="ts" setup>
 import { openingHoursToString } from "@@/lib/openingHours";
-import { MapPin, Internet } from "@iconoir/vue";
+import Button from "@/components/core/Button.vue";
+import Container from "@/components/core/Container.vue";
+import Heading from "@/components/core/Heading.vue";
+import ProductGrid from "@/components/modules/ProductGrid.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
+import { Internet, MapPin } from "@iconoir/vue";
 
 const { t, locale } = useI18n({
   useScope: "local",
@@ -83,11 +88,8 @@ header {
     margin-bottom: var(--fluid-spacing-8);
     flex-wrap: wrap;
   }
-  h1 {
+  .heading {
     margin-bottom: var(--fluid-spacing-8);
-    display: flex;
-    align-items: center;
-    line-height: 1.15;
   }
   .description {
     max-width: var(--max-text-width);

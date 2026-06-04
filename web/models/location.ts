@@ -1,3 +1,4 @@
+import type { OpeningHours } from "~~/lib/openingHours";
 import type { RecordModel } from "pocketbase";
 
 export type Location = RecordModel & {
@@ -8,7 +9,7 @@ export type Location = RecordModel & {
   description: string;
   slug: string;
   active: boolean;
-  opening_hours: string;
+  opening_hours: OpeningHours;
   links: string;
   max_reservation_days: number;
 };

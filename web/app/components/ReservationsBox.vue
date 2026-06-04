@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>{{ title }}</h3>
+    <Heading is="h3" size="md" class="heading">{{ title }}</Heading>
     <ul v-if="reservations && reservations.length > 0">
       <li
         v-for="reservation in reservations"
@@ -24,10 +24,11 @@
 </template>
 
 <script setup>
-import { DateTime } from "luxon";
 import { formatDate } from "@@/lib/date";
-import { User as UserIcon } from "@iconoir/vue";
 import { isToday } from "@@/lib/reservation";
+import { User as UserIcon } from "@iconoir/vue";
+import { DateTime } from "luxon";
+import Heading from "./core/Heading.vue";
 
 const { locale } = useI18n();
 
@@ -50,6 +51,9 @@ const userReservationIds = computed(() =>
 </script>
 
 <style scoped>
+.heading {
+  margin-bottom: var(--fluid-spacing-4);
+}
 ul {
   --border-color: var(--text-color-light);
   border: 1px solid var(--border-color);

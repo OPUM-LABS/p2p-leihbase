@@ -24,6 +24,11 @@ onRecordCreateRequest((e) => {
     requestUser && location.get("users").includes(requestUser.get("id"));
   record.set("location", product.get("location"));
 
+  // Require e-mail verification
+  if (!requestUser?.verified()) {
+    throw new BadRequestError("User_not_verified.");
+  }
+
   // Make sure there is not already an open reservation with the same user
   // and product
   if (hasOpenReservations(record) && !isAdmin && !isLocationUser) {
