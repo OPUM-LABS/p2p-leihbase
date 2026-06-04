@@ -32,20 +32,7 @@
       </div>
       <div class="info-col">
         <header>
-          <ul class="breadcrumb">
-            <li>
-              <NuxtLink :to="`/l/${location?.slug}`">
-                {{ location?.name }}
-              </NuxtLink>
-            </li>
-            <li>
-              <span v-for="category in product?.expand?.categories">
-                <NuxtLink :to="`/l/${location?.slug}?category=${category.id}`">
-                  {{ category.name_de }}
-                </NuxtLink>
-              </span>
-            </li>
-          </ul>
+          <Breadcrumb :items="breadcrumb" />
         </header>
 
         <div class="info-header">
@@ -99,6 +86,8 @@
 import { formatCurrency } from "@@/lib/currency";
 import { isToday } from "@@/lib/reservation";
 import AvailabilityBadge from "@/components/AvailabilityBadge.vue";
+import type { BreadcrumbList } from "@/components/core/Breadcrumb.model";
+import Breadcrumb from "@/components/core/Breadcrumb.vue";
 import Button from "@/components/core/Button.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
@@ -140,16 +129,24 @@ if (!product.value) {
   });
 }
 
-userStore.clearAuthenticationIntent();
-
 const { reservations, refresh: refreshReservations } =
   await getFutureReservationsByProduct(product.value.id as string);
+
+const breadcrumb = computed<BreadcrumbList[]>(() => [
+  { label: location.value?.name, href: `/l/${location.value?.slug}` },
+  product.value?.expand?.categories.map((category) => ({
+    label: category.name_de,
+    href: `/l/${location.value?.slug}?category=${category.id}`,
+  })),
+]);
 
 const available = computed(() =>
   reservations.value && reservations.value.length > 0
     ? reservations.value?.filter((r) => isToday(r)).length === 0
     : true
 );
+
+userStore.clearAuthenticationIntent();
 
 // Refetch reservations when the user created a reservation
 nuxtApp.hook("app:user:reservation:create", () => {
@@ -193,26 +190,6 @@ section {
   max-width: var(--max-text-width);
   h1 {
     line-height: 1.15;
-  }
-}
-.breadcrumb {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0;
-  margin-bottom: var(--fluid-spacing-8);
-  & > li:not(:last-child)::after {
-    content: ">";
-    margin-left: 0.5rem;
-    color: var(--text-color-light);
-  }
-  li > span:not(:last-child)::after {
-    content: ", ";
-  }
-  a {
-    color: var(--text-color);
   }
 }
 .product {
