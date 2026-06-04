@@ -8,6 +8,7 @@
     <Footer></Footer>
   </div>
   <ReservationDialog />
+  <VerificationDialog />
 </template>
 
 <script setup>
@@ -19,6 +20,7 @@ import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.j
 import Footer from "./components/modules/Footer.vue";
 import NavBar from "./components/modules/NavBar.vue";
 import ReservationDialog from "./components/ReservationDialog.vue";
+import VerificationDialog from "./components/VerificationDialog.vue";
 
 setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/"

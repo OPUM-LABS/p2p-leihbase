@@ -7,6 +7,7 @@
       open,
       'was-open': wasOpen,
       inset,
+      [`size-${size}`]: true,
     }"
     :aria-labelledby="id + '-title'"
     @close="close"
@@ -41,10 +42,23 @@ const id = useId();
 const wasOpen = ref(false);
 const dialog = templateRef("dialog");
 
-defineProps<{
-  inset: boolean;
-  title: string;
-}>();
+withDefaults(
+  defineProps<{
+    /**
+     * Title of dialog
+     */
+    title: string;
+    /**
+     * Add padding around dialog content
+     */
+    inset: boolean;
+    /**
+     * Dialog size
+     */
+    size?: "sm" | "md";
+  }>(),
+  { size: "md" }
+);
 
 const emit = defineEmits<{ close: [] }>();
 
@@ -85,7 +99,6 @@ dialog {
   left: 50%;
   top: -100%;
   transform: translate(-50%, -50%);
-  width: min(600px, 100%);
   height: 100%;
   max-height: 100%;
   max-width: 100%;
@@ -131,6 +144,14 @@ dialog {
       padding-bottom: 2rem;
     }
   }
+
+  &.size-md {
+    width: min(600px, 100%);
+  }
+  &.size-sm {
+    width: min(400px, 100%);
+  }
+
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
     height: min-content;
     max-height: 95vh;

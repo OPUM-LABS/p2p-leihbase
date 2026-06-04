@@ -1,5 +1,5 @@
-import type { RecordModel } from "pocketbase";
 import { defineStore } from "pinia";
+import type { RecordModel } from "pocketbase";
 
 interface State {
   name: string | null;
@@ -13,8 +13,8 @@ interface State {
   banner: string | null;
 }
 
-export const useUserStore = defineStore<"user", State>("user", {
-  state: () => ({
+export const useUserStore = defineStore("user", {
+  state: (): State => ({
     name: null,
     hasInitialData: false,
     reservations: [],

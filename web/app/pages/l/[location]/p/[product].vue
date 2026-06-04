@@ -86,7 +86,7 @@
         <Button
           size="lg"
           data-testid="reserve-button"
-          @click.prevent="onReserve"
+          @click.prevent="handleReserveButonClick"
         >
           {{ t("reserve_button") }}
         </Button>
@@ -107,18 +107,15 @@ import Tooltip from "@/components/core/Tooltip.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import ProductImage from "@/components/ProductImage.vue";
 import ReservationsBox from "@/components/ReservationsBox.vue";
+import { getLocationBySlug } from "@/composables/location";
 import { Lock } from "@iconoir/vue";
-import type { Location } from "~~/models/location";
-import type { Product } from "~~/models/product";
-import type { Reservation } from "~~/models/reservation";
 
 const { t } = useI18n({ useScope: "local" });
-const { pb } = usePocketbase();
 const config = useRuntimeConfig();
 const {
   product: { thumbs },
 } = useAppConfig();
-const { open } = useReservationDialog();
+const { open: openReservationDialog } = useReservationDialog();
 
 const nuxtApp = useNuxtApp();
 const route = useRoute();
@@ -127,55 +124,26 @@ const { locale } = useI18n();
 
 const imageIndex = ref(0);
 
+const { location } = await getLocationBySlug(route.params.location as string);
+if (!location.value) {
+  throw createError({
+    statusCode: 404,
+  });
+}
+
+const { product } = await getProduct(route.params.product as string, {
+  expand: "categories",
+});
+if (!product.value) {
+  throw createError({
+    statusCode: 404,
+  });
+}
+
 userStore.clearAuthenticationIntent();
 
-const { data: location } = await useAsyncData("location", async () => {
-  const location = await pb
-    .collection("public_locations")
-    .getFirstListItem(
-      pb.filter("slug = {:slug}", { slug: route.params.location })
-    );
-  return structuredClone(location) as Location;
-});
-
-const { data: product } = await useAsyncData("product", async () => {
-  const product = await pb
-    .collection(userStore.isAdmin ? "products" : "public_products")
-    .getOne(route.params.product, {
-      expand: "categories",
-    });
-  return structuredClone(product) as Product;
-});
-
-// Also get product description converted to plain-text,
-// to be used in meta-tags
-const { data: excerpt } = await useAsyncData("product-excerpt", async () => {
-  const product = await pb
-    .collection(userStore.isAdmin ? "products" : "public_products")
-    .getOne(route.params.product, {
-      fields: "description:excerpt(200,true)",
-    });
-  return structuredClone(product);
-});
-
-const { data: reservations, refresh: refreshReservations } = await useAsyncData(
-  "reservations",
-  async () => {
-    const reservations = await pb
-      .collection("public_reservations")
-      .getFullList({
-        filter: pb.filter("product = {:product} && end >= @todayStart", {
-          product: product.value.id,
-        }),
-        sort: "start",
-      });
-    return structuredClone(reservations) as Reservation[];
-  }
-);
-
-nuxtApp.hook("app:user:reservation:create", () => {
-  refreshReservations();
-});
+const { reservations, refresh: refreshReservations } =
+  await getFutureReservationsByProduct(product.value.id as string);
 
 const available = computed(() =>
   reservations.value && reservations.value.length > 0
@@ -183,12 +151,27 @@ const available = computed(() =>
     : true
 );
 
+// Refetch reservations when the user created a reservation
+nuxtApp.hook("app:user:reservation:create", () => {
+  refreshReservations();
+});
+
+// Open reservation dialog
+async function handleReserveButonClick() {
+  if (!location.value || !product.value) {
+    console.error("Can't reserve, location or product not set");
+    return;
+  }
+  openReservationDialog(location.value, product.value);
+}
+
+const { excerpt } = await getProductExcerpt(route.params.product as string);
 useHead({
   title: `${product.value?.name} | ${location.value?.name}`,
   meta: [
-    { name: "description", content: excerpt.value?.description },
+    { name: "description", content: excerpt.value },
     { property: "og:title", content: product.value?.name },
-    { property: "og:description", content: excerpt.value?.description },
+    { property: "og:description", content: excerpt.value },
     {
       property: "og:image",
       content:
@@ -198,22 +181,6 @@ useHead({
     },
   ].filter((m) => !!m.content),
 });
-
-function onReserve() {
-  if (!location.value || !product.value) {
-    console.error("Can't reserve, location or product not set");
-    return;
-  }
-  if (!pb.authStore.isValid) {
-    userStore.setAuthenticationIntent(
-      "reservation",
-      `/l/${location.value.slug}/p/${product.value.id}`
-    );
-    navigateTo("/signup");
-    return;
-  }
-  open(location.value, product.value);
-}
 </script>
 
 <style lang="scss" scoped>
