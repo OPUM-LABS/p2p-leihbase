@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 const open = defineModel<boolean>("open");
-const id = useId().replace(":", "");
+const id = useId();
 
 function close(e: Event) {
   const target = e.target as HTMLInputElement;

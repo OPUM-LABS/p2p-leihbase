@@ -12,8 +12,7 @@
       v-model="model"
       rows="3"
       class="lb-input"
-    >
-    </textarea>
+    ></textarea>
     <p v-if="description" :id="`${id}-description`">
       <small>{{ description }}</small>
     </p>

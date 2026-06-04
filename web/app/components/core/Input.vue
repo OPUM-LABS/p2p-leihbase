@@ -43,7 +43,7 @@ import FormLabel from "./FormLabel.vue";
 
 const model = defineModel();
 const props = defineProps<{
-  id: string;
+  id?: string;
   label?: string;
   name?: string;
   value?: string;
@@ -59,6 +59,7 @@ const props = defineProps<{
 if (props.value) {
   model.value = props.value;
 }
+const id = props.id || useId();
 </script>
 
 <style scoped>

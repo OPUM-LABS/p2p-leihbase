@@ -182,10 +182,6 @@ import ProductImage from "@/components/ProductImage.vue";
 import ReservationsBox from "@/components/ReservationsBox.vue";
 import { Lock } from "@iconoir/vue";
 
-if (process.client) {
-  await import("@shoelace-style/shoelace/dist/components/alert/alert.js");
-}
-
 const { t } = useI18n({
   useScope: "local",
 });
