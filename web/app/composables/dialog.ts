@@ -6,7 +6,7 @@ export const useReservationDialog = function () {
   const product = useState<Product | null>(() => null);
   const location = useState<Location | null>(() => null);
 
-  const { pb } = usePocketbase();
+  const { pb, user } = usePocketbase();
   const userStore = useUserStore();
   const { open: openVerificationDialog } = useVerificationDialog();
 
@@ -22,10 +22,10 @@ export const useReservationDialog = function () {
     }
 
     // Checkout verification status
-    if (!pb.authStore.record?.verified) {
+    if (!user.value?.verified) {
       await pb.collection("users").authRefresh();
     }
-    if (!pb.authStore.record?.verified) {
+    if (!user.value?.verified) {
       openVerificationDialog();
       return;
     }

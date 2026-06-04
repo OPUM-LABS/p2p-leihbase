@@ -38,8 +38,8 @@ import Input from "@/components/core/Input.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { ClientResponseError, type RecordModel } from "pocketbase";
 
-const { pb, isValid, logout } = usePocketbase();
-const user = ref<RecordModel | null>(null);
+const { pb, isValid, user, logout } = usePocketbase();
+const userStore = useUserStore();
 const { loading, update, errors } = usePocketbaseUpdate(pb, "users");
 const { t } = useI18n({
   useScope: "local",
@@ -49,11 +49,10 @@ useHead({
   title: t("edit_profile"),
 });
 
-if (!isValid.value || !pb.authStore.record) {
+if (!isValid.value || !user.value) {
   logout();
+  userStore.logout();
   navigateTo("/login");
-} else {
-  user.value = await pb.collection("users").getOne(pb.authStore.record.id);
 }
 
 async function handleSubmit(e: SubmitEvent) {

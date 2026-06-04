@@ -1,9 +1,8 @@
-import PocketBase from "pocketbase";
 import { useUserStore } from "@@/app/stores/user";
+import PocketBase from "pocketbase";
 
 export default defineNuxtPlugin(async () => {
   const config = useRuntimeConfig();
-  const userStore = useUserStore();
 
   const url = process.client
     ? config.public.pocketbase.clientBaseUrl

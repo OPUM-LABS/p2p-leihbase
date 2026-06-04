@@ -71,7 +71,7 @@ import ReservationCardButton from "./_components/ReservationCardButton.vue";
 import ReservationDetailDialog from "./_components/ReservationDetailDialog.vue";
 
 const { pb, isValid, logout } = usePocketbase();
-const router = useRouter();
+const userStore = useUserStore();
 
 const selectedReservation = ref<Reservation>();
 
@@ -152,6 +152,7 @@ useHead({
 
 if (!isValid.value) {
   logout();
+  userStore.logout();
   navigateTo("/login");
 }
 </script>

@@ -37,10 +37,9 @@ import Heading from "@/components/core/Heading.vue";
 import KeyValue from "@/components/core/KeyValue.vue";
 import Link from "@/components/core/Link.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
-import type { RecordModel } from "pocketbase";
 
-const { pb, isValid, logout } = usePocketbase();
-const user = ref<RecordModel>();
+const { isValid, user, logout } = usePocketbase();
+const userStore = useUserStore();
 const { t } = useI18n({
   useScope: "local",
 });
@@ -49,11 +48,10 @@ useHead({
   title: t("profile"),
 });
 
-if (!isValid.value || !pb.authStore?.record?.id) {
+if (!isValid.value || !user.value?.id) {
   logout();
+  userStore.logout();
   navigateTo("/login");
-} else {
-  user.value = await pb.collection("users").getOne(pb.authStore.record.id);
 }
 </script>
 

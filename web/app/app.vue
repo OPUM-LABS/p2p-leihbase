@@ -26,7 +26,7 @@ setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/"
 );
 
-const { isValid } = usePocketbase();
+const { isValid, logout } = usePocketbase();
 const userStore = useUserStore();
 const {
   public: { plausibleTrackingDomain, locale: defaultLocale },
@@ -68,6 +68,7 @@ useHead({
 if (isValid.value) {
   await userStore.login();
 } else {
+  logout();
   userStore.logout();
 }
 </script>

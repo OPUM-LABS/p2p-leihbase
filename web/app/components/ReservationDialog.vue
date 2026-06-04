@@ -79,7 +79,7 @@ import Dialog from "./core/Dialog.vue";
 import Input from "./core/Input.vue";
 import Textarea from "./core/Textarea.vue";
 
-const { pb } = usePocketbase();
+const { pb, user } = usePocketbase();
 const { t, locale } = useI18n({ useScope: "local" });
 const nuxtApp = useNuxtApp();
 const userStore = useUserStore();
@@ -119,7 +119,7 @@ async function onSubmit() {
     console.error("Can't create reservation, no location or product defined");
     return;
   }
-  if (!pb.authStore.record?.id) {
+  if (!user.value?.id) {
     console.error("Can't create reservation, no user id defined");
     return;
   }
@@ -129,7 +129,7 @@ async function onSubmit() {
   let reservation;
   try {
     reservation = (await pb.collection("reservations").create({
-      user: pb.authStore.record.id,
+      user: user.value?.id,
       product: product.value.id,
       start: start.value,
       end: end.value,

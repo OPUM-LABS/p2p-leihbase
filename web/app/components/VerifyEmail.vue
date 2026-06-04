@@ -2,7 +2,7 @@
   <div class="lb-stack">
     <!-- Already verified -->
     <p v-if="user?.verified">{{ t("already_verified") }}</p>
-    <Button v-if="user?.verified" to="/profile">{{ t("return") }}</Button>
+    <slot v-if="user?.verified" name="verified"></slot>
 
     <!-- Not yet verified -->
     <p v-if="!user?.verified">
@@ -29,12 +29,10 @@
 <script setup lang="ts">
 import Alert from "@/components/core/Alert.vue";
 import Button from "@/components/core/Button.vue";
-import type { AuthRecord, RecordModel } from "pocketbase";
 
-const { pb, isValid, logout } = usePocketbase();
+const { pb, user } = usePocketbase();
 const { t } = useI18n({ useScope: "local" });
 
-const user = ref<AuthRecord>(pb.authStore?.record);
 const success = ref(false);
 const error = ref<string>();
 const loading = ref(false);
