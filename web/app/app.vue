@@ -1,14 +1,13 @@
 <template>
-  <IconoirProvider>
-    <div class="grid">
-      <NavBar></NavBar>
-      <main>
-        <NuxtLoadingIndicator color="#fff" />
-        <NuxtPage />
-      </main>
-      <Footer></Footer>
-    </div>
-  </IconoirProvider>
+  <div class="grid">
+    <NavBar></NavBar>
+    <main>
+      <NuxtLoadingIndicator color="#fff" />
+      <NuxtPage />
+    </main>
+    <Footer></Footer>
+  </div>
+  <ReservationDialog />
 </template>
 
 <script setup>
@@ -16,10 +15,10 @@ import "@/assets/styles/main.scss";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { useLeihbase } from "@/stores/leihbase";
 import { useUserStore } from "@/stores/user";
-import { IconoirProvider } from "@iconoir/vue";
 import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.js";
 import Footer from "./components/modules/Footer.vue";
 import NavBar from "./components/modules/NavBar.vue";
+import ReservationDialog from "./components/ReservationDialog.vue";
 
 setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/"

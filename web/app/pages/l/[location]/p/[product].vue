@@ -90,68 +90,6 @@
         >
           {{ t("reserve_button") }}
         </Button>
-
-        <Dialog v-model:open="showDialog" inset :title="t('reserve')">
-          <div class="dialog">
-            <!-- Opening hours -->
-            <p
-              v-if="location?.opening_hours"
-              class="opening-hours"
-              data-testid="opening-hours"
-            >
-              <span>{{ t("opening_hours_of") }} {{ location?.name }}:</span>
-              <br />
-              <span
-                v-html="openingHoursToString(location?.opening_hours)"
-              ></span>
-            </p>
-            <form @submit.prevent="onSubmit">
-              <Input
-                type="text"
-                :label="t('product')"
-                v-model="product.name"
-                required
-                disabled
-                readonly
-              />
-              <DateInput
-                :label="t('start')"
-                v-model="start"
-                :is-date-disallowed="isDateDisallowed"
-                :show-outside-days="false"
-                data-testid="start-input"
-                required
-              />
-              <DateInput
-                :label="t('end')"
-                v-model="end"
-                :is-date-disallowed="isDateDisallowed"
-                :show-outside-days="false"
-                data-testid="end-input"
-                required
-              />
-              <Textarea :label="t('message')" v-model="message" />
-
-              <Alert
-                v-if="reservationCreationError"
-                variant="error"
-                data-testid="reservation-form-error"
-                class="alert"
-              >
-                {{ reservationCreationError }}
-              </Alert>
-
-              <Button
-                :loading="isSubmittingReservation"
-                size="lg"
-                type="submit"
-                data-testid="reserve-submit"
-              >
-                {{ t("reserve_now_button") }}
-              </Button>
-            </form>
-          </div>
-        </Dialog>
       </div>
     </section>
   </Container>
@@ -159,51 +97,35 @@
 
 <script lang="ts" setup>
 import { formatCurrency } from "@@/lib/currency";
-import {
-  startOfDate as getStartOfDate,
-  getStartOfDay,
-  isSameDate,
-} from "@@/lib/date";
-import { isInOpeningHoursDay, openingHoursToString } from "@@/lib/openingHours";
 import { isToday } from "@@/lib/reservation";
 import AvailabilityBadge from "@/components/AvailabilityBadge.vue";
-import Alert from "@/components/core/Alert.vue";
 import Button from "@/components/core/Button.vue";
 import Container from "@/components/core/Container.vue";
-import DateInput from "@/components/core/DateInput.vue";
-import Dialog from "@/components/core/Dialog.vue";
 import Heading from "@/components/core/Heading.vue";
-import Input from "@/components/core/Input.vue";
 import KeyValue from "@/components/core/KeyValue.vue";
-import Textarea from "@/components/core/Textarea.vue";
 import Tooltip from "@/components/core/Tooltip.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import ProductImage from "@/components/ProductImage.vue";
 import ReservationsBox from "@/components/ReservationsBox.vue";
 import { Lock } from "@iconoir/vue";
+import type { Location } from "~~/models/location";
+import type { Product } from "~~/models/product";
+import type { Reservation } from "~~/models/reservation";
 
-const { t } = useI18n({
-  useScope: "local",
-});
+const { t } = useI18n({ useScope: "local" });
 const { pb } = usePocketbase();
 const config = useRuntimeConfig();
 const {
   product: { thumbs },
 } = useAppConfig();
+const { open } = useReservationDialog();
 
+const nuxtApp = useNuxtApp();
 const route = useRoute();
 const userStore = useUserStore();
 const { locale } = useI18n();
 
-const showDialog = ref(false);
 const imageIndex = ref(0);
-
-const reservationCreationError = ref(null);
-
-// Fields
-const start = ref(null);
-const end = ref(null);
-const message = ref(null);
 
 userStore.clearAuthenticationIntent();
 
@@ -213,7 +135,7 @@ const { data: location } = await useAsyncData("location", async () => {
     .getFirstListItem(
       pb.filter("slug = {:slug}", { slug: route.params.location })
     );
-  return structuredClone(location);
+  return structuredClone(location) as Location;
 });
 
 const { data: product } = await useAsyncData("product", async () => {
@@ -222,7 +144,7 @@ const { data: product } = await useAsyncData("product", async () => {
     .getOne(route.params.product, {
       expand: "categories",
     });
-  return structuredClone(product);
+  return structuredClone(product) as Product;
 });
 
 // Also get product description converted to plain-text,
@@ -247,9 +169,13 @@ const { data: reservations, refresh: refreshReservations } = await useAsyncData(
         }),
         sort: "start",
       });
-    return structuredClone(reservations);
+    return structuredClone(reservations) as Reservation[];
   }
 );
+
+nuxtApp.hook("app:user:reservation:create", () => {
+  refreshReservations();
+});
 
 const available = computed(() =>
   reservations.value && reservations.value.length > 0
@@ -260,51 +186,24 @@ const available = computed(() =>
 useHead({
   title: `${product.value?.name} | ${location.value?.name}`,
   meta: [
-    excerpt.value?.description
-      ? {
-          name: "description",
-          content: excerpt.value?.description,
-        }
-      : null,
+    { name: "description", content: excerpt.value?.description },
+    { property: "og:title", content: product.value?.name },
+    { property: "og:description", content: excerpt.value?.description },
     {
-      property: "og:title",
-      content: product.value?.name,
+      property: "og:image",
+      content:
+        product.value?.images && product.value?.images.length > 0
+          ? `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.value.id}/${product.value.images[0]}${thumbs.lg}`
+          : "",
     },
-    excerpt.value?.description
-      ? {
-          property: "og:description",
-          content: excerpt.value?.description,
-        }
-      : null,
-    product.value?.images && product.value?.images.length > 0
-      ? {
-          property: "og:image",
-          content: `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.value.id}/${product.value.images[0]}${thumbs.lg}`,
-        }
-      : null,
-  ].filter((m) => !!m),
+  ].filter((m) => !!m.content),
 });
 
-const startOfToday = getStartOfDay();
-const closedDates = (location.value?.opening_hours?.except?.dates || []).map(
-  (d) => getStartOfDate(new Date(d))
-);
-function isDateDisallowed(date) {
-  const startOfDate = getStartOfDate(date);
-  // Is on an open day according to opening hours
-  const isOpenDay = location.value?.opening_hours
-    ? isInOpeningHoursDay(location.value.opening_hours, date)
-    : true;
-  // Is in the past
-  const isInPast = startOfDate < startOfToday;
-  // Is on a closed date (opening hours exception)
-  const isClosedDate = !!closedDates.find((date) =>
-    isSameDate(date, startOfDate)
-  );
-  return !isOpenDay || isInPast || isClosedDate;
-}
-
 function onReserve() {
+  if (!location.value || !product.value) {
+    console.error("Can't reserve, location or product not set");
+    return;
+  }
   if (!pb.authStore.isValid) {
     userStore.setAuthenticationIntent(
       "reservation",
@@ -313,68 +212,7 @@ function onReserve() {
     navigateTo("/signup");
     return;
   }
-  showDialog.value = true;
-}
-
-const isSubmittingReservation = ref(false);
-async function onSubmit() {
-  reservationCreationError.value = null;
-  isSubmittingReservation.value = true;
-  try {
-    const reservation = await pb.collection("reservations").create({
-      user: pb.authStore.record.id,
-      product: product.value.id,
-      start: start.value,
-      end: end.value,
-      message: message.value,
-      send_confirmation: true,
-    });
-  } catch (e) {
-    isSubmittingReservation.value = false;
-    if (e.status === 400 && e.message) {
-      switch (e.message) {
-        case "User_not_verified.":
-          reservationCreationError.value = t("errors.user_not_verified");
-          break;
-        case "Has_open_reservation.":
-          reservationCreationError.value = t("errors.has_open_reservation", {
-            email: location.value.email,
-          });
-          break;
-        case "Date_range_too_long.":
-          reservationCreationError.value = t("errors.date_range_too_long", {
-            days: location.max_reservation_days || 14,
-            email: location.value.email,
-          });
-          break;
-        case "Overlapping_reservation.":
-          reservationCreationError.value = t("errors.overlapping_reservation");
-          break;
-        case "Start_before_today.":
-          reservationCreationError.value = t("errors.start_before_today");
-          break;
-        case "End_before_today.":
-          reservationCreationError.value = t("errors.end_before_today");
-          break;
-        case "Start_and_end_equal.":
-          reservationCreationError.value = t("errors.start_and_end_equal");
-          break;
-        case "End_before_start.":
-          reservationCreationError.value = t("errors.end_before_start");
-          break;
-      }
-      if (!reservationCreationError.value) {
-        reservationCreationError.value = t("errors.general");
-      }
-      return;
-    }
-  }
-
-  await userStore.fetchUserReservations();
-  refreshReservations();
-
-  showDialog.value = false;
-  isSubmittingReservation.value = false;
+  open(location.value, product.value);
 }
 </script>
 
@@ -524,20 +362,6 @@ section {
     }
   }
 }
-.dialog form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.dialog .alert {
-  margin: 0;
-}
-.opening-hours {
-  padding: 1rem;
-  background-color: #ecf4fe;
-  border-radius: var(--border-radius);
-  margin-bottom: 1rem;
-}
 </style>
 
 <i18n lang="json">
@@ -548,25 +372,7 @@ section {
     "admin_notes_none": "None",
     "admin_notes_tooltip": "Only visible for admin users",
     "reservations": "Reservations",
-    "reserve_button": "Reserve",
-    "reserve": "Reserve",
-    "opening_hours_of": "Opening hours of",
-    "product": "Product",
-    "start": "Start",
-    "end": "End",
-    "message": "Message",
-    "reserve_now_button": "Reserve now",
-    "errors": {
-      "user_not_verified": "Confirm your e-mail address before placing a reservation.",
-      "has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
-      "date_range_too_long": "Products can't be reserved for longer than {days} days. Reach out on {email} to discuss a longer period.",
-      "overlapping_reservation": "The product is already reserved for this period.",
-      "start_before_today": "The start of the reservation is before today.",
-      "end_before_today": "The end of the reservation is before today.",
-      "start_and_end_equal": "The start and end of the reservation can't be on the same day.",
-      "end_before_start": "The end can't be befor the start of the reservation.",
-      "general": "Something went wrong while creating the reservation, please try again."
-    }
+    "reserve_button": "Reserve"
   },
   "de": {
     "deposit": "Pfand",
@@ -574,25 +380,7 @@ section {
     "admin_notes_none": "Keine",
     "admin_notes_tooltip": "Nur sichtbar für Admin-Benutzer",
     "reservations": "Reservierungen",
-    "reserve_button": "Reservieren",
-    "reserve": "Reservieren",
-    "opening_hours_of": "Öffnungszeiten von",
-    "product": "Gegenstand",
-    "start": "Start",
-    "end": "Ende",
-    "message": "Nachricht",
-    "reserve_now_button": "Jetzt reservieren",
-    "errors": {
-      "user_not_verified": "Bestätige deine E-Mail-Adresse, bevor du reservierst.",
-      "has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
-      "date_range_too_long": "Produkte können nicht länger als {days} Tage reserviert werden. Kontaktiere uns unter {email}, um einen längeren Zeitraum zu besprechen.",
-      "overlapping_reservation": "Das Produkt ist für diesen Termin bereits reserviert.",
-      "start_before_today": "Der Beginn der Reservierung liegt vor dem heutigen Tag.",
-      "end_before_today": "Das Enddatum der Reservierung liegt vor dem heutigen Tag.",
-      "start_and_end_equal": "Beginn und Ende der Reservierung dürfen nicht am selben Tag liegen.",
-      "end_before_start": "Ende kann nicht vor Beginn der Reservierung liegen.",
-      "general": "Beim Erstellen deiner Reservierung ist ein Fehler aufgetreten, bitte versuche es erneut."
-    }
+    "reserve_button": "Reservieren"
   }
 }
 </i18n>

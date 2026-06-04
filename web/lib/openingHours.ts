@@ -14,7 +14,7 @@ type OpeningHoursExcept = {
   dates: string[];
 };
 
-type OpeningHours = {
+export type OpeningHours = {
   days: OpeningHoursDays;
   except: OpeningHoursExcept;
 };

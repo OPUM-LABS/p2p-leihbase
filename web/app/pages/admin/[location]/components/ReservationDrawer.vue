@@ -163,8 +163,8 @@ const emit = defineEmits(["update"]);
 
 const productId = ref<string>();
 const userId = ref<string>();
-const start = ref<Date | null>(null);
-const end = ref<Date | null>(null);
+const start = ref<Date>();
+const end = ref<Date>();
 const started = ref<boolean>(false);
 const ended = ref<boolean>(false);
 const cancelled = ref<boolean>(false);
@@ -179,8 +179,10 @@ watch(open, (isOpening) => {
   userId.value = props.reservation?.user || undefined;
   start.value = props.reservation?.start
     ? new Date(props.reservation.start)
-    : null;
-  end.value = props.reservation?.end ? new Date(props.reservation.end) : null;
+    : undefined;
+  end.value = props.reservation?.end
+    ? new Date(props.reservation.end)
+    : undefined;
   started.value = props.reservation?.started || false;
   ended.value = props.reservation?.ended || false;
   cancelled.value = props.reservation?.cancelled || false;

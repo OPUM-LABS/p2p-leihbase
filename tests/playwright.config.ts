@@ -1,5 +1,5 @@
-import { defineConfig, devices, selectors } from "@playwright/test";
 import type { ConfigOptions } from "@nuxt/test-utils/playwright";
+import { defineConfig, devices, selectors } from "@playwright/test";
 
 // Selector to query, and unwrap a shadowroot element
 const createShadowRootEngine = () => ({
@@ -65,6 +65,6 @@ export default defineConfig<ConfigOptions>({
     command: "mise run //...:start:test",
     url: "http://127.0.0.1:3000/favicon.ico",
     reuseExistingServer: false,
-    // stdout: 'pipe'
+    // stdout: "pipe",
   },
 });

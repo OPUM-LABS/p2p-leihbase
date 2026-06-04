@@ -71,8 +71,8 @@ const { pb } = usePocketbase();
 
 const slug = route.params.location;
 
-const dateStart = ref(subtractDays(new Date(Date.now()), 30));
-const dateEnd = ref(new Date(Date.now()));
+const dateStart = ref<Date | undefined>(subtractDays(new Date(Date.now()), 30));
+const dateEnd = ref<Date | undefined>(new Date(Date.now()));
 
 const location = await useLocation({
   slug: Array.isArray(slug) ? slug[0] : slug,
@@ -86,6 +86,7 @@ if (!location.value || !location.value.id) {
 }
 
 const { data: reservations, refresh } = await useAsyncData(async () => {
+  if (!dateStart.value || !dateEnd.value) return;
   const reservations = await pb.collection("reservations").getFullList({
     filter: pb.filter("start >= {:dateStart} && end <= {:dateEnd}", {
       dateStart: startOfUTCDate(dateStart.value),

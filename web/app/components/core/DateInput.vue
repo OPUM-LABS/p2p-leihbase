@@ -39,7 +39,7 @@ import Popup from "./Popup.vue";
 
 const { t, locale } = useI18n();
 
-const model = defineModel<Date | null>();
+const model = defineModel<Date>();
 const emit = defineEmits<{ input: [Date] }>();
 const props = withDefaults(
   defineProps<{
