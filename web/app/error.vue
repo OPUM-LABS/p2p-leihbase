@@ -1,25 +1,32 @@
 <template>
-  <NavBar></NavBar>
-  <main>
-    <Container width="sm" centered>
-      <Card class="lb-stack">
-        <Heading is="h1" size="xl">{{ t("error_" + error?.status) }}</Heading>
-        <p>{{ t("error_" + error?.status + "_text") }}</p>
-        <p>
-          <Link href="/">
-            {{ t("to_home") }}
-          </Link>
-        </p>
-      </Card>
-    </Container>
-  </main>
-  <Footer></Footer>
+  <IconoirProvider>
+    <NavBar></NavBar>
+    <main>
+      <Container width="sm" centered>
+        <Card class="lb-stack">
+          <Heading is="h1" size="xl">{{ t("error_" + error?.status) }}</Heading>
+          <p>{{ t("error_" + error?.status + "_text") }}</p>
+          <p>
+            <Link href="/">
+              {{ t("to_home") }}
+            </Link>
+          </p>
+        </Card>
+      </Container>
+    </main>
+    <Footer></Footer>
+  </IconoirProvider>
 </template>
 
 <script setup lang="ts">
 import "@/assets/styles/main.scss";
+import { IconoirProvider } from "@iconoir/vue";
 import type { NuxtError } from "#app";
+import Card from "./components/core/Card.vue";
+import Container from "./components/core/Container.vue";
+import Heading from "./components/core/Heading.vue";
 import Link from "./components/core/Link.vue";
+import Footer from "./components/modules/Footer.vue";
 import NavBar from "./components/modules/NavBar.vue";
 
 const {
