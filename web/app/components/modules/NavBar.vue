@@ -1,7 +1,9 @@
 <template>
   <header ref="header" :class="{ 'is-sticky': isSticky }">
     <div>
-      <NuxtLink to="/" class="logo">{{ leihbase?.name || "" }}</NuxtLink>
+      <NuxtLink to="/" class="logo">
+        <span v-html="(leihbase?.name || '').replace('\n', '<br />')" />
+      </NuxtLink>
       <DropdownMenu class="dropdown">
         <DropdownMenuTrigger
           :as="Button"
@@ -134,7 +136,6 @@ header {
     font-weight: var(--font-weight-black);
     line-height: 1;
     text-decoration: none;
-    white-space: pre;
   }
 
   nav {
