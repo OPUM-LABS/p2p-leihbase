@@ -64,10 +64,7 @@ import Card from "@/components/core/Card.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import Input from "@/components/core/Input.vue";
-import {
-  AFTER_LOGIN,
-  AFTER_LOGIN_RESERVATION_INTENT,
-} from "@/components/page-alert/PageAlert.model";
+import { PageAlertType } from "@/components/page-alert/PageAlert.model";
 
 useHead({
   title: `Login`,
@@ -111,13 +108,13 @@ async function onLogin() {
     const { path, intent } = userStore.$state.authenticationIntent;
     if (path) {
       if (intent && intent === "reservation") {
-        userStore.showBanner(AFTER_LOGIN_RESERVATION_INTENT);
+        userStore.showBanner(PageAlertType.AFTER_LOGIN_RESERVATION_INTENT);
       } else {
-        userStore.showBanner(AFTER_LOGIN);
+        userStore.showBanner(PageAlertType.AFTER_LOGIN);
       }
       navigateTo(path);
     } else {
-      userStore.showBanner(AFTER_LOGIN);
+      userStore.showBanner(PageAlertType.AFTER_LOGIN);
       navigateTo("/profile");
     }
   }

@@ -1,5 +1,6 @@
 <template>
   <Container width="lg" centered>
+    <PageAlert />
     <header>
       <section class="links">
         <Button
@@ -51,6 +52,7 @@ import Button from "@/components/core/Button.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import ProductGrid from "@/components/modules/ProductGrid.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { Internet, MapPin } from "@iconoir/vue";
 
 const { t, locale } = useI18n({

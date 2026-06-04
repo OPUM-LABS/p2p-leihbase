@@ -7,15 +7,12 @@ type Options = {
 export async function getProduct(id: string, options: Options) {
   const { pb } = usePocketbase();
   const userStore = useUserStore();
+  const { isAdmin } = storeToRefs(userStore);
 
-  const { data, error, refresh } = await useAsyncData<Product>(
-    "product",
-    async () =>
-      pb
-        .collection(userStore.isAdmin ? "products" : "public_products")
-        .getOne(id, {
-          expand: options.expand,
-        })
+  const { data, error, refresh } = await useAsyncData<Product>(async () =>
+    pb.collection(isAdmin.value ? "products" : "public_products").getOne(id, {
+      expand: options.expand,
+    })
   );
   return { product: data, error, refresh };
 }

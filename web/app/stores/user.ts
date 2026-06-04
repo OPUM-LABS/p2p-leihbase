@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import type { RecordModel } from "pocketbase";
+import { PageAlertType } from "../components/page-alert/PageAlert.model";
 
 interface State {
   name: string | null;
@@ -40,6 +41,9 @@ export const useUserStore = defineStore("user", {
     },
     logout() {
       this.name = null;
+      this.reservations = [];
+      this.locations = [];
+      this.clearAuthenticationIntent();
     },
     async fetchInitialData() {
       await Promise.all([
@@ -73,7 +77,7 @@ export const useUserStore = defineStore("user", {
     clearAuthenticationIntent() {
       this.authenticationIntent.path = null;
     },
-    showBanner(banner: string) {
+    showBanner(banner: PageAlertType) {
       this.banner = banner;
     },
     resetBanner() {

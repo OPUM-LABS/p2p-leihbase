@@ -86,10 +86,7 @@ import Card from "@/components/core/Card.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import Input from "@/components/core/Input.vue";
-import {
-  AFTER_SIGNUP,
-  AFTER_SIGNUP_RESERVATION_INTENT,
-} from "@/components/page-alert/PageAlert.model";
+import { PageAlertType } from "@/components/page-alert/PageAlert.model";
 import { ClientResponseError } from "pocketbase";
 
 if (process.client) {
@@ -143,13 +140,13 @@ async function onSignup() {
     const { path, intent } = userStore.$state.authenticationIntent;
     if (path) {
       if (intent && intent === "reservation") {
-        userStore.showBanner(AFTER_SIGNUP_RESERVATION_INTENT);
+        userStore.showBanner(PageAlertType.AFTER_SIGNUP_RESERVATION_INTENT);
       } else {
-        userStore.showBanner(AFTER_SIGNUP);
+        userStore.showBanner(PageAlertType.AFTER_SIGNUP);
       }
       navigateTo(path);
     } else {
-      userStore.showBanner(AFTER_SIGNUP);
+      userStore.showBanner(PageAlertType.AFTER_SIGNUP);
       navigateTo("/profile");
     }
   } catch (e) {

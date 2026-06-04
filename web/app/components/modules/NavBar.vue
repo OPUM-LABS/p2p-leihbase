@@ -74,6 +74,7 @@ import DropdownMenu from "../core/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuItem from "../core/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuPopover from "../core/dropdown-menu/DropdownMenuPopover.vue";
 import DropdownMenuTrigger from "../core/dropdown-menu/DropdownMenuTrigger.vue";
+import { PageAlertType } from "../page-alert/PageAlert.model.js";
 
 const { t } = useI18n({
   useScope: "local",
@@ -88,9 +89,9 @@ const { isSticky } = useIsSticky(header);
 
 function handleLogout() {
   logout();
-  setTimeout(() => {
-    window.location.href = "/";
-  });
+  userStore.logout();
+  userStore.showBanner(PageAlertType.AFTER_LOGOUT);
+  navigateTo("/");
 }
 </script>
 

@@ -2,16 +2,17 @@
   <div :class="{ alert: true, [variant]: true, [`size-${size}`]: true }">
     <ThumbsUp v-if="variant === 'success'" />
     <WarningTriangle v-else-if="variant === 'warning'" />
+    <InfoCircle v-else-if="variant === 'info'" />
     <slot></slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ThumbsUp, WarningTriangle } from "@iconoir/vue";
+import { InfoCircle, ThumbsUp, WarningTriangle } from "@iconoir/vue";
 
 withDefaults(
   defineProps<{
-    variant?: "success" | "error" | "warning";
+    variant?: "success" | "error" | "warning" | "info";
     size?: "sm" | "md";
   }>(),
   {
@@ -35,6 +36,9 @@ withDefaults(
   }
   &.error {
     background-color: var(--surface-error-color);
+  }
+  &.info {
+    background-color: var(--surface-info-color);
   }
   &.size-sm {
     padding: 0.5rem 0.75rem;
