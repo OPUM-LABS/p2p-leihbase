@@ -70,6 +70,7 @@ import Input from "@/components/core/Input.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { ClientResponseError, type RecordModel } from "pocketbase";
 
+const userStore = useUserStore();
 const { pb, isValid, logout } = usePocketbase();
 const user = ref<RecordModel | null>(null);
 const { loading, update, errors } = usePocketbaseUpdate(pb, "users");
@@ -93,6 +94,7 @@ async function handleSubmit(e: SubmitEvent) {
   try {
     await update(user.value!.id, data);
     logout();
+    userStore.logout();
     navigateTo("/login");
   } catch (e) {
     if (e instanceof ClientResponseError) {
