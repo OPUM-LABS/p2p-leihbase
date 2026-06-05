@@ -12,6 +12,10 @@ export default defineNuxtConfig({
         serverBaseUrl: "", // NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL
         clientBaseUrl: "", // NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL
       },
+      cap: {
+        instanceHost: "",
+        siteKey: "",
+      },
     },
   },
 
@@ -64,7 +68,9 @@ export default defineNuxtConfig({
     compilerOptions: {
       // treat all tags with a dash as custom elements
       isCustomElement: (tag) =>
-        tag.startsWith("sl-") || tag.startsWith("calendar-"),
+        tag.startsWith("sl-") ||
+        tag.startsWith("calendar-") ||
+        tag.startsWith("cap-"),
     },
   },
 
@@ -74,8 +80,8 @@ export default defineNuxtConfig({
     tsConfig: {
       vueCompilerOptions: {
         strictTemplates: true,
-        fallthroughAttributes: true
-      }
-    }
-  }
+        fallthroughAttributes: true,
+      },
+    },
+  },
 });

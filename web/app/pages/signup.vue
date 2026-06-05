@@ -7,42 +7,38 @@
       <i18n-t keypath="text" tag="p" for="login_text">
         <NuxtLink to="/login">{{ t("login_text") }}</NuxtLink>
       </i18n-t>
-      <form @submit.prevent="onSignup">
+      <form @submit.prevent="handleSubmit">
         <Input
+          id="name"
           name="name"
           :label="t('name')"
-          id="name"
           type="text"
-          required
-          v-model="name"
           data-testid="name-input"
+          required
         />
         <Input
           id="email"
-          type="email"
-          :label="t('email')"
           name="email"
-          required
-          v-model="email"
+          :label="t('email')"
+          type="email"
           data-testid="email-input"
+          required
         />
         <Input
           id="password"
-          type="password"
-          :label="t('password')"
           name="password"
-          required
-          password-toggle
-          v-model="password"
+          :label="t('password')"
+          type="password"
           data-testid="password-input"
+          required
         />
         <fieldset class="checkbox">
           <input
             id="terms-and-conditions"
+            name="terms"
             type="checkbox"
-            name="terms_and_conditions"
             data-testid="tac-checkbox"
-            v-model="terms"
+            value="true"
             required
           />
           <label for="terms-and-conditions">
@@ -58,6 +54,12 @@
           </label>
         </fieldset>
 
+        <cap-widget
+          v-if="cap.instanceHost && cap.siteKey"
+          id="floating"
+          :data-cap-api-endpoint="`https://${cap.instanceHost}/${cap.siteKey}/`"
+        ></cap-widget>
+
         <sl-alert
           v-if="!!signupError"
           variant="danger"
@@ -72,6 +74,8 @@
           size="lg"
           type="submit"
           data-testid="submit-button"
+          data-cap-floating="#floating"
+          data-cap-floating-position="bottom"
         >
           {{ t("submit") }}
         </Button>
@@ -89,38 +93,36 @@ import Input from "@/components/core/Input.vue";
 import { PageAlertType } from "@/components/page-alert/PageAlert.model";
 import { ClientResponseError } from "pocketbase";
 
-if (process.client) {
-  await import("@shoelace-style/shoelace/dist/components/alert/alert.js");
-  await import("@shoelace-style/shoelace/dist/components/icon/icon.js");
-}
-
 const { t } = useI18n({
   useScope: "local",
 });
 const userStore = useUserStore();
 const { pb, login } = usePocketbase();
+const {
+  public: { cap },
+} = useRuntimeConfig();
 
 const signupError = ref<string>();
 const loading = ref(false);
+
+if (import.meta.client) {
+  await import("@shoelace-style/shoelace/dist/components/alert/alert.js");
+  await import("@shoelace-style/shoelace/dist/components/icon/icon.js");
+
+  if (cap.instanceHost && cap.siteKey) {
+    await import("https://cdn.jsdelivr.net/npm/cap-widget@0.1.52");
+    await import("https://cdn.jsdelivr.net/npm/cap-widget@0.1.52/cap-floating.min.js");
+  }
+}
 
 useHead({
   title: t("page_title"),
 });
 
-const name = ref(null);
-const email = ref(null);
-const password = ref(null);
-const terms = ref(false);
-
-async function onSignup() {
-  const data = {
-    name: name.value,
-    email: email.value,
-    password: password.value,
-    passwordConfirm: password.value,
-    terms: terms.value,
-  };
-  signupError.value = null;
+async function handleSubmit(e: SubmitEvent) {
+  const data = new FormData(e.target as HTMLFormElement);
+  data.set("passwordConfirm", data.get("password") || "");
+  signupError.value = undefined;
   loading.value = true;
 
   try {
@@ -128,10 +130,15 @@ async function onSignup() {
     await pb.collection("users").create(data);
 
     // Send an email verification request
-    await pb.collection("users").requestVerification(data.email);
+    await pb
+      .collection("users")
+      .requestVerification(data.get("email")!.toString());
 
     // Authenticate
-    await login(data.email, data.password);
+    await login(
+      data.get("email")!.toString(),
+      data.get("password")!.toString()
+    );
 
     // Login
     userStore.login();
@@ -172,6 +179,11 @@ async function onSignup() {
       e.data?.data?.terms?.code === "validation_required"
     ) {
       signupError.value = t("errors.terms_required");
+    } else if (
+      e instanceof ClientResponseError &&
+      e.data?.data?.message === "Captcha_invalid."
+    ) {
+      signupError.value = t("errors.captcha_invalid");
     } else {
       signupError.value = t("errors.general");
     }
@@ -225,6 +237,7 @@ fieldset.checkbox {
       "invalid_email": "E-mail address is invalid or already in use.",
       "email_in_use": "There is already an account with this e-mail address.",
       "terms_required": "To proceed, you must agree to the data protection terms.",
+      "captcha": "The website couldn't verify your request, please try again or contact us to resolve the issue.",
       "general": "An error occured during sign up, please try again."
     }
   },
@@ -244,6 +257,7 @@ fieldset.checkbox {
       "invalid_email": "Die E-Mail ist ungültig oder wird bereits verwendet.",
       "email_in_use": "Es gibt bereits ein Konto mit dieser E-Mail-Adresse.",
       "terms_required": "Um fortzufahren, musst du den Datenschutzbestimmungen zustimmen.",
+      "captcha": "Die Website konnte deine Anfrage nicht verifizieren. Versuch's bitte nochmal oder kontaktiere uns, um das Problem zu klären.",
       "general": "Beim Erstellen deiner Account ist ein Fehler aufgetreten, bitte versuche es erneut."
     }
   }

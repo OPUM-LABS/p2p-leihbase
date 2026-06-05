@@ -9,10 +9,15 @@ services:
     ports:
       - "3000:3000"
     environment:
+      NUXT_PUBLIC_LOCALE: "en"
+      # Pocketbase settings
       NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: http://pocketbase:8090
       NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: http://localhost:8090
+      # Plausible settings (https://plausible.io/)
       NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN: ""
-      NUXT_PUBLIC_LOCALE: "en"
+      # Captcha settings (https://trycap.dev)
+      NUXT_PUBLIC_CAP_INSTANCE_HOST: ""
+      NUXT_PUBLIC_CAP_SITE_KEY: ""
     networks:
       - leihbar
 
@@ -30,6 +35,10 @@ services:
       # If a reservation needs to have a user, or not
       CONFIG_RESERVATION_REQUIRE_USER: "false"
       CONFIG_LENDING_CONDITIONS_LINK: "https://example.com/lending-conditions"
+      # Captcha settings (https://trycap.dev)
+      CONFIG_CAP_INSTANCE_HOST: ""
+      CONFIG_CAP_SITE_KEY: ""
+      CONFIG_CAP_SECRET_KEY: ""
     volumes:
       - ./pocketbase/pb_data:/pb/pb_data
     networks:

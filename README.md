@@ -46,6 +46,11 @@ services:
     environment:
       NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: http://leihbase-pb:8080
       NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: <leihbase-pb public url>
+      # Plausible settings (https://plausible.io/)
+      NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN: ""
+      # Captcha settings (https://trycap.dev)
+      NUXT_PUBLIC_CAP_INSTANCE_HOST: ""
+      NUXT_PUBLIC_CAP_SITE_KEY: ""
 
   leihbase-pb:
     image: lumocra/leihbase-pb:v1.7.0
@@ -55,6 +60,10 @@ services:
       # If a reservation (created in the admin section) is required to have a user
       CONFIG_RESERVATION_REQUIRE_USER: "false"
       CONFIG_LENDING_CONDITIONS_LINK: "https://example.com/borrow-conditions"
+      # Captcha settings (https://trycap.dev)
+      CONFIG_CAP_INSTANCE_HOST: ""
+      CONFIG_CAP_SITE_KEY: ""
+      CONFIG_CAP_SECRET_KEY: ""
     volumes:
       - ./pb_data:/pb/pb_data
 ```

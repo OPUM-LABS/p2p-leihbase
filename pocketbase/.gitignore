@@ -3,3 +3,4 @@ pb_data/data*
 pb_data/auxiliary*
 pb_data/logs*
 pocketbase
+.env

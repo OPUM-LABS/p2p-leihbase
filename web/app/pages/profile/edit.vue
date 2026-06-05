@@ -57,7 +57,6 @@ if (!isValid.value || !user.value) {
 
 async function handleSubmit(e: SubmitEvent) {
   const data = new FormData(e.target as HTMLFormElement);
-  console.log(data);
   try {
     await update(user.value!.id, data);
     navigateTo("/profile");

@@ -25,8 +25,13 @@ run = [
   "./pocketbase serve --http=0.0.0.0:8090",
 ]
 
-[env]
+[[env]]
 PB_VERSION = "0.38.2"
 CONFIG_LOCALE = "en"
 CONFIG_RESERVATION_REQUIRE_USER = "false"
 CONFIG_LENDING_CONDITIONS_LINK = "https://example.com/lending-conditions"
+CONFIG_CAP_INSTANCE_HOST = ""
+CONFIG_CAP_SITE_KEY = ""
+CONFIG_CAP_SECRET_KEY = ""
+[[env]]
+_.file = '.env'
