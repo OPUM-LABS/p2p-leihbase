@@ -124,7 +124,9 @@ function handleDayForward() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use "@/assets/styles/breakpoints.scss";
+
 .title-wrapper {
   min-width: 10rem;
   display: flex;
@@ -146,8 +148,12 @@ h3 {
   }
 }
 .show-cancelled {
-  margin-left: auto;
   width: auto;
+}
+@media screen and (min-width: breakpoints.$breakpoint-md) {
+  .show-cancelled {
+    margin-left: auto;
+  }
 }
 </style>
 

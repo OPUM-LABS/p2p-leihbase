@@ -19,6 +19,7 @@ header {
   display: flex;
   margin-bottom: 1rem;
   gap: var(--fluid-spacing-8);
+  flex-wrap: wrap;
 }
 
 header > button {
