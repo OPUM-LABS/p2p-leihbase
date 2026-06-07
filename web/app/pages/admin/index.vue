@@ -30,7 +30,7 @@ if (!isValid.value) {
       statusCode: 404,
       statusMessage: "Page Not Found",
     });
-  } else if (locations.value?.length === 1) {
+  } else {
     await navigateTo({
       path: `/admin/${locations.value[0].slug}`,
     });

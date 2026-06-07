@@ -12,26 +12,14 @@
   </section>
 </template>
 
-<script setup>
-const props = defineProps({
-  centered: {
-    type: Boolean,
-    default: false,
-  },
-  width: {
-    type: String,
-    default: null,
-  },
-  noPadding: {
-    type: Boolean,
-  },
-  paddingX: {
-    type: Boolean,
-  },
-  paddingY: {
-    type: Boolean,
-  },
-});
+<script lang="ts" setup>
+const props = defineProps<{
+  centered: boolean;
+  width: "sm" | "md" | "lg";
+  noPadding: boolean;
+  paddingX: boolean;
+  paddingY: boolean;
+}>();
 </script>
 
 <style scoped>

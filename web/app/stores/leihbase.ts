@@ -1,3 +1,5 @@
+import { type Leihbase } from "../../models/leihbase";
+
 export const useLeihbase = defineStore("leihbase", () => {
   const { pb } = usePocketbase();
 
@@ -8,7 +10,7 @@ export const useLeihbase = defineStore("leihbase", () => {
     },
     { immediate: false }
   );
-  const leihbase = computed(() => leihbases.value?.[0]);
+  const leihbase = computed(() => leihbases.value?.[0] as Leihbase);
 
   return { leihbase, fetch: refresh };
 });
