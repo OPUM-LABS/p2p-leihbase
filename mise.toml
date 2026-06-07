@@ -35,3 +35,7 @@ run = "docker compose -f docker-compose.test.yaml run --service-ports --build --
 [tasks.'test:e2e:update']
 description = "Run e2e test & update snapshots"
 run = "docker compose -f docker-compose.test.yaml run --service-ports --build --remove-orphans app bash -c 'mise run //tests:e2e:update'"
+
+[tasks.'start:test']
+description = "Run mailpit"
+run = "./.bin/mailpit"

@@ -1,4 +1,5 @@
 import { expect } from "@playwright/test";
+import { ClientResponseError } from "pocketbase";
 import { pocketbase } from "../services/pocketbase";
 import { waitForClientMount } from "./utils";
 
@@ -57,5 +58,12 @@ export async function getLastProductReservation(productId) {
 export async function updateLastProductReservation(productId, data) {
   const pb = await pocketbase();
   const reservation = await getLastProductReservation(productId);
-  return await pb.collection("reservations").update(reservation.id, data);
+  try {
+    return await pb.collection("reservations").update(reservation.id, data);
+  } catch (e) {
+    if (e instanceof ClientResponseError) {
+      console.log(JSON.stringify(e.data, null, 2));
+    }
+    throw e;
+  }
 }

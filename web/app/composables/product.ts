@@ -7,10 +7,10 @@ type Options = {
 export async function getProduct(id: string, options: Options) {
   const { pb } = usePocketbase();
   const userStore = useUserStore();
-  const { isAdmin } = storeToRefs(userStore);
+  const { isManager } = storeToRefs(userStore);
 
   const { data, error, refresh } = await useAsyncData<Product>(async () =>
-    pb.collection(isAdmin.value ? "products" : "public_products").getOne(id, {
+    pb.collection(isManager.value ? "products" : "public_products").getOne(id, {
       expand: options.expand,
     })
   );
@@ -25,7 +25,7 @@ export async function getProductExcerpt(id: string) {
     "product-excerpt",
     async () =>
       await pb
-        .collection(userStore.isAdmin ? "products" : "public_products")
+        .collection(userStore.isManager ? "products" : "public_products")
         .getOne(id, {
           fields: "description:excerpt(200,true)",
         })

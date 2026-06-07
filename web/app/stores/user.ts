@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import type { RecordModel } from "pocketbase";
+import type { User } from "../../models/User";
 import { PageAlertType } from "../components/page-alert/PageAlert.model";
 
 interface State {
   name: string | null;
+  role: "user" | "manager" | "admin" | null;
   hasInitialData: boolean;
   reservations: RecordModel[] | [];
-  locations: RecordModel[] | [];
   authenticationIntent: {
     intent: "reservation" | null;
     path: string | null;
@@ -19,7 +20,7 @@ export const useUserStore = defineStore("user", {
     name: null,
     hasInitialData: false,
     reservations: [],
-    locations: [],
+    role: null,
     authenticationIntent: {
       intent: null,
       path: null,
@@ -28,28 +29,27 @@ export const useUserStore = defineStore("user", {
   }),
   getters: {
     isAdmin(state) {
-      return state.locations.length > 0;
+      return state.role === "admin";
+    },
+    isManager(state) {
+      return state.role === "manager" || state.role === "admin";
     },
   },
   actions: {
-    login({ name }: { name?: string } = {}) {
-      const { pb } = usePocketbase();
-      // Store user name
-      this.name = name || pb.authStore?.model?.name;
-      // Fetch initial data
+    login({ user }: { user: User }) {
+      // Store user data
+      this.name = user.name;
+      this.role = user.role;
+      // Fetch other initial data
       return this.fetchInitialData();
     },
     logout() {
       this.name = null;
       this.reservations = [];
-      this.locations = [];
       this.clearAuthenticationIntent();
     },
     async fetchInitialData() {
-      await Promise.all([
-        this.fetchUserReservations(),
-        this.fetchUserLocations(),
-      ]);
+      await Promise.all([this.fetchUserReservations()]);
       this.hasInitialData = true;
     },
     async fetchUserReservations() {
@@ -61,13 +61,6 @@ export const useUserStore = defineStore("user", {
           }),
         });
         this.reservations = reservations;
-      }
-    },
-    async fetchUserLocations() {
-      const { pb } = usePocketbase();
-      if (pb.authStore?.record?.id) {
-        const locations = await pb.collection("location").getFullList();
-        this.locations = locations;
       }
     },
     setAuthenticationIntent(intent: null | "reservation", path: string) {

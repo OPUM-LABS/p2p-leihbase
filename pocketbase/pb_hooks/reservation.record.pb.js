@@ -21,7 +21,9 @@ onRecordCreateRequest((e) => {
   $app.expandRecord(product, ["location"], null);
   const location = product.expandedOne("location");
   const isLocationUser =
-    requestUser && location.get("users").includes(requestUser.get("id"));
+    requestUser &&
+    requestUser.get("manager_locations") &&
+    requestUser.get("manager_locations").includes(location.id);
   record.set("location", product.get("location"));
 
   // Require e-mail verification
@@ -97,9 +99,10 @@ onRecordUpdateRequest((e) => {
   const end = new Date(record.get("end").string().split(" ")[0]);
   $app.expandRecord(record, ["location"], null);
   const location = record.expandedOne("location");
-  const isLocationUser = requestUser
-    ? location.get("users").includes(requestUser.get("id"))
-    : false;
+  const isLocationUser =
+    requestUser &&
+    requestUser.get("manager_locations") &&
+    requestUser.get("manager_locations").includes(location.id);
 
   // Make sure there is not already an open reservation with the same user
   // and product

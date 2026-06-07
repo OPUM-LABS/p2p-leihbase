@@ -51,7 +51,7 @@
           </KeyValue>
         </div>
 
-        <div v-if="userStore.isAdmin" class="info-admin">
+        <div v-if="userStore.isManager" class="info-admin">
           <Heading is="h2" size="sm">
             {{ t("admin_notes") }}
             <Tooltip :html="t('admin_notes_tooltip')">

@@ -1,5 +1,4 @@
-import { test, expect } from "@playwright/test";
-import { waitForClientMount } from "../lib/utils";
+import { expect, test } from "@playwright/test";
 import { login } from "../lib/login";
 import {
   createProduct,
@@ -7,6 +6,8 @@ import {
   navigateToProductPage,
   updateLastProductReservation,
 } from "../lib/product";
+import { createUser } from "../lib/user";
+import { waitForClientMount } from "../lib/utils";
 import { pocketbase } from "../services/pocketbase";
 
 async function reserve(page, startIndex, endIndex, navigateToNextMonth = true) {
@@ -66,18 +67,19 @@ test.describe("reservation", () => {
 
     // Signup
     const email = `john${Math.round(Math.random() * 100)}@example.com`;
+    const password = "123456789";
     await page.getByTestId("name-input").fill("John2");
-    await page
-      .getByTestId("email-input")
-      .fill(email);
-    await page.getByTestId("password-input").fill("123456789");
+    await page.getByTestId("email-input").fill(email);
+    await page.getByTestId("password-input").fill(password);
     await page.getByTestId("tac-checkbox").check();
     await page.getByTestId("submit-button").click();
     await page.waitForURL(/\/l\/test-store\/p\/(.+)/);
 
     // Set user as verified
     const pb = await pocketbase();
-    const user = await pb.collection("users").getFirstListItem(`email="${email}"`);
+    const user = await pb
+      .collection("users")
+      .getFirstListItem(`email="${email}"`);
     await pb.collection("users").update(user.id, { verified: true });
 
     // Reserve
@@ -85,6 +87,42 @@ test.describe("reservation", () => {
     await reserve(page, 0, 1);
 
     await expect(page.getByTestId("opening-hours")).toBeHidden();
+  });
+
+  test("user can't access reservations of others", async ({ page }) => {
+    // Create product, user, and reservation
+    const product = await createProduct();
+    const firstUserEmail = `a${Math.round(Math.random() * 100)}@example.com`;
+    const firstUserPassword = "123456789";
+    await createUser(firstUserEmail, firstUserPassword);
+    await login(page, firstUserEmail, firstUserPassword);
+    await navigateToProductPage(page, product.id);
+    await reserve(page, 0, 1);
+    const firstUserPb = await pocketbase(
+      firstUserEmail,
+      firstUserPassword,
+      false
+    );
+    const firstReservations = await firstUserPb
+      .collection("reservations")
+      .getFullList();
+    // Expect the user to have 1 reservation
+    expect(firstReservations.length).toBe(1);
+
+    // Create second user
+    const secondUserEmail = `b${Math.round(Math.random() * 100)}@example.com`;
+    const secondUserPassword = "123456789";
+    await createUser(secondUserEmail, secondUserPassword);
+    const secondUserPb = await pocketbase(
+      secondUserEmail,
+      secondUserPassword,
+      false
+    );
+    const secondReservations = await secondUserPb
+      .collection("reservations")
+      .getFullList();
+    // Expect the user to have no reservations
+    expect(secondReservations.length).toBe(0);
   });
 
   test("user can't reserve the same product twice", async ({ page }) => {

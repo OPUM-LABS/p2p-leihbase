@@ -11,12 +11,13 @@
   <VerificationDialog />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import "@/assets/styles/main.scss";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { useLeihbase } from "@/stores/leihbase";
 import { useUserStore } from "@/stores/user";
 import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.js";
+import type { User } from "~~/models/User.js";
 import Footer from "./components/modules/Footer.vue";
 import NavBar from "./components/modules/NavBar.vue";
 import ReservationDialog from "./components/ReservationDialog.vue";
@@ -26,7 +27,7 @@ setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/"
 );
 
-const { isValid, logout } = usePocketbase();
+const { pb, isValid, logout } = usePocketbase();
 const userStore = useUserStore();
 const {
   public: { plausibleTrackingDomain, locale: defaultLocale },
@@ -66,7 +67,7 @@ useHead({
 });
 
 if (isValid.value) {
-  await userStore.login();
+  await userStore.login({ user: pb.authStore.record as User });
 } else {
   logout();
   userStore.logout();

@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 onRecordCreateRequest(async (e) => {
-  const { requestInfo } = e;
+  const { requestInfo, record } = e;
 
   // Validate captcha, if captcha is enabled
   const capInstanceHost = $os.getenv("CONFIG_CAP_INSTANCE_HOST");
@@ -27,6 +27,24 @@ onRecordCreateRequest(async (e) => {
     if (!res.json.success) {
       throw new Error("Captcha_invalid.");
     }
+  }
+
+  record.set("role", "user");
+
+  e.next();
+}, "users");
+
+onRecordEnrich((e) => {
+
+  // Unhide 'role' and 'manager_locations' for requesting user.
+  if (
+    e.record &&
+    e.requestInfo &&
+    e.requestInfo.auth &&
+    e.requestInfo.auth.id === e.record.id
+  ) {
+    e.record.unhide("role");
+    e.record.unhide("manager_locations");
   }
 
   e.next();

@@ -65,18 +65,17 @@ import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import Input from "@/components/core/Input.vue";
 import { PageAlertType } from "@/components/page-alert/PageAlert.model";
+import type { User } from "~~/models/User";
 
 useHead({
   title: `Login`,
 });
 
-const { t } = useI18n({
-  useScope: "local",
-});
+const { t } = useI18n({ useScope: "local" });
 
 const route = useRoute();
 const userStore = useUserStore();
-const { login, isValid } = usePocketbase();
+const { pb, isValid, login } = usePocketbase();
 
 const email = ref(null);
 const password = ref(null);
@@ -87,12 +86,14 @@ const authenticationError = ref(false);
 // If the 'return' query parameter is set in the url,
 // set the authentication intent
 if (route.query.return) {
-  userStore.setAuthenticationIntent(null, route.query.return);
+  userStore.setAuthenticationIntent(null, route.query.return as string);
 }
 
 async function onLogin() {
   authenticationError.value = false;
   loading.value = true;
+
+  if (!email.value || !password.value) return;
 
   try {
     await login(email.value, password.value);
@@ -103,7 +104,7 @@ async function onLogin() {
   }
 
   if (isValid.value) {
-    userStore.login();
+    userStore.login({ user: pb.authStore.record as User });
     // Show after-login banner on next page
     const { path, intent } = userStore.$state.authenticationIntent;
     if (path) {

@@ -49,7 +49,7 @@
                 {{ t("reservations") }}
               </NuxtLink>
             </li>
-            <li v-if="isValid && userStore.isAdmin">
+            <li v-if="isValid && userStore.isManager">
               <DropdownMenuItem :as="NuxtLink" to="/admin">
                 {{ t("admin") }}
               </DropdownMenuItem>

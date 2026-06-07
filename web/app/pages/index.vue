@@ -1,5 +1,6 @@
 <template>
   <Container width="lg" centered class="container">
+    <PageAlert />
     <div class="grid">
       <div class="lb-stack">
         <Heading is="h1" size="xl">{{ leihbase.name }}</Heading>
@@ -37,6 +38,7 @@
 import Button from "@/components/core/Button.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
+import PageAlert from "@/components/page-alert/PageAlert.vue";
 
 const { t } = useI18n({ useScope: "local" });
 const { pb } = usePocketbase();

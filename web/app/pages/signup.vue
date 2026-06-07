@@ -91,6 +91,7 @@ import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import Input from "@/components/core/Input.vue";
 import { PageAlertType } from "@/components/page-alert/PageAlert.model";
+import type { User } from "~~/models/User";
 import { ClientResponseError } from "pocketbase";
 
 const { t } = useI18n({
@@ -141,7 +142,7 @@ async function handleSubmit(e: SubmitEvent) {
     );
 
     // Login
-    userStore.login();
+    userStore.login({ user: pb.authStore.record as User });
 
     // Routing
     const { path, intent } = userStore.$state.authenticationIntent;

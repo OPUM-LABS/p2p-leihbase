@@ -1,6 +1,6 @@
 import { expect, test as setup } from "@playwright/test";
-import { pocketbase } from "../services/pocketbase";
 import { createUser } from "../lib/user";
+import { pocketbase } from "../services/pocketbase";
 
 setup.describe.configure({ mode: "serial" });
 
@@ -13,7 +13,7 @@ setup.describe("setup", () => {
     await pb.settings.update({
       smtp: {
         enabled: true,
-        host: "mailhog",
+        host: "localhost",
         port: 1025,
       },
     });
