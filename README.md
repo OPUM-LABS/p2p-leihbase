@@ -41,7 +41,7 @@ Use the following docker-compose.yml as a base to deploy Leihbase using Docker:
 ```yaml
 services:
   leihbase-webapp:
-    image: lumocra/leihbase-webapp:v1.7.0
+    image: lumocra/leihbase-webapp:v2.3.0
     container_name: leihbase-webapp
     environment:
       NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: http://leihbase-pb:8080
@@ -53,7 +53,7 @@ services:
       NUXT_PUBLIC_CAP_SITE_KEY: ""
 
   leihbase-pb:
-    image: lumocra/leihbase-pb:v1.7.0
+    image: lumocra/leihbase-pb:v2.3.0
     container_name: leihbase-pb
     environment:
       CONFIG_LOCALE: "en"
