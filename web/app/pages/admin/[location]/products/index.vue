@@ -105,8 +105,8 @@ const {
   refresh,
   status: fetchStatus,
 } = await useAsyncData(async () => {
-  const filters = [];
-  const params: Record<string, any> = {};
+  const filters = ["location = {:location}"];
+  const params: Record<string, any> = { location: location.value!.id };
   if (status.value) {
     filters.push("active = {:active}");
     params["active"] = status.value === "active" ? true : false;
