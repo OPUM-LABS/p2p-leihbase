@@ -2,7 +2,7 @@
   <Container width="lg" centered class="container">
     <PageAlert />
     <div class="grid">
-      <div class="lb-stack">
+      <div class="content lb-stack">
         <Heading is="h1" size="xl">{{ leihbase.name }}</Heading>
         <div
           v-if="leihbase.description"
@@ -10,7 +10,8 @@
           v-html="leihbase.description"
         ></div>
       </div>
-      <div v-if="locations && locations.length > 0" class="lb-stack locations">
+
+      <div v-if="locations && locations.length > 0" class="locations lb-stack">
         <Heading is="h2" size="lg" class="heading">{{
           t("locations")
         }}</Heading>
@@ -30,6 +31,12 @@
           </li>
         </ul>
       </div>
+
+      <img
+        v-if="leihbase?.image"
+        :src="`${config.public.pocketbase.clientBaseUrl}/api/files/leihbase/${leihbase.id}/${leihbase?.image}${thumbs.lg}`"
+        class="image"
+      />
     </div>
   </Container>
 </template>
@@ -40,6 +47,10 @@ import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 
+const config = useRuntimeConfig();
+const {
+  product: { thumbs },
+} = useAppConfig();
 const { t } = useI18n({ useScope: "local" });
 const { pb } = usePocketbase();
 const { leihbase } = useLeihbase();
@@ -71,13 +82,47 @@ useHead({
 }
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--fluid-spacing-8);
-  margin-top: var(--fluid-spacing-8);
+  gap: var(--fluid-spacing-12);
+  grid-template-areas:
+    "a"
+    "b"
+    "c";
 }
 @media (min-width: breakpoints.$breakpoint-md) {
   .grid {
     grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "a b"
+      "c b";
+  }
+}
+.content {
+  grid-area: b;
+}
+.locations {
+  grid-area: c;
+}
+.image {
+  grid-area: a;
+  border-radius: var(--border-radius);
+}
+@media (min-width: breakpoints.$breakpoint-md) {
+  .grid {
+    margin-top: var(--fluid-spacing-8);
+  }
+  .content {
+    grid-area: a;
+  }
+  .locations {
+    grid-area: c;
+  }
+  .image {
+    grid-area: b;
+  }
+  .grid:not(:has(.image)) {
+    .locations {
+      grid-area: b;
+    }
   }
 }
 .locations .heading {
