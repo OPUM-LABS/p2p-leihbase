@@ -44,12 +44,9 @@ const {
   data: reservations,
   refresh,
   status,
-} = await useAsyncData(
+} = await useAsyncData<Reservation[]>(
   "admin_overdue_reservations",
-  async () => {
-    const reservations = await getOverdueReservations(props.location.id);
-    return structuredClone(reservations) as Reservation[];
-  },
+  () => getOverdueReservations(props.location.id),
   { lazy: true }
 );
 </script>

@@ -79,13 +79,13 @@ const selectedIds = computed(() => {
  */
 const { data: documents, refresh } = await useAsyncData(
   `record-picker-${props.id}-${props.collection}`,
-  async () => {
+  () => {
     if (!props.collection || !props.columns) {
       throw new Error(
         "[RecordPicker] no `collection` or `columns` parameter set"
       );
     }
-    const records = await pb.collection(props.collection).getFullList(
+    return pb.collection(props.collection).getFullList(
       query.value
         ? {
             filter: pb.filter(
@@ -97,7 +97,6 @@ const { data: documents, refresh } = await useAsyncData(
           }
         : {}
     );
-    return structuredClone(records);
   },
   { server: false, watch: [query] }
 );

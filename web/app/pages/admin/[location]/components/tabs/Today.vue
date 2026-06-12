@@ -92,10 +92,10 @@ const {
   data: reservations,
   refresh,
   status,
-} = await useAsyncData(
+} = await useAsyncData<Reservation[]>(
   "admin_todays_reservations",
-  async () => {
-    const reservations = await pb.collection("reservations").getFullList({
+  () =>
+    pb.collection("reservations").getFullList({
       filter: pb.filter(
         `location = {:location} ${showCancelled.value ? "" : "&& cancelled = false"} && ((start >= {:dateStart} && start <= {:dateEnd}) || (end >= {:dateStart} && end <= {:dateEnd}))`,
         {
@@ -107,9 +107,7 @@ const {
       sort: "start",
       expand: "product,user",
       requestKey: "admin_todays_reservations",
-    });
-    return structuredClone(reservations) as Reservation[];
-  },
+    }),
   { lazy: true }
 );
 

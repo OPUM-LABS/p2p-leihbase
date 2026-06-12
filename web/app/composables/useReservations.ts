@@ -1,3 +1,5 @@
+import type { Reservation } from "~~/models/reservation";
+
 export function useReservations() {
   const { pb } = usePocketbase();
 
@@ -12,7 +14,7 @@ export function useReservations() {
       sort: "end",
       expand: "product,user",
       requestKey: "admin_overdue_reservations",
-    });
+    }) as Promise<Reservation[]>;
   }
 
   return {

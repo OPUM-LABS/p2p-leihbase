@@ -85,16 +85,17 @@ if (!location.value || !location.value.id) {
   });
 }
 
-const { data: reservations, refresh } = await useAsyncData(async () => {
-  if (!dateStart.value || !dateEnd.value) return;
-  const reservations = await pb.collection("reservations").getFullList({
+const { data: reservations, refresh } = await useAsyncData(() => {
+  if (!dateStart.value || !dateEnd.value) {
+    throw new Error("No start or end date defined.");
+  }
+  return pb.collection("reservations").getFullList({
     filter: pb.filter("start >= {:dateStart} && end <= {:dateEnd}", {
       dateStart: startOfUTCDate(dateStart.value),
       dateEnd: endOfUTCDate(dateEnd.value),
     }),
     expand: "product",
   });
-  return structuredClone(reservations);
 });
 
 const borrowings = computed(() =>

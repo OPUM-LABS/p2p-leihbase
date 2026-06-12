@@ -9,7 +9,7 @@ export async function getProduct(id: string, options: Options) {
   const userStore = useUserStore();
   const { isManager } = storeToRefs(userStore);
 
-  const { data, error, refresh } = await useAsyncData<Product>(async () =>
+  const { data, error, refresh } = await useAsyncData<Product>(() =>
     pb.collection(isManager.value ? "products" : "public_products").getOne(id, {
       expand: options.expand,
     })
@@ -23,8 +23,7 @@ export async function getProductExcerpt(id: string) {
 
   const { data, error, refresh } = await useAsyncData<{ description: string }>(
     "product-excerpt",
-    async () =>
-      await pb
+    () => pb
         .collection(userStore.isManager ? "products" : "public_products")
         .getOne(id, {
           fields: "description:excerpt(200,true)",

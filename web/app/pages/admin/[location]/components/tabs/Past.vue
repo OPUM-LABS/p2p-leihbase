@@ -42,19 +42,17 @@ const {
   data: pastReservations,
   refresh,
   status,
-} = await useAsyncData(
+} = await useAsyncData<ListResult<Reservation>>(
   "admin_past_reservations",
-  async () => {
-    const reservations = await pb.collection("reservations").getList(0, 50, {
+  () =>
+    pb.collection("reservations").getList(0, 50, {
       filter: pb.filter("location = {:location} && end < @todayStart", {
         location: props.location.id,
       }),
       sort: "-end",
       expand: "product,user",
       requestKey: "admin_past_reservations",
-    });
-    return structuredClone(reservations) as ListResult<Reservation>;
-  },
+    }),
   { lazy: true }
 );
 </script>

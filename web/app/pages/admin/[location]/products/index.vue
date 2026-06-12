@@ -104,7 +104,7 @@ const {
   data: products,
   refresh,
   status: fetchStatus,
-} = await useAsyncData(async () => {
+} = await useAsyncData<Product[]>(() => {
   const filters = ["location = {:location}"];
   const params: Record<string, any> = { location: location.value!.id };
   if (status.value) {
@@ -121,12 +121,10 @@ const {
     filters.push("(name ~ {:query} || description ~ {:query})");
     params.query = query.value;
   }
-  const products = await pb.collection("products").getFullList({
+  return pb.collection("products").getFullList({
     filter: pb.filter(filters.join(" && "), params),
     sort: "name",
   });
-  const p = structuredClone(products) as Product[];
-  return p;
 });
 
 function handleNewProductClick() {

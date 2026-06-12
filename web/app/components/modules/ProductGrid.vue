@@ -121,21 +121,19 @@ watch(
   }
 );
 
-const { data: categories } = await useAsyncData("categories", async () => {
-  const categories = await pb
-    .collection("categories")
-    .getFullList({ sort: "name_de" });
-  return structuredClone(categories);
-});
+const { data: categories } = await useAsyncData("categories", () =>
+  pb.collection("categories").getFullList({ sort: "name_de" })
+);
 
 const { data: productsData, refresh: refreshProducts } = await useAsyncData(
   "products",
-  async () => {
-    const data = await pb
+  () =>
+    pb
       .collection("public_products")
-      .getList(page.value, 24, { filter: getFilter(), sort: "name" });
-    return structuredClone(data);
-  }
+      .getList(parseInt((page.value as string) ?? "0"), 24, {
+        filter: getFilter(),
+        sort: "name",
+      })
 );
 
 const products = computed(() => {

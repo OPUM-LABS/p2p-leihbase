@@ -54,6 +54,7 @@ import Heading from "@/components/core/Heading.vue";
 import ProductGrid from "@/components/modules/ProductGrid.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { Internet, MapPin } from "@iconoir/vue";
+import { type Location } from "~~/models/location";
 
 const { t, locale } = useI18n({
   useScope: "local",
@@ -64,12 +65,11 @@ const route = useRoute();
 
 const slug = route.params.location;
 
-const { data: location } = await useAsyncData("location", async () => {
-  const location = await pb
+const { data: location } = await useAsyncData<Location>("location", () =>
+  pb
     .collection("public_locations")
-    .getFirstListItem(pb.filter("slug = {:slug}", { slug }));
-  return structuredClone(location);
-});
+    .getFirstListItem(pb.filter("slug = {:slug}", { slug }))
+);
 
 useHead({
   title: location.value?.name,

@@ -5,9 +5,7 @@ export const useLeihbase = defineStore("leihbase", () => {
 
   const { data: leihbases, refresh } = useAsyncData(
     "leihbase",
-    () => {
-      return pb.collection("leihbase").getFullList();
-    },
+    () => pb.collection("leihbase").getFullList(),
     { immediate: false }
   );
   const leihbase = computed(() => leihbases.value?.[0] as Leihbase);
