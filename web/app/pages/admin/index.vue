@@ -51,9 +51,8 @@ if (!isValid.value) {
 
 // Fetch locations the user has access to from
 // the non-public location collection
-const { data: locations } = await useAsyncData<Location[]>(
-  "locations",
-  async () => pb.collection("location").getFullList()
+const { data: locations } = await useAsyncData<Location[]>("locations", () =>
+  pb.collection("location").getFullList({ sort: "name" })
 );
 
 if (!locations.value || locations.value.length === 0) {

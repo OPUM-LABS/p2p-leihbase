@@ -46,6 +46,7 @@ const { leihbase } = useLeihbase();
 
 const locations = await pb.collection("public_locations").getFullList({
   filter: "active = true",
+  sort: "name",
 });
 
 // If there is only a single location navigate there directly
