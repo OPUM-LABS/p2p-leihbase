@@ -54,22 +54,21 @@ import Heading from "@/components/core/Heading.vue";
 import ProductGrid from "@/components/modules/ProductGrid.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { Internet, MapPin } from "@iconoir/vue";
-import { type Location } from "~~/models/location";
 
 const { t, locale } = useI18n({
   useScope: "local",
 });
 
-const { pb } = usePocketbase();
 const route = useRoute();
 
-const slug = route.params.location;
-
-const { data: location } = await useAsyncData<Location>("location", () =>
-  pb
-    .collection("public_locations")
-    .getFirstListItem(pb.filter("slug = {:slug}", { slug }))
+const { location } = await getActiveLocationBySlug(
+  route.params.location as string
 );
+if (!location.value) {
+  throw createError({
+    statusCode: 404,
+  });
+}
 
 useHead({
   title: location.value?.name,

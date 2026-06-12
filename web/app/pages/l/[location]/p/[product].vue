@@ -113,7 +113,9 @@ const { locale } = useI18n();
 
 const imageIndex = ref(0);
 
-const { location } = await getLocationBySlug(route.params.location as string);
+const { location } = await getActiveLocationBySlug(
+  route.params.location as string
+);
 if (!location.value) {
   throw createError({
     statusCode: 404,
