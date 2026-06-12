@@ -95,8 +95,10 @@ const reservationCreationError = ref<string>();
 const isSubmittingReservation = ref(false);
 
 const startOfToday = getStartOfDay();
-const closedDates = (location.value?.opening_hours?.except?.dates || []).map(
-  (d) => getStartOfDate(new Date(d))
+const closedDates = computed(() =>
+  (location.value?.opening_hours?.except?.dates || []).map((d) =>
+    getStartOfDate(new Date(d))
+  )
 );
 
 function isDateDisallowed(date: Date) {
@@ -108,7 +110,7 @@ function isDateDisallowed(date: Date) {
   // Is in the past
   const isInPast = startOfDate < startOfToday;
   // Is on a closed date (opening hours exception)
-  const isClosedDate = !!closedDates.find((date) =>
+  const isClosedDate = !!closedDates.value.find((date) =>
     isSameDate(date, startOfDate)
   );
   return !isOpenDay || isInPast || isClosedDate;
