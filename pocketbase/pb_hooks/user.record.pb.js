@@ -1,7 +1,11 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-onRecordCreateRequest(async (e) => {
+onRecordCreateRequest((e) => {
   const { requestInfo, record } = e;
+
+  if (!record) {
+    throw new BadRequestError();
+  }
 
   // Validate captcha, if captcha is enabled
   const capInstanceHost = $os.getenv("CONFIG_CAP_INSTANCE_HOST");
@@ -27,6 +31,12 @@ onRecordCreateRequest(async (e) => {
     if (!res.json.success) {
       throw new Error("Captcha_invalid.");
     }
+  }
+
+  // Make sure privacy policy has been accepted, if defined
+  const leihbase = $app.findAllRecords("leihbase")[0];
+  if (leihbase?.get('privacy_policy_link') && !record.getBool('terms'))  {
+    throw new BadRequestError("Terms_required.")
   }
 
   record.set("role", "user");

@@ -5,7 +5,10 @@ export type Leihbase = RecordModel & {
   name: string;
   description?: string;
   contact_link?: string;
+  privacy_policy_link?: string;
+  footer_links?: {
+    text: string;
+    link: string;
+  }[];
   style?: string;
-  imprint?: string;
-  privacy_policy?: string;
 };

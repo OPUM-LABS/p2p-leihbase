@@ -32,7 +32,7 @@
           data-testid="password-input"
           required
         />
-        <fieldset class="checkbox">
+        <fieldset v-if="leihbase.privacy_policy_link" class="checkbox">
           <input
             id="terms-and-conditions"
             name="terms"
@@ -47,7 +47,7 @@
               tag="span"
               for="terms_and_conditions_link"
             >
-              <NuxtLink target="_blank" to="/privacy-policy">{{
+              <NuxtLink target="_blank" :to="leihbase.privacy_policy_link">{{
                 t("terms_and_conditions_link")
               }}</NuxtLink>
             </i18n-t>
@@ -94,11 +94,11 @@ import { PageAlertType } from "@/components/page-alert/PageAlert.model";
 import type { User } from "~~/models/User";
 import { ClientResponseError } from "pocketbase";
 
-const { t } = useI18n({
-  useScope: "local",
-});
-const userStore = useUserStore();
+const { t } = useI18n({ useScope: "local" });
 const { pb, login } = usePocketbase();
+const userStore = useUserStore();
+const { leihbase } = useLeihbase();
+
 const {
   public: { cap },
 } = useRuntimeConfig();
@@ -177,7 +177,7 @@ async function handleSubmit(e: SubmitEvent) {
       signupError.value = t("errors.email_in_use");
     } else if (
       e instanceof ClientResponseError &&
-      e.data?.data?.terms?.code === "validation_required"
+      e.data?.message === "Terms_required."
     ) {
       signupError.value = t("errors.terms_required");
     } else if (

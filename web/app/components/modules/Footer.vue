@@ -1,13 +1,14 @@
 <template>
   <footer>
-    <NuxtLink to="/imprint">
-      {{ t("imprint") }}
-    </NuxtLink>
-    <span>—</span>
-    <NuxtLink to="/privacy-policy">
-      {{ t("privacy_policy") }}
-    </NuxtLink>
-    <span>—</span>
+    <template
+      v-if="leihbase.footer_links"
+      v-for="(link, index) in leihbase.footer_links"
+    >
+      <NuxtLink :to="link.link" target="_blank">
+        {{ link.text }}
+      </NuxtLink>
+      <span>—</span>
+    </template>
     <NuxtLink target="_blank" href="https://github.com/ArcoMul/leihbase">
       Open-Source
     </NuxtLink>
