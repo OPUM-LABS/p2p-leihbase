@@ -15,7 +15,12 @@
                 :to="`/admin/${location.slug}`"
                 class="location"
               >
-                <strong>{{ location.name }}</strong>
+                <strong>
+                  {{ location.name }}
+                  <Badge :variant="location.active ? 'success' : 'error'">
+                    {{ t(location.active ? "active" : "inactive") }}
+                  </Badge>
+                </strong>
                 <template v-if="location.address">
                   <br />
                   <p>{{ location.address }}</p>
@@ -30,6 +35,7 @@
 </template>
 
 <script lang="ts" setup>
+import Badge from "@/components/core/Badge.vue";
 import Button from "@/components/core/Button.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
@@ -101,6 +107,12 @@ if (!locations.value || locations.value.length === 0) {
   margin: 0;
   padding: 0;
 }
+.locations ul strong {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 .locations ul a {
   display: flex;
   flex-direction: column;
@@ -112,10 +124,14 @@ if (!locations.value || locations.value.length === 0) {
 <i18n lang="json">
 {
   "en": {
-    "locations": "Locations"
+    "locations": "Locations",
+    "active": "Active",
+    "inactive": "Inactive"
   },
   "de": {
-    "locations": "Standorte"
+    "locations": "Standorte",
+    "active": "Aktiv",
+    "inactive": "Inaktiv"
   }
 }
 </i18n>
