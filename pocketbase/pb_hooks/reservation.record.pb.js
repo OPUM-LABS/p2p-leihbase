@@ -38,6 +38,16 @@ onRecordCreateRequest((e) => {
     throw new BadRequestError("User_not_verified.");
   }
 
+  // If reservation system is disabled, prevent reservations from regular users
+  if (
+    location.get("reservation_system") === "disabled" &&
+    !isSuperuser &&
+    !isAdmin &&
+    !isLocationUser
+  ) {
+    throw new BadRequestError("Reservation_system_disabled.");
+  }
+
   // If only a single reservation is allowed per product, verify if there is no
   // other active reservation for this product
   if (

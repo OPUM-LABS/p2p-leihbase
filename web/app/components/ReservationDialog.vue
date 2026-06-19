@@ -182,6 +182,9 @@ async function onSubmit() {
         case "End_before_start.":
           reservationCreationError.value = t("errors.end_before_start");
           break;
+        case "Reservation_system_disabled.":
+          reservationCreationError.value = t("errors.reservation_system_disabled");
+          break;
       }
       if (!reservationCreationError.value) {
         reservationCreationError.value = t("errors.general");
@@ -237,6 +240,7 @@ async function onSubmit() {
       "end_before_today": "The end of the reservation is before today.",
       "start_and_end_equal": "The start and end of the reservation can't be on the same day.",
       "end_before_start": "The end can't be befor the start of the reservation.",
+      "reservation_system_disabled": "Reservations are not allowed for this location.",
       "general": "Something went wrong while creating the reservation, please try again."
     }
   },
@@ -258,6 +262,7 @@ async function onSubmit() {
       "end_before_today": "Das Enddatum der Reservierung liegt vor dem heutigen Tag.",
       "start_and_end_equal": "Beginn und Ende der Reservierung dürfen nicht am selben Tag liegen.",
       "end_before_start": "Ende kann nicht vor Beginn der Reservierung liegen.",
+      "reservation_system_disabled": "Reservierungen sind für diesen Standort nicht erlaubt.",
       "general": "Beim Erstellen deiner Reservierung ist ein Fehler aufgetreten, bitte versuche es erneut."
     }
   }

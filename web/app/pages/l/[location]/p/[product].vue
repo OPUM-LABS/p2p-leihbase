@@ -73,6 +73,7 @@
         />
 
         <Button
+          v-if="location?.reservation_system !== 'disabled'"
           size="lg"
           data-testid="reserve-button"
           @click.prevent="handleReserveButonClick"
