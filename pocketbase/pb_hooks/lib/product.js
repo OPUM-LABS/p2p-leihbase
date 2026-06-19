@@ -2,16 +2,18 @@
  * Checks if a product has another active reservation.
  * @param {string} productId
  * @param {core.Record} [excludeReservation]
+ * @param {boolean} [includeUnreturned=false] - Also include reservations that were not marked as ended
  * @returns {boolean}
  */
-function hasActiveReservation(productId, excludeReservation) {
+function hasActiveReservation(productId, excludeReservation, includeUnreturned = false) {
   /** @type {typeof import('./date')} */
   const { endOfDate } = require(`${__hooks}/lib/date`);
+  const endedFilter = includeUnreturned ? "(end > {:endOfToday} || ended != true)" : "end > {:endOfToday}";
   const records = $app.findRecordsByFilter(
     "reservations",
     [
       excludeReservation && excludeReservation.get("id") ? "id != {:id}" : "",
-      "product = {:product} && end > {:endOfToday} && cancelled != true",
+      `product = {:product} && ${endedFilter} && cancelled != true`,
     ]
       .filter((v) => !!v)
       .join(" && "),

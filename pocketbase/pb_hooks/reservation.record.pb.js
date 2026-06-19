@@ -49,11 +49,11 @@ onRecordCreateRequest((e) => {
   }
 
   // If only a single reservation is allowed per product, verify if there is no
-  // other active reservation for this product
+  // other active reservation for this product (including unreturned ones)
   if (
     location.get("reservation_system") === "single" &&
     !record.get("cancelled") &&
-    hasActiveReservation(record.getString("product"), record) &&
+    hasActiveReservation(record.getString("product"), record, true) &&
     !isSuperuser &&
     !isAdmin &&
     !isLocationUser
