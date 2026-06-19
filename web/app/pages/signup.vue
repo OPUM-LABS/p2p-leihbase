@@ -7,7 +7,7 @@
       <i18n-t keypath="text" tag="p" for="login_text">
         <NuxtLink to="/login">{{ t("login_text") }}</NuxtLink>
       </i18n-t>
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" method="post">
         <Input
           id="name"
           name="name"
