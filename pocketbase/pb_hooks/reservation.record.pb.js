@@ -2,16 +2,22 @@
 
 onRecordCreateRequest((e) => {
   /** @type {typeof import('./lib/reservation')} */
-  const {
-    validateStartEnd,
-    hasOpenReservations,
-    hasOverlappingReservations,
-  } = require(`${__hooks}/lib/reservation`);
+  const { validateStartEnd, hasOverlappingReservations } = require(
+    `${__hooks}/lib/reservation`
+  );
+  /** @type {typeof import('./lib/user')} */
+  const { hasActiveReservationForProduct } = require(`${__hooks}/lib/user`);
+  /** @type {typeof import('./lib/product')} */
+  const { hasActiveReservation } = require(`${__hooks}/lib/product`);
 
   const { record } = e;
+  if (!record) {
+    throw new BadRequestError("Record_not_defined.");
+  }
+
   const start = new Date(record.get("start").string().split(" ")[0]);
   const end = new Date(record.get("end").string().split(" ")[0]);
-  const isAdmin = e.hasSuperuserAuth();
+  const isSuperuser = e.hasSuperuserAuth();
   const requestUser = e.auth;
   const requireUser = $os.getenv("CONFIG_RESERVATION_REQUIRE_USER") !== "false";
 
@@ -20,6 +26,7 @@ onRecordCreateRequest((e) => {
   const product = record.expandedOne("product");
   $app.expandRecord(product, ["location"], null);
   const location = product.expandedOne("location");
+  const isAdmin = requestUser && requestUser.get("role") === "admin"
   const isLocationUser =
     requestUser &&
     requestUser.get("manager_locations") &&
@@ -31,10 +38,32 @@ onRecordCreateRequest((e) => {
     throw new BadRequestError("User_not_verified.");
   }
 
+  // If only a single reservation is allowed per product, verify if there is no
+  // other active reservation for this product
+  if (
+    location.get("reservation_system") === "single" &&
+    !record.get("cancelled") &&
+    hasActiveReservation(record.getString("product"), record) &&
+    !isSuperuser &&
+    !isAdmin &&
+    !isLocationUser
+  ) {
+    throw new BadRequestError("Product_has_open_reservation.");
+  }
+
   // Make sure there is not already an open reservation with the same user
   // and product
-  if (hasOpenReservations(record) && !isAdmin && !isLocationUser) {
-    throw new BadRequestError("Has_open_reservation.");
+  if (
+    hasActiveReservationForProduct(
+      record.get("user"),
+      record.get("product"),
+      record
+    ) &&
+    !isSuperuser &&
+    !isAdmin &&
+    !isLocationUser
+  ) {
+    throw new BadRequestError("User_has_open_reservation.");
   }
 
   // Validate reservation start/end
@@ -42,19 +71,18 @@ onRecordCreateRequest((e) => {
     start,
     end,
     location.getInt("max_reservation_days") || 14,
-    isLocationUser,
-    isAdmin
+    isLocationUser || isAdmin || isSuperuser,
   );
 
   // Make sure the reservation is linked to a user
-  if (requireUser && !record.get("user") && !isAdmin && !isLocationUser) {
+  if (requireUser && !record.get("user") && !isSuperuser && !isLocationUser) {
     throw new BadRequestError("User_not_defined.");
   }
 
   // If send_confirmation isn't set yet, make sure to set it to false for admin
   // or location users, so that no confirmations are send when creating
   // reservations from the admin section or pocketbase interface
-  if (!record.get("send_confirmation") && (isAdmin || isLocationUser)) {
+  if (!record.get("send_confirmation") && (isSuperuser || isLocationUser)) {
     record.set("send_confirmation", false);
   }
 
@@ -86,19 +114,24 @@ onRecordCreateRequest((e) => {
 
 onRecordUpdateRequest((e) => {
   /** @type {typeof import('./lib/reservation')} */
-  const {
-    validateStartEnd,
-    hasOverlappingReservations,
-    hasOpenReservations,
-  } = require(`${__hooks}/lib/reservation`);
+  const { validateStartEnd, hasOverlappingReservations } = require(
+    `${__hooks}/lib/reservation`
+  );
+  /** @type {typeof import('./lib/user')} */
+  const { hasActiveReservationForProduct } = require(`${__hooks}/lib/user`);
 
   const { record } = e;
+  if (!record) {
+    throw new BadRequestError("Record_not_defined.");
+  }
+
   const requestUser = e.auth;
-  const isAdmin = e.hasSuperuserAuth();
+  const isSuperuser = e.hasSuperuserAuth();
   const start = new Date(record.get("start").string().split(" ")[0]);
   const end = new Date(record.get("end").string().split(" ")[0]);
   $app.expandRecord(record, ["location"], null);
   const location = record.expandedOne("location");
+  const isAdmin = requestUser && requestUser.get("role") === "admin";
   const isLocationUser =
     requestUser &&
     requestUser.get("manager_locations") &&
@@ -106,8 +139,17 @@ onRecordUpdateRequest((e) => {
 
   // Make sure there is not already an open reservation with the same user
   // and product
-  if (hasOpenReservations(record) && !isAdmin && !isLocationUser) {
-    throw new BadRequestError("Has_open_reservation.");
+  if (
+    hasActiveReservationForProduct(
+      record.get("user"),
+      record.get("product"),
+      record
+    ) &&
+    !isSuperuser &&
+    !isAdmin &&
+    !isLocationUser
+  ) {
+    throw new BadRequestError("User_has_open_reservation.");
   }
 
   // Validate reservation start/end
@@ -115,8 +157,7 @@ onRecordUpdateRequest((e) => {
     start,
     end,
     location.getInt("max_reservation_days") || 14,
-    isLocationUser,
-    isAdmin
+    isLocationUser || isAdmin || isSuperuser
   );
 
   // Make sure there is no overlapping reservation for the same product in the
@@ -125,7 +166,7 @@ onRecordUpdateRequest((e) => {
     ? JSON.parse(location.getString("config")) || {}
     : {};
   const allowSameDayReservations =
-    isAdmin || isLocationUser || !!locationConfig.allow_same_day_reservations;
+    isSuperuser || isLocationUser || !!locationConfig.allow_same_day_reservations;
   if (hasOverlappingReservations(record, allowSameDayReservations)) {
     throw new BadRequestError("Overlapping_reservation.");
   }

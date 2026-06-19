@@ -1,17 +1,16 @@
 /**
- * Validates the start and end of a reservation
+ * Validates if the reservation start is before the end, if the start is after
+ * today, and if `maxReservationDays` is respected.
  * @param {Date} start
  * @param {Date} end
  * @param {Number} maxReservationDays
- * @param {Boolean} isLocationUser
- * @param {Boolean} isAdmin
+ * @param {Boolean} isManager
  */
 function validateStartEnd(
   start,
   end,
   maxReservationDays,
-  isLocationUser,
-  isAdmin
+  isManager 
 ) {
   var startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
@@ -27,10 +26,10 @@ function validateStartEnd(
 
   // Don't allow reserving where start of end is before today
   // Except if the user is an admin or a location user
-  if (start < startOfDay && !isAdmin && !isLocationUser) {
+  if (start < startOfDay && !isManager) {
     throw new BadRequestError("Start_before_today.");
   }
-  if (end < startOfDay && !isAdmin && !isLocationUser) {
+  if (end < startOfDay && !isManager) {
     throw new BadRequestError("End_before_today.");
   }
 
@@ -38,8 +37,7 @@ function validateStartEnd(
   const maxDays = 1000 * 60 * 60 * 24 * maxReservationDays;
   if (
     end.getTime() - start.getTime() > maxDays &&
-    !isAdmin &&
-    !isLocationUser
+    !isManager
   ) {
     throw new BadRequestError("Date_range_too_long.");
   }
@@ -79,38 +77,6 @@ function hasOverlappingReservations(reservation, allowSameDay) {
   return records.length > 0;
 }
 
-/**
- * Checks if a reservation has other overlapping reservations
- * @param {core.Record} reservation
- * @returns {boolean}
- */
-function hasOpenReservations(reservation) {
-  const { endOfDate } = require(`${__hooks}/lib/date`);
-  // A cancelled reservation is allowed to have a second reservation for the same product
-  if (reservation.get("cancelled")) {
-    return false;
-  }
-  // A reservation without a user can't already have an open reservation
-  if (!reservation.get("user")) {
-    return false;
-  }
-  const records = $app.findRecordsByFilter(
-    "reservations",
-    reservation.get("id")
-      ? `id != {:id} && user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`
-      : `user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`,
-    null,
-    1,
-    0,
-    {
-      id: reservation.get("id"),
-      user: reservation.get("user"),
-      product: reservation.get("product"),
-      endOfToday: endOfDate(new Date()),
-    }
-  );
-  return records.length > 0;
-}
 
 /**
  * @param {core.Record} reservation
@@ -209,7 +175,6 @@ function getReminderEmail(reservation, type) {
 module.exports = {
   validateStartEnd,
   hasOverlappingReservations,
-  hasOpenReservations,
   saveSentEmail,
   removeSentEmail,
   getReminderEmail,

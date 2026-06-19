@@ -1,17 +1,17 @@
 import type { Product } from "~~/models/product";
 
 type Options = {
-  expand: string;
+  expand?: string;
+  query?: Record<string, any>;
 };
 
 export async function getProduct(id: string, options: Options) {
   const { pb } = usePocketbase();
-  const userStore = useUserStore();
-  const { isManager } = storeToRefs(userStore);
 
   const { data, error, refresh } = await useAsyncData<Product>(() =>
-    pb.collection(isManager.value ? "products" : "public_products").getOne(id, {
+    pb.collection("products").getOne(id, {
       expand: options.expand,
+      query: options.query,
     })
   );
   return { product: data, error, refresh };
@@ -19,15 +19,13 @@ export async function getProduct(id: string, options: Options) {
 
 export async function getProductExcerpt(id: string) {
   const { pb } = usePocketbase();
-  const userStore = useUserStore();
 
   const { data, error, refresh } = await useAsyncData<{ description: string }>(
     "product-excerpt",
-    () => pb
-        .collection(userStore.isManager ? "products" : "public_products")
-        .getOne(id, {
-          fields: "description:excerpt(200,true)",
-        })
+    () =>
+      pb.collection("products").getOne(id, {
+        fields: "description:excerpt(200,true)",
+      })
   );
 
   const excerpt = computed(() => data.value?.description);

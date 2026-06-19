@@ -36,7 +36,7 @@ export async function createProduct() {
     });
     return product;
   } catch (err) {
-    console.log("Error creating test product", err.response.data);
+    console.log("Error creating test product", err?.response?.data);
     throw new Error("createProduct: couldn't create product");
   }
 }

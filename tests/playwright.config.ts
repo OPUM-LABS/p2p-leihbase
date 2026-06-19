@@ -65,6 +65,7 @@ export default defineConfig<ConfigOptions>({
     command: "mise run //...:start:test",
     url: "http://127.0.0.1:3000/favicon.ico",
     reuseExistingServer: false,
-    // stdout: "pipe",
+    stdout: "pipe",
+    stderr: "pipe",
   },
 });

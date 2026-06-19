@@ -145,10 +145,21 @@ async function onSubmit() {
         case "User_not_verified.":
           reservationCreationError.value = t("errors.user_not_verified");
           break;
-        case "Has_open_reservation.":
-          reservationCreationError.value = t("errors.has_open_reservation", {
-            email: location.value.email,
-          });
+        case "Product_has_open_reservation.":
+          reservationCreationError.value = t(
+            "errors.product_has_open_reservation",
+            {
+              email: location.value.email,
+            }
+          );
+          break;
+        case "User_has_open_reservation.":
+          reservationCreationError.value = t(
+            "errors.user_has_open_reservation",
+            {
+              email: location.value.email,
+            }
+          );
           break;
         case "Date_range_too_long.":
           reservationCreationError.value = t("errors.date_range_too_long", {
@@ -218,7 +229,8 @@ async function onSubmit() {
     "reserve_now_button": "Reserve now",
     "errors": {
       "user_not_verified": "Confirm your e-mail address before placing a reservation.",
-      "has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
+      "product_has_open_reservation": "This product is currently not available.",
+      "user_has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
       "date_range_too_long": "Products can't be reserved for longer than {days} days. Reach out on {email} to discuss a longer period.",
       "overlapping_reservation": "The product is already reserved for this period.",
       "start_before_today": "The start of the reservation is before today.",
@@ -238,7 +250,8 @@ async function onSubmit() {
     "reserve_now_button": "Jetzt reservieren",
     "errors": {
       "user_not_verified": "Bestätige deine E-Mail-Adresse, bevor du reservierst.",
-      "has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
+      "product_has_open_reservation": "Diesen Gegenstand ist derzeit nicht verfügbar.",
+      "user_has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
       "date_range_too_long": "Produkte können nicht länger als {days} Tage reserviert werden. Kontaktiere uns unter {email}, um einen längeren Zeitraum zu besprechen.",
       "overlapping_reservation": "Das Produkt ist für diesen Termin bereits reserviert.",
       "start_before_today": "Der Beginn der Reservierung liegt vor dem heutigen Tag.",

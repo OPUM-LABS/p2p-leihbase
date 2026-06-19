@@ -39,7 +39,9 @@
           <Heading is="h1" size="xl" data-testid="product-page-h1" cap>
             {{ product?.name }}
           </Heading>
-          <AvailabilityBadge :available="available" />
+          <AvailabilityBadge
+            :available="product?.computedIsAvailable !== false"
+          />
         </div>
 
         <div class="info-body lb-stack">
@@ -124,8 +126,11 @@ if (!location.value) {
 
 const { product } = await getProduct(route.params.product as string, {
   expand: "categories",
+  query: {
+    computeAvailability: true,
+  },
 });
-if (!product.value) {
+if (!product.value || !product.value.active) {
   throw createError({
     statusCode: 404,
   });
@@ -141,12 +146,6 @@ const breadcrumb = computed<BreadcrumbList[]>(() => [
     href: `/l/${location.value?.slug}?category=${category.id}`,
   })),
 ]);
-
-const available = computed(() =>
-  reservations.value && reservations.value.length > 0
-    ? reservations.value?.filter((r) => isToday(r)).length === 0
-    : true
-);
 
 userStore.clearAuthenticationIntent();
 
