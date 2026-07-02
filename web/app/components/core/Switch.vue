@@ -7,6 +7,9 @@
       :data-testid="dataTestid"
       :disabled="disabled"
       :readonly="readonly"
+      :aria-describedby="
+        [description ? `${id}-description` : null].filter((v) => !!v).join(' ')
+      "
       v-model="model"
     />
     <label :for="id" role="switch" :aria-checked="model">
@@ -15,6 +18,9 @@
       </span>
       <FormLabel is="span" hide-required>{{ label }}</FormLabel>
     </label>
+    <p v-if="description" :id="`${id}-description`" class="descrption">
+      <small>{{ description }}</small>
+    </p>
   </div>
 </template>
 
@@ -28,6 +34,7 @@ const props = withDefaults(
     id: string;
     label: string;
     name?: string;
+    value?: boolean;
     placeholder?: string;
     required?: boolean;
     disabled?: boolean;
@@ -35,9 +42,13 @@ const props = withDefaults(
     type?: string;
     dataTestid?: string;
     orientation?: "vertical" | "horizontal";
+    description?: string;
   }>(),
   { orientation: "vertical" }
 );
+if (props.value) {
+  model.value = props.value;
+}
 </script>
 
 <style scoped>
@@ -57,7 +68,7 @@ input {
 }
 label {
   display: inline-flex;
-  gap: var(--spacing-2);
+  column-gap: var(--spacing-2);
   cursor: pointer;
 }
 label .switch {
