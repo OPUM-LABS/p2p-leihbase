@@ -27,7 +27,7 @@ export default defineConfig<ConfigOptions>({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: 1,
+  retries: 0,
   /* Opt out of parallel tests on CI. */
   workers: Number(process.env.PLAYWRIGHT_WORKERS) || undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -38,7 +38,7 @@ export default defineConfig<ConfigOptions>({
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "http://127.0.0.1:3001",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
   },
 
   /* Configure projects for major browsers */
@@ -47,6 +47,11 @@ export default defineConfig<ConfigOptions>({
       name: "setup",
       testDir: "./setup",
       testMatch: /global\.setup\.ts/,
+    },
+    {
+      name: "API Tests",
+      testDir: "./api",
+      dependencies: ["setup"],
     },
     {
       name: "Desktop Chrome",

@@ -1,21 +1,17 @@
 import { pocketbase } from "../services/pocketbase";
 
-export async function createUser(
-  email = "test@example.com",
-  password = "testtest"
-) {
+export const DEFAULT_PASSWORD = "123456789";
+
+export async function createUser(email?: string, password?: string) {
   const pb = await pocketbase();
-  try {
-    const user = await pb.collection("users").create({
-      name: "Test User",
-      email,
-      password,
-      passwordConfirm: password,
-      terms: true,
-    });
-    await pb.collection("users").update(user.id, { verified: true });
-    return user;
-  } catch (err) {
-    console.log("Error creating test user", err.response.data);
-  }
+  const user = await pb.collection("users").create({
+    name: "Test User",
+    email:
+      email || `test-user-${Math.round(Math.random() * 10000)}@example.com`,
+    password: password || DEFAULT_PASSWORD,
+    passwordConfirm: password || DEFAULT_PASSWORD,
+    terms: true,
+  });
+  await pb.collection("users").update(user.id, { verified: true });
+  return user;
 }
