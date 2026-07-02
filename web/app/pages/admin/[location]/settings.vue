@@ -65,11 +65,33 @@
           name="reservation_system"
           :title="t('multiple.title')"
           value="multiple"
-          :checked="location.reservation_system === 'mulitple'"
+          :checked="location.reservation_system === 'multiple'"
         >
           {{ t("multiple.text") }}
         </RadioBox>
       </div>
+
+      <Input
+        name="max_reservation_days"
+        type="number"
+        :label="t('max-reservation-days.label')"
+        :description="t('max-reservation-days.description')"
+        :value="location.max_reservation_days"
+        :error="
+          errors.fields['max_reservation_days']
+            ? t(errors.fields['max_reservation_days'])
+            : undefined
+        "
+        class="max-w"
+      />
+
+      <Switch
+        id="allow-same-day-reservations"
+        name="allow_same_day_reservations"
+        :label="t('allow-same-day-reservations.label')"
+        :description="t('allow-same-day-reservations.description')"
+        :value="location.allow_same_day_reservations"
+      />
 
       <Alert v-if="success" variant="success">
         {{ t("success") }}
@@ -89,6 +111,7 @@ import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import Input from "@/components/core/Input.vue";
 import RadioBox from "@/components/core/RadioBox.vue";
+import Switch from "@/components/core/Switch.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { ClientResponseError } from "pocketbase";
 import AdminHeader from "./components/AdminHeader.vue";
@@ -115,6 +138,10 @@ if (!location.value || !location.value.id) {
 
 async function handleSubmit(e: SubmitEvent) {
   const data = new FormData(e.target as HTMLFormElement);
+  data.set(
+    "allow_same_day_reservations",
+    data.get("allow_same_day_reservations") ? "true" : "false"
+  );
   try {
     await update(location.value!.id, data);
     success.value = true;
@@ -155,6 +182,14 @@ async function handleSubmit(e: SubmitEvent) {
       "title": "Multiple",
       "text": "Multiple reservations per product for different time periods. A product is unavailable during active reservations or when no new reservation can be placed before the next one."
     },
+    "max-reservation-days": {
+      "label": "Maximum reservation duration",
+      "description": "Maximum duration of reservation in days"
+    },
+    "allow-same-day-reservations": {
+      "label": "Same day reservations",
+      "description": "Allow a new reservation to start on the same day as the previous reservation ends"
+    },
     "success": "Settings successfuly saved.",
     "save": "Save"
   },
@@ -175,6 +210,14 @@ async function handleSubmit(e: SubmitEvent) {
     "multiple": {
       "title": "Mehrfach",
       "text": "Mehrere Reservierungen pro Produkt für verschiedene Zeiträume. Das Produkt ist während aktiver Reservierungen oder wenn vor der nächsten Reservierung keine neue mehr möglich ist, nicht verfügbar."
+    },
+    "max-reservation-days": {
+      "label": "Maximum reservation duration",
+      "description": "Maximum duration of reservation in days."
+    },
+    "allow-same-day-reservations": {
+      "label": "Same day reservations",
+      "description": "Allow a new reservation to start on the same day as the previous reservation ends."
     },
     "success": "Einstellungen erfolgreich gespeichert.",
     "save": "Speichern"
