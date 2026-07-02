@@ -70,7 +70,7 @@ setup.describe("setup", () => {
     }
 
     // Create test user
-    createUser();
+    createUser("test@example.com", "testtest");
   });
 
   // Wait for homepage to load with extra long timeout

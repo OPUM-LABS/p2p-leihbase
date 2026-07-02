@@ -22,7 +22,6 @@ await selectors.register("shadow", createShadowRootEngine);
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig<ConfigOptions>({
-  testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -46,15 +45,18 @@ export default defineConfig<ConfigOptions>({
   projects: [
     {
       name: "setup",
+      testDir: "./setup",
       testMatch: /global\.setup\.ts/,
     },
     {
       name: "Desktop Chrome",
+      testDir: "./browser",
       use: devices["Desktop Chrome"],
       dependencies: ["setup"],
     },
     {
       name: "Mobile Chrome",
+      testDir: "./browser",
       use: devices["Pixel 5"],
       dependencies: ["setup"],
     },
