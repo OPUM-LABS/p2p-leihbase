@@ -19,8 +19,14 @@ migrate((app) => {
       "multiple"
     ]
   }))
+  app.save(collection)
 
-  return app.save(collection)
+  // Set default 'reservation_system' for all locations
+  const locations = app.findAllRecords("location")
+  locations.forEach(location => {
+    location.set('reservation_system', 'multiple');
+    app.save(location);
+  });
 }, (app) => {
   const collection = app.findCollectionByNameOrId("nkbfankqkyubdu9")
 
