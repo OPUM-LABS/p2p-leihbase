@@ -9,6 +9,9 @@
     <Button variant="secondary" :to="`/admin/${location?.slug}/stats`">
       {{ t("statistics") }}
     </Button>
+    <Button variant="secondary" :to="`/admin/${location?.slug}/settings`">
+      {{ t("settings") }}
+    </Button>
   </HorizontalScroll>
 </template>
 
@@ -37,12 +40,14 @@ defineProps<{ location: RecordModel }>();
   "en": {
     "reservations": "Reservations",
     "products": "Products",
-    "statistics": "Statistics"
+    "statistics": "Statistics",
+    "settings": "Settings"
   },
   "de": {
     "reservations": "Reservierungen",
     "products": "Gegenständen",
-    "statistics": "Statistieken"
+    "statistics": "Statistieken",
+    "settings": "Einstellungen"
   }
 }
 </i18n>
