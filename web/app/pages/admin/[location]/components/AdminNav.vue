@@ -9,7 +9,11 @@
     <Button variant="secondary" :to="`/admin/${location?.slug}/stats`">
       {{ t("statistics") }}
     </Button>
-    <Button variant="secondary" :to="`/admin/${location?.slug}/settings`">
+    <Button
+      :disabled="!userStore.isAdmin"
+      variant="secondary"
+      :to="`/admin/${location?.slug}/settings`"
+    >
       {{ t("settings") }}
     </Button>
   </HorizontalScroll>
@@ -19,6 +23,8 @@
 import Button from "@/components/core/Button.vue";
 import HorizontalScroll from "@/components/core/HorizontalScroll.vue";
 import type { RecordModel } from "pocketbase";
+
+const userStore = useUserStore();
 
 const { t } = useI18n({
   useScope: "local",

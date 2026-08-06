@@ -46,7 +46,11 @@
 
         <div class="info-body lb-stack">
           <!-- Description -->
-          <div class="lb-richtext" v-html="product?.description"></div>
+          <div
+            v-if="product?.description"
+            class="lb-richtext"
+            v-html="product?.description"
+          ></div>
           <!-- Deposit -->
           <KeyValue v-if="product?.deposit" :title="t('deposit')">
             {{ formatCurrency(product.deposit, locale) }}

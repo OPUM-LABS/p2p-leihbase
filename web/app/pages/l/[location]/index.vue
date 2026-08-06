@@ -92,6 +92,7 @@ header {
   }
   .description {
     max-width: var(--max-text-width);
+    margin-bottom: var(--fluid-spacing-4);
   }
 }
 h2 {

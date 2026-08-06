@@ -39,6 +39,18 @@
         class="max-w"
       />
 
+      <RichTextarea
+        :label="t('description')"
+        name="description"
+        :value="location.description"
+        :error="
+          errors.fields['description']
+            ? t(errors.fields['description'])
+            : undefined
+        "
+        class="max-w"
+      />
+
       <Heading is="h2" size="md">{{ t("reservation-system") }}</Heading>
 
       <div class="lb-cols">
@@ -111,7 +123,9 @@ import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import Input from "@/components/core/Input.vue";
 import RadioBox from "@/components/core/RadioBox.vue";
+import RichTextarea from "@/components/core/RichTextarea.vue";
 import Switch from "@/components/core/Switch.vue";
+import Textarea from "@/components/core/Textarea.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import { ClientResponseError } from "pocketbase";
 import AdminHeader from "./components/AdminHeader.vue";
