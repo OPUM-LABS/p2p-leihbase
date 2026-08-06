@@ -15,6 +15,7 @@
       <template #popup>
         <ClientOnly>
           <calendar-date
+            :key="popoutKey"
             ref="datepicker"
             :show-outside-days="showOutsideDays"
             :isDateDisallowed="isDateDisallowed"
@@ -55,6 +56,7 @@ const props = withDefaults(
     showOutsideDays?: boolean;
     dataTestid?: string;
     description?: string;
+    popoutKey?: string;
   }>(),
   { showOutsideDays: true }
 );
