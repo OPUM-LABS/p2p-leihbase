@@ -76,6 +76,19 @@ onRecordCreateRequest((e) => {
     throw new BadRequestError("User_has_open_reservation.");
   }
 
+  // Check reservation_start_limit
+  const reservationStartLimit = location.getInt("reservation_start_limit");
+  if (reservationStartLimit > 0) {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+    const maxStartDate = new Date(today);
+    maxStartDate.setDate(maxStartDate.getDate() + reservationStartLimit);
+
+    if (start > maxStartDate && !isSuperuser && !isAdmin && !isLocationUser) {
+      throw new BadRequestError("Reservation_start_too_far_in_future.");
+    }
+  }
+
   // Validate reservation start/end
   validateStartEnd(
     start,
@@ -160,6 +173,19 @@ onRecordUpdateRequest((e) => {
     !isLocationUser
   ) {
     throw new BadRequestError("User_has_open_reservation.");
+  }
+
+  // Check reservation_start_limit
+  const reservationStartLimit = location.getInt("reservation_start_limit");
+  if (reservationStartLimit > 0) {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+    const maxStartDate = new Date(today);
+    maxStartDate.setDate(maxStartDate.getDate() + reservationStartLimit);
+
+    if (start > maxStartDate && !isSuperuser && !isAdmin && !isLocationUser) {
+      throw new BadRequestError("Reservation_start_too_far_in_future.");
+    }
   }
 
   // Validate reservation start/end

@@ -44,11 +44,12 @@ export const ALL_DAYS_OPENING_HOURS: OpeningHours = {
 };
 
 /**
- * Creates a new location with the specified reservation system and opening hours
+ * Creates a new location with the specified reservation system, opening hours, and optional reservation_start_limit
  */
 export async function createLocation(
   reservationSystem: "disabled" | "single" | "multiple",
-  openingHours: OpeningHours = DEFAULT_OPENING_HOURS
+  openingHours: OpeningHours = DEFAULT_OPENING_HOURS,
+  reservationStartLimit?: number
 ) {
   const pb = await pocketbase();
   try {
@@ -61,6 +62,7 @@ export async function createLocation(
       reservation_system: reservationSystem,
       opening_hours: openingHours,
       max_reservation_days: 14,
+      reservation_start_limit: reservationStartLimit,
     });
     return location as Location;
   } catch (err) {

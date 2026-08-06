@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { ClientResponseError } from "pocketbase";
-import { createLocation } from "../lib/location";
+import { createLocation, DEFAULT_OPENING_HOURS } from "../lib/location";
 import { createProduct } from "../lib/product";
 import { createReservation } from "../lib/reservation";
 import { createUser, DEFAULT_PASSWORD } from "../lib/user";
@@ -171,5 +171,88 @@ test.describe("reservation system", () => {
       end: getFutureDate(4),
     });
     expect(secondReservation).toBeDefined();
+  });
+
+  test.describe("reservation_start_limit", () => {
+    test("allows reservations when reservation_start_limit is 0", async () => {
+      // Create location with reservation_start_limit = 0
+      const location = await createLocation("multiple", DEFAULT_OPENING_HOURS, 0);
+      // Create product in that location
+      const product = await createProduct(location);
+      // Create user
+      const user = await createUser();
+      const userPb = await pocketbase(user.email, DEFAULT_PASSWORD, false);
+
+      // Create reservation far in the future (100 days)
+      const reservation = await createReservation(userPb, {
+        user: user.id,
+        product: product.id,
+        location: location.id,
+        start: getFutureDate(100),
+        end: getFutureDate(101),
+      });
+      expect(reservation).toBeDefined();
+    });
+
+    test("allows reservations within reservation_start_limit", async () => {
+      // Create location with reservation_start_limit = 14
+      const location = await createLocation("multiple", DEFAULT_OPENING_HOURS, 14);
+      // Create product in that location
+      const product = await createProduct(location);
+      // Create user
+      const user = await createUser();
+      const userPb = await pocketbase(user.email, DEFAULT_PASSWORD, false);
+
+      // Create reservation within limit (10 days)
+      const reservation = await createReservation(userPb, {
+        user: user.id,
+        product: product.id,
+        location: location.id,
+        start: getFutureDate(10),
+        end: getFutureDate(11),
+      });
+      expect(reservation).toBeDefined();
+    });
+
+    test("blocks reservations beyond reservation_start_limit for regular users", async () => {
+      // Create location with reservation_start_limit = 14
+      const location = await createLocation("multiple", DEFAULT_OPENING_HOURS, 14);
+      // Create product in that location
+      const product = await createProduct(location);
+      // Create user
+      const user = await createUser();
+      const userPb = await pocketbase(user.email, DEFAULT_PASSWORD, false);
+
+      // Try to create reservation beyond limit (20 days)
+      await expect(
+        createReservation(userPb, {
+          user: user.id,
+          product: product.id,
+          location: location.id,
+          start: getFutureDate(20),
+          end: getFutureDate(21),
+        })
+      ).rejects.toThrow(ClientResponseError);
+    });
+
+    test("allows reservations beyond reservation_start_limit for admin users", async () => {
+      const adminPb = await pocketbase();
+      // Create location with reservation_start_limit = 14
+      const location = await createLocation("multiple", DEFAULT_OPENING_HOURS, 14);
+      // Create product in that location
+      const product = await createProduct(location);
+      // Create manager
+      const manager = await createUser(undefined, undefined, 'manager', [location.id]);
+
+      // Admin creates reservation beyond limit (20 days)
+      const reservation = await createReservation(adminPb, {
+        user: manager.id,
+        product: product.id,
+        location: location.id,
+        start: getFutureDate(20),
+        end: getFutureDate(21),
+      });
+      expect(reservation).toBeDefined();
+    });
   });
 });
