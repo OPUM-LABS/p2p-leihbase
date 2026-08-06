@@ -9,6 +9,7 @@
         :value="model ? formatDate(model, 'DD.MM.YYYY', locale) : ''"
         class="lb-input"
         :data-testid="dataTestid"
+        :aria-describedby="description ? `${id}-description` : undefined"
         @click="handleInputFocus"
       />
       <template #popup>
@@ -28,6 +29,9 @@
         </ClientOnly>
       </template>
     </Popup>
+    <p v-if="description" :id="`${id}-description`" class="description">
+      <small>{{ description }}</small>
+    </p>
   </div>
 </template>
 
@@ -50,6 +54,7 @@ const props = withDefaults(
     isDateDisallowed?: Function;
     showOutsideDays?: boolean;
     dataTestid?: string;
+    description?: string;
   }>(),
   { showOutsideDays: true }
 );
@@ -89,6 +94,13 @@ label {
   display: block;
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--spacing-2);
+}
+.description {
+  color: var(--input-description-color, #666);
+  margin: 0;
+}
+p {
+  margin: 0;
 }
 calendar-date::part(previous),
 calendar-date::part(next) {
