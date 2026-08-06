@@ -27,6 +27,7 @@
           v-model="start"
           :is-date-disallowed="isStartDateDisallowed"
           :show-outside-days="false"
+          :description="startDateDescription"
           data-testid="start-input"
           required
         />
@@ -35,6 +36,7 @@
           v-model="end"
           :is-date-disallowed="isEndDateDisallowed"
           :show-outside-days="false"
+          :description="endDateDescription"
           data-testid="end-input"
           required
         />
@@ -100,6 +102,20 @@ const closedDates = computed(() =>
     getStartOfDate(new Date(d))
   )
 );
+
+const startDateDescription = computed(() => {
+  if (!location.value?.reservation_start_limit || location.value.reservation_start_limit <= 0) {
+    return undefined;
+  }
+  return `${location.value.name} ${t('allows_reserving_days_in_future', { days: location.value.reservation_start_limit })}`;
+});
+
+const endDateDescription = computed(() => {
+  if (!location.value?.max_reservation_days || location.value.max_reservation_days <= 0) {
+    return undefined;
+  }
+  return `${location.value.name} ${t('allows_reservations_up_to_days', { days: location.value.max_reservation_days })}`;
+});
 
 function isStartDateDisallowed(date: Date) {
   return isDateDisallowed(date, "start");
@@ -261,6 +277,8 @@ async function onSubmit() {
     "end": "End",
     "message": "Message",
     "reserve_now_button": "Reserve now",
+    "allows_reserving_days_in_future": "allows reserving {days} days in the future.",
+    "allows_reservations_up_to_days": "allows reservations up to {days} days.",
     "errors": {
       "user_not_verified": "Confirm your e-mail address before placing a reservation.",
       "product_has_open_reservation": "This product is currently not available.",
@@ -284,6 +302,8 @@ async function onSubmit() {
     "end": "Ende",
     "message": "Nachricht",
     "reserve_now_button": "Jetzt reservieren",
+    "allows_reserving_days_in_future": "erlaubt Reservierungen bis zu {days} Tage im Voraus.",
+    "allows_reservations_up_to_days": "erlaubt Reservierungen von bis zu {days} Tagen.",
     "errors": {
       "user_not_verified": "Bestätige deine E-Mail-Adresse, bevor du reservierst.",
       "product_has_open_reservation": "Diesen Gegenstand ist derzeit nicht verfügbar.",
