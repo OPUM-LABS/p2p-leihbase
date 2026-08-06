@@ -32,6 +32,7 @@
           data-testid="start-input"
           required
         />
+        <!-- Problem: end date does not refresh on start date change -->
         <DateInput
           :label="t('end')"
           :key="`end-date-${location?.id}`"
@@ -68,6 +69,7 @@
 
 <script setup lang="ts">
 import { isInOpeningHoursDay } from "@@/lib/openingHours";
+import type { OpeningHours } from "@@/lib/openingHours";
 import {
   startOfDate as getStartOfDate,
   getStartOfDay,
@@ -104,60 +106,97 @@ const closedDates = computed(() =>
     getStartOfDate(new Date(d))
   )
 );
+const maxReservationDays = computed(
+  () => location.value?.max_reservation_days || 0
+);
+const reservationStartLimit = computed(
+  () => location.value?.reservation_start_limit || 0
+);
 
 const startDateDescription = computed(() => {
-  if (
-    !location.value?.reservation_start_limit ||
-    location.value.reservation_start_limit <= 0
-  ) {
+  if (reservationStartLimit.value <= 0) {
     return undefined;
   }
-  return `${location.value.name} ${t("allows_reserving_days_in_future", { days: location.value.reservation_start_limit })}`;
+  return `${location.value?.name} ${t("allows_reserving_days_in_future", { days: reservationStartLimit.value })}`;
 });
 
 const endDateDescription = computed(() => {
-  if (
-    !location.value?.max_reservation_days ||
-    location.value.max_reservation_days <= 0
-  ) {
+  if (maxReservationDays.value <= 0) {
     return undefined;
   }
-  return `${location.value.name} ${t("allows_reservations_up_to_days", { days: location.value.max_reservation_days })}`;
+  return `${location.value?.name} ${t("allows_reservations_up_to_days", { days: maxReservationDays.value })}`;
 });
 
-function isStartDateDisallowed(date: Date) {
-  return isDateDisallowed(date, "start");
+function isPastDate(startOfDate: Date, today: Date): boolean {
+  return startOfDate < today;
 }
 
-function isEndDateDisallowed(date: Date) {
-  return isDateDisallowed(date, "end");
+function isClosedDate(startOfDate: Date, closedDatesList: Date[]): boolean {
+  return closedDatesList.some((date) => isSameDate(date, startOfDate));
 }
 
-function isDateDisallowed(date: Date, type: "start" | "end") {
-  const startOfDate = getStartOfDate(date);
-  // Is on an open day according to opening hours
-  const isOpenDay = location.value?.opening_hours
-    ? isInOpeningHoursDay(location.value.opening_hours, date)
-    : true;
-  // Is in the past
-  const isInPast = startOfDate < startOfToday;
-  // Is on a closed date (opening hours exception)
-  const isClosedDate = !!closedDates.value.find((date) =>
-    isSameDate(date, startOfDate)
+function isBeyondStartLimit(
+  startOfDate: Date,
+  limit: number,
+  today: Date
+): boolean {
+  if (limit <= 0) return false;
+  const limitDate = getStartOfDate(
+    new Date(today.getTime() + limit * 24 * 60 * 60 * 1000)
   );
-  // Check if date is beyond reservation_start_limit
-  const reservationStartLimit = location.value?.reservation_start_limit || 0;
-  const isBeyondStartLimit =
-    type === "start" &&
-    reservationStartLimit > 0 &&
-    startOfDate >
-      getStartOfDate(
-        new Date(
-          startOfToday.getTime() + reservationStartLimit * 24 * 60 * 60 * 1000
-        )
-      );
+  return startOfDate > limitDate;
+}
 
-  return !isOpenDay || isInPast || isClosedDate || isBeyondStartLimit;
+function isBeyondMaxDuration(
+  date: Date,
+  startDate: Date | undefined,
+  limit: number
+): boolean {
+  if (limit <= 0 || !startDate) return false;
+  const maxEndDate = getStartOfDate(
+    new Date(getStartOfDate(startDate).getTime() + limit * 24 * 60 * 60 * 1000)
+  );
+  return date > maxEndDate;
+}
+
+function isOpenDay(
+  date: Date,
+  openingHours: OpeningHours | undefined
+): boolean {
+  return openingHours ? isInOpeningHoursDay(openingHours, date) : true;
+}
+
+function isStartDateDisallowed(date: Date): boolean {
+  const startOfDate = getStartOfDate(date);
+  const isOpen = isOpenDay(date, location.value?.opening_hours);
+  const isPast = isPastDate(startOfDate, startOfToday);
+  const isClosed = isClosedDate(startOfDate, closedDates.value);
+  const isBeyondLimit = isBeyondStartLimit(
+    startOfDate,
+    reservationStartLimit.value,
+    startOfToday
+  );
+  return !isOpen || isPast || isClosed || isBeyondLimit;
+}
+
+function isEndDateDisallowed(date: Date): boolean {
+  const startOfDate = getStartOfDate(date);
+  const isOpen = isOpenDay(date, location.value?.opening_hours);
+  const isPast = isPastDate(startOfDate, startOfToday);
+  const isClosed = isClosedDate(startOfDate, closedDates.value);
+  const isBeyondMax = isBeyondMaxDuration(
+    startOfDate,
+    start.value,
+    maxReservationDays.value
+  );
+  console.log(
+    "isBeyondMax",
+    isBeyondMax,
+    startOfDate,
+    start.value,
+    maxReservationDays.value
+  );
+  return !isOpen || isPast || isClosed || isBeyondMax;
 }
 
 async function onSubmit() {
