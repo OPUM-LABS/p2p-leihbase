@@ -24,6 +24,7 @@
         />
         <DateInput
           :label="t('start')"
+          :key="`start-date-${location?.id}`"
           v-model="start"
           :is-date-disallowed="isStartDateDisallowed"
           :show-outside-days="false"
@@ -33,6 +34,7 @@
         />
         <DateInput
           :label="t('end')"
+          :key="`end-date-${location?.id}`"
           v-model="end"
           :is-date-disallowed="isEndDateDisallowed"
           :show-outside-days="false"
@@ -104,17 +106,23 @@ const closedDates = computed(() =>
 );
 
 const startDateDescription = computed(() => {
-  if (!location.value?.reservation_start_limit || location.value.reservation_start_limit <= 0) {
+  if (
+    !location.value?.reservation_start_limit ||
+    location.value.reservation_start_limit <= 0
+  ) {
     return undefined;
   }
-  return `${location.value.name} ${t('allows_reserving_days_in_future', { days: location.value.reservation_start_limit })}`;
+  return `${location.value.name} ${t("allows_reserving_days_in_future", { days: location.value.reservation_start_limit })}`;
 });
 
 const endDateDescription = computed(() => {
-  if (!location.value?.max_reservation_days || location.value.max_reservation_days <= 0) {
+  if (
+    !location.value?.max_reservation_days ||
+    location.value.max_reservation_days <= 0
+  ) {
     return undefined;
   }
-  return `${location.value.name} ${t('allows_reservations_up_to_days', { days: location.value.max_reservation_days })}`;
+  return `${location.value.name} ${t("allows_reservations_up_to_days", { days: location.value.max_reservation_days })}`;
 });
 
 function isStartDateDisallowed(date: Date) {
