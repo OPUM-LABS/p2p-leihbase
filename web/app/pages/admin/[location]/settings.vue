@@ -97,6 +97,20 @@
         class="max-w"
       />
 
+      <Input
+        name="reservation_start_limit"
+        type="number"
+        :label="t('reservation-start-limit.label')"
+        :description="t('reservation-start-limit.description')"
+        :value="location.reservation_start_limit"
+        :error="
+          errors.fields['reservation_start_limit']
+            ? t(errors.fields['reservation_start_limit'])
+            : undefined
+        "
+        class="max-w"
+      />
+
       <Switch
         id="allow-same-day-reservations"
         name="allow_same_day_reservations"
@@ -198,7 +212,11 @@ async function handleSubmit(e: SubmitEvent) {
     },
     "max-reservation-days": {
       "label": "Maximum reservation duration",
-      "description": "Maximum duration of reservation in days"
+      "description": "Maximum duration of reservation in days."
+    },
+    "reservation-start-limit": {
+      "label": "Maximum reservation start days",
+      "description": "Furthest in advance a reservation can begin, in days (0=endless)."
     },
     "allow-same-day-reservations": {
       "label": "Same day reservations",
@@ -228,6 +246,10 @@ async function handleSubmit(e: SubmitEvent) {
     "max-reservation-days": {
       "label": "Maximum reservation duration",
       "description": "Maximum duration of reservation in days."
+    },
+    "reservation-start-limit": {
+      "label": "Maximale Reservierungsstarttage",
+      "description": "Maximale Vorlaufzeit in Tage für den Beginn einer Reservierung (0=unbegrenzt)."
     },
     "allow-same-day-reservations": {
       "label": "Same day reservations",
