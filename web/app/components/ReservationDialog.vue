@@ -25,7 +25,7 @@
         <DateInput
           :label="t('start')"
           v-model="start"
-          :is-date-disallowed="isDateDisallowed"
+          :is-date-disallowed="isStartDateDisallowed"
           :show-outside-days="false"
           data-testid="start-input"
           required
@@ -33,7 +33,7 @@
         <DateInput
           :label="t('end')"
           v-model="end"
-          :is-date-disallowed="isDateDisallowed"
+          :is-date-disallowed="isEndDateDisallowed"
           :show-outside-days="false"
           data-testid="end-input"
           required
@@ -101,7 +101,15 @@ const closedDates = computed(() =>
   )
 );
 
-function isDateDisallowed(date: Date) {
+function isStartDateDisallowed(date: Date) {
+  return isDateDisallowed(date, "start");
+}
+
+function isEndDateDisallowed(date: Date) {
+  return isDateDisallowed(date, "end");
+}
+
+function isDateDisallowed(date: Date, type: "start" | "end") {
   const startOfDate = getStartOfDate(date);
   // Is on an open day according to opening hours
   const isOpenDay = location.value?.opening_hours
@@ -113,7 +121,19 @@ function isDateDisallowed(date: Date) {
   const isClosedDate = !!closedDates.value.find((date) =>
     isSameDate(date, startOfDate)
   );
-  return !isOpenDay || isInPast || isClosedDate;
+  // Check if date is beyond reservation_start_limit
+  const reservationStartLimit = location.value?.reservation_start_limit || 0;
+  const isBeyondStartLimit =
+    type === "start" &&
+    reservationStartLimit > 0 &&
+    startOfDate >
+      getStartOfDate(
+        new Date(
+          startOfToday.getTime() + reservationStartLimit * 24 * 60 * 60 * 1000
+        )
+      );
+
+  return !isOpenDay || isInPast || isClosedDate || isBeyondStartLimit;
 }
 
 async function onSubmit() {
@@ -183,7 +203,18 @@ async function onSubmit() {
           reservationCreationError.value = t("errors.end_before_start");
           break;
         case "Reservation_system_disabled.":
-          reservationCreationError.value = t("errors.reservation_system_disabled");
+          reservationCreationError.value = t(
+            "errors.reservation_system_disabled"
+          );
+          break;
+        case "Reservation_start_too_far_in_future.":
+          reservationCreationError.value = t(
+            "errors.reservation_start_too_far_in_future",
+            {
+              days: location.value.reservation_start_limit,
+              email: location.value.email,
+            }
+          );
           break;
       }
       if (!reservationCreationError.value) {
@@ -241,6 +272,7 @@ async function onSubmit() {
       "start_and_end_equal": "The start and end of the reservation can't be on the same day.",
       "end_before_start": "The end can't be befor the start of the reservation.",
       "reservation_system_disabled": "Reservations are not allowed for this location.",
+      "reservation_start_too_far_in_future": "Reservations can't start more than {days} days in the future. Reach out on {email} to discuss.",
       "general": "Something went wrong while creating the reservation, please try again."
     }
   },
@@ -263,6 +295,7 @@ async function onSubmit() {
       "start_and_end_equal": "Beginn und Ende der Reservierung dürfen nicht am selben Tag liegen.",
       "end_before_start": "Ende kann nicht vor Beginn der Reservierung liegen.",
       "reservation_system_disabled": "Reservierungen sind für diesen Standort nicht erlaubt.",
+      "reservation_start_too_far_in_future": "Reservierungen können nicht mehr als {days} Tage im Voraus beginnen. Kontaktiere uns unter {email}, um dies zu besprechen.",
       "general": "Beim Erstellen deiner Reservierung ist ein Fehler aufgetreten, bitte versuche es erneut."
     }
   }
