@@ -72,6 +72,7 @@ defineEmits<{ input: [] }>();
 }
 .text-search {
   width: auto !important;
+  min-width: 200px;
 }
 .no-photos {
   width: auto;
