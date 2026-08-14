@@ -128,6 +128,13 @@ const endDateDescription = computed(() => {
   return `${location.value?.name} ${t("allows_reservations_up_to_days", { days: maxReservationDays.value })}`;
 });
 
+watch(isOpen, (newValue) => {
+  if (!newValue) {
+    start.value = undefined;
+    end.value = undefined;
+  }
+});
+
 function isPastDate(startOfDate: Date, today: Date) {
   return startOfDate < today;
 }

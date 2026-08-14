@@ -15,7 +15,7 @@
       <template #popup>
         <ClientOnly>
           <calendar-date
-            :key="popoutKey"
+            :key="id + popoutKey + key"
             ref="datepicker"
             :show-outside-days="showOutsideDays"
             :isDateDisallowed="isDateDisallowed"
@@ -58,10 +58,11 @@ const props = withDefaults(
     description?: string;
     popoutKey?: string;
   }>(),
-  { showOutsideDays: true }
+  { showOutsideDays: true, popoutKey: "" }
 );
 
 const id = props.id || useId();
+const key = ref(0);
 const datepicker = ref();
 const showPopup = ref(false);
 
@@ -69,7 +70,10 @@ watch(model, (value) => {
   if (value) {
     datepicker.value.value = toShortISO(value);
   } else {
+    // Reset datepicker value when module value got reset
     datepicker.value.value = "";
+    // Force rerender of cally calendar-date, so that initial month view gets reset
+    key.value++;
   }
 });
 

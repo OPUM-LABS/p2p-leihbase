@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 import { login } from "../lib/login";
 import {
   createProduct,
@@ -10,7 +10,7 @@ import { createUser } from "../lib/user";
 import { waitForClientMount } from "../lib/utils";
 import { pocketbase } from "../services/pocketbase";
 
-async function reserve(page, startIndex, endIndex, navigateToNextMonth = true) {
+async function reserve(page: Page, startIndex: number, endIndex: number, navigateToNextMonth = true) {
   // Click reserve
   await waitForClientMount(page.getByTestId("reserve-button"));
   await page.getByTestId("reserve-button").click();
@@ -130,7 +130,7 @@ test.describe("reservation", () => {
     await login(page);
     await navigateToProductPage(page, product.id);
     await reserve(page, 0, 1);
-    await reserve(page, 2, 3, false);
+    await reserve(page, 2, 3);
     await expect(page.getByTestId("reservation-form-error")).toBeVisible();
   });
 
@@ -143,7 +143,7 @@ test.describe("reservation", () => {
     await reserve(page, 0, 1);
     await expect(page.getByTestId("opening-hours")).toBeHidden();
     await updateLastProductReservation(product.id, { cancelled: true });
-    await reserve(page, 2, 3, false);
+    await reserve(page, 2, 3);
     await expect(page.getByTestId("opening-hours")).toBeHidden();
   });
 
@@ -168,7 +168,7 @@ test.describe("reservation", () => {
         )
       ),
     });
-    await reserve(page, 2, 3, false);
+    await reserve(page, 2, 3);
     await expect(page.getByTestId("opening-hours")).toBeHidden();
   });
 
