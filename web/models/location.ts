@@ -12,4 +12,6 @@ export type Location = RecordModel & {
   opening_hours: OpeningHours;
   links: string;
   max_reservation_days: number;
+  reservation_system: "disabled" | "single" | "multiple";
+  reservation_start_limit: number;
 };

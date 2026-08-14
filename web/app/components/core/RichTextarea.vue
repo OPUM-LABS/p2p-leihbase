@@ -4,7 +4,6 @@
     <div class="textarea">
       <ClientOnly>
         <QuillEditor
-          :id="id"
           ref="editor"
           theme="snow"
           v-model:content="model"
@@ -17,34 +16,50 @@
         />
       </ClientOnly>
     </div>
+    <p v-if="error" :id="`${id}-error`" class="error">
+      <small>{{ error }}</small>
+    </p>
+    <textarea :name="name" class="hidden" v-model="model"></textarea>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { QuillEditor } from "@vueup/vue-quill";
 import FormLabel from "./FormLabel.vue";
-
-let QuillEditor;
-if (process.client) {
-  ({ QuillEditor } = await import("@vueup/vue-quill"));
-  await import("@vueup/vue-quill/dist/vue-quill.snow.css");
-}
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
 const editor = ref();
-const model = defineModel();
+const model = defineModel<string>();
 const props = defineProps<{
   id?: string;
   label?: string;
   name?: string;
+  value?: string;
   placeholder?: string;
+  error?: string;
   required?: boolean;
   disabled?: boolean;
   readonly?: boolean;
   dataTestid?: string;
 }>();
 
+if (props.value) {
+  model.value = props.value;
+}
+
 watch(model, (newValue) => {
+  // Make sure editor is empty when model has no value
   if (!newValue) {
     editor.value.setHTML("");
+    return;
+  }
+
+  // Reset model value to empty string when editor has empty-html structure
+  // ex. `<div><p></p></div>`
+  const el = document.createElement("div");
+  el.innerHTML = newValue;
+  if (!el.innerText) {
+    model.value = "";
   }
 });
 </script>

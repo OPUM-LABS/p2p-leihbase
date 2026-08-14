@@ -87,7 +87,6 @@ const props = defineProps({
 });
 
 const { pb } = usePocketbase();
-const router = useRouter();
 const route = useRoute();
 
 const categoryId = ref(route.query.category);
@@ -129,10 +128,13 @@ const { data: productsData, refresh: refreshProducts } = await useAsyncData(
   "products",
   () =>
     pb
-      .collection("public_products")
+      .collection("products")
       .getList(parseInt((page.value as string) ?? "0"), 24, {
         filter: getFilter(),
         sort: "name",
+        query: {
+          computeAvailability: true,
+        },
       })
 );
 
@@ -152,7 +154,7 @@ function onSearchBlur() {
 }
 
 function getFilter() {
-  const filter = [];
+  const filter = ["active = true"];
   const args = {};
   if (props.location && props.location.id) {
     filter.push("location = {:location}");

@@ -9,11 +9,13 @@
         :value="model ? formatDate(model, 'DD.MM.YYYY', locale) : ''"
         class="lb-input"
         :data-testid="dataTestid"
+        :aria-describedby="description ? `${id}-description` : undefined"
         @click="handleInputFocus"
       />
       <template #popup>
         <ClientOnly>
           <calendar-date
+            :key="id + popoutKey + key"
             ref="datepicker"
             :show-outside-days="showOutsideDays"
             :isDateDisallowed="isDateDisallowed"
@@ -28,6 +30,9 @@
         </ClientOnly>
       </template>
     </Popup>
+    <p v-if="description" :id="`${id}-description`" class="description">
+      <small>{{ description }}</small>
+    </p>
   </div>
 </template>
 
@@ -50,11 +55,14 @@ const props = withDefaults(
     isDateDisallowed?: Function;
     showOutsideDays?: boolean;
     dataTestid?: string;
+    description?: string;
+    popoutKey?: string;
   }>(),
-  { showOutsideDays: true }
+  { showOutsideDays: true, popoutKey: "" }
 );
 
 const id = props.id || useId();
+const key = ref(0);
 const datepicker = ref();
 const showPopup = ref(false);
 
@@ -62,7 +70,10 @@ watch(model, (value) => {
   if (value) {
     datepicker.value.value = toShortISO(value);
   } else {
+    // Reset datepicker value when module value got reset
     datepicker.value.value = "";
+    // Force rerender of cally calendar-date, so that initial month view gets reset
+    key.value++;
   }
 });
 
@@ -89,6 +100,13 @@ label {
   display: block;
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--spacing-2);
+}
+.description {
+  color: var(--input-description-color, #666);
+  margin: 0;
+}
+p {
+  margin: 0;
 }
 calendar-date::part(previous),
 calendar-date::part(next) {

@@ -22,14 +22,11 @@
     </ProductImage>
     <div class="content">
       <sl-tooltip
-        v-if="!!product.ongoingReservation"
+        v-if="product.computedIsAvailable === false"
         content="Gerade nicht verfügbar"
         distance="0"
       >
-        <AvailabilityCircle
-          class="availability-circle"
-          :available="!product.ongoingReservation"
-        />
+        <AvailabilityCircle class="availability-circle" :available="false" />
       </sl-tooltip>
       <slot>
         <p class="name">

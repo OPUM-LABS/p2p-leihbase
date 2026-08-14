@@ -6,4 +6,5 @@ export type Product = RecordModel & {
   location: string;
   name: string;
   images: string[];
+  computedIsAvailable?: boolean;
 };

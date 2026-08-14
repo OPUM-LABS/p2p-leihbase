@@ -11,9 +11,18 @@
       :data-testid="dataTestid"
       v-model="model"
       rows="3"
+      :aria-invalid="!!error"
+      :aria-describedby="
+        [error ? `${id}-error` : null, description ? `${id}-description` : null]
+          .filter((v) => !!v)
+          .join(' ')
+      "
       class="lb-input"
     ></textarea>
-    <p v-if="description" :id="`${id}-description`">
+    <p v-if="error" :id="`${id}-error`" class="error">
+      <small>{{ error }}</small>
+    </p>
+    <p v-if="description" :id="`${id}-description`" class="descrption">
       <small>{{ description }}</small>
     </p>
   </div>
@@ -27,13 +36,19 @@ const props = defineProps<{
   id?: string;
   label?: string;
   name?: string;
+  value?: string;
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
   readonly?: boolean;
+  error?: string;
   description?: string;
   dataTestid?: string;
 }>();
+if (props.value) {
+  model.value = props.value;
+}
+const id = props.id || useId();
 </script>
 
 <style scoped>

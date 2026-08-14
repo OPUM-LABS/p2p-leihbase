@@ -18,7 +18,7 @@ defineOptions({
 });
 defineProps<{
   label: string;
-  hideLabel: boolean;
+  hideLabel?: boolean;
 }>();
 const id = useId();
 const model = defineModel();

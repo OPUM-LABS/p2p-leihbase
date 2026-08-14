@@ -24,17 +24,22 @@
         />
         <DateInput
           :label="t('start')"
+          :key="`start-date-${location?.id}`"
           v-model="start"
-          :is-date-disallowed="isDateDisallowed"
+          :is-date-disallowed="isStartDateDisallowed"
           :show-outside-days="false"
+          :description="startDateDescription"
           data-testid="start-input"
           required
         />
         <DateInput
           :label="t('end')"
+          :key="`end-date-${location?.id}`"
+          :popout-key="`end-date-popout-${start?.getTime()}`"
           v-model="end"
-          :is-date-disallowed="isDateDisallowed"
+          :is-date-disallowed="isEndDateDisallowed"
           :show-outside-days="false"
+          :description="endDateDescription"
           data-testid="end-input"
           required
         />
@@ -64,7 +69,9 @@
 
 <script setup lang="ts">
 import { isInOpeningHoursDay } from "@@/lib/openingHours";
+import type { OpeningHours } from "@@/lib/openingHours";
 import {
+  addDays,
   startOfDate as getStartOfDate,
   getStartOfDay,
   isSameDate,
@@ -100,20 +107,88 @@ const closedDates = computed(() =>
     getStartOfDate(new Date(d))
   )
 );
+const maxReservationDays = computed(
+  () => location.value?.max_reservation_days || 0
+);
+const reservationStartLimit = computed(
+  () => location.value?.reservation_start_limit || 0
+);
 
-function isDateDisallowed(date: Date) {
+const startDateDescription = computed(() => {
+  if (reservationStartLimit.value <= 0) {
+    return undefined;
+  }
+  return `${location.value?.name} ${t("allows_reserving_days_in_future", { days: reservationStartLimit.value })}`;
+});
+
+const endDateDescription = computed(() => {
+  if (maxReservationDays.value <= 0) {
+    return undefined;
+  }
+  return `${location.value?.name} ${t("allows_reservations_up_to_days", { days: maxReservationDays.value })}`;
+});
+
+watch(isOpen, (newValue) => {
+  if (!newValue) {
+    start.value = undefined;
+    end.value = undefined;
+  }
+});
+
+function isPastDate(startOfDate: Date, today: Date) {
+  return startOfDate < today;
+}
+
+function isClosedDate(startOfDate: Date, closedDatesList: Date[]) {
+  return closedDatesList.some((date) => isSameDate(date, startOfDate));
+}
+
+function isBeyondStartLimit(startOfDate: Date, limit: number, today: Date) {
+  if (limit <= 0) return false;
+  const limitDate = addDays(today, limit);
+  return startOfDate > limitDate;
+}
+
+function isBeyondMaxDuration(
+  date: Date,
+  startDate: Date | undefined,
+  limit: number
+) {
+  if (limit <= 0 || !startDate) return false;
+  const maxEndDate = addDays(getStartOfDate(startDate), limit);
+  return date > maxEndDate;
+}
+
+function isOpenDay(date: Date, openingHours: OpeningHours | undefined) {
+  return openingHours ? isInOpeningHoursDay(openingHours, date) : true;
+}
+
+function isStartDateDisallowed(date: Date): boolean {
   const startOfDate = getStartOfDate(date);
-  // Is on an open day according to opening hours
-  const isOpenDay = location.value?.opening_hours
-    ? isInOpeningHoursDay(location.value.opening_hours, date)
-    : true;
-  // Is in the past
-  const isInPast = startOfDate < startOfToday;
-  // Is on a closed date (opening hours exception)
-  const isClosedDate = !!closedDates.value.find((date) =>
-    isSameDate(date, startOfDate)
+  const isOpen = isOpenDay(date, location.value?.opening_hours);
+  const isPast = isPastDate(startOfDate, startOfToday);
+  const isClosed = isClosedDate(startOfDate, closedDates.value);
+  const isBeyondLimit = isBeyondStartLimit(
+    startOfDate,
+    reservationStartLimit.value,
+    startOfToday
   );
-  return !isOpenDay || isInPast || isClosedDate;
+  return !isOpen || isPast || isClosed || isBeyondLimit;
+}
+
+function isEndDateDisallowed(date: Date): boolean {
+  const startOfDate = getStartOfDate(date);
+  const isBeforeStart =
+    start.value && startOfDate <= getStartOfDate(start.value);
+  const isOpen = isOpenDay(date, location.value?.opening_hours);
+  const isPast = isPastDate(startOfDate, startOfToday);
+  const isClosed = isClosedDate(startOfDate, closedDates.value);
+  const isBeyondMax = isBeyondMaxDuration(
+    startOfDate,
+    start.value,
+    maxReservationDays.value
+  );
+  return !isOpen || isPast || isBeforeStart || isClosed || isBeyondMax;
 }
 
 async function onSubmit() {
@@ -145,10 +220,21 @@ async function onSubmit() {
         case "User_not_verified.":
           reservationCreationError.value = t("errors.user_not_verified");
           break;
-        case "Has_open_reservation.":
-          reservationCreationError.value = t("errors.has_open_reservation", {
-            email: location.value.email,
-          });
+        case "Product_has_open_reservation.":
+          reservationCreationError.value = t(
+            "errors.product_has_open_reservation",
+            {
+              email: location.value.email,
+            }
+          );
+          break;
+        case "User_has_open_reservation.":
+          reservationCreationError.value = t(
+            "errors.user_has_open_reservation",
+            {
+              email: location.value.email,
+            }
+          );
           break;
         case "Date_range_too_long.":
           reservationCreationError.value = t("errors.date_range_too_long", {
@@ -170,6 +256,20 @@ async function onSubmit() {
           break;
         case "End_before_start.":
           reservationCreationError.value = t("errors.end_before_start");
+          break;
+        case "Reservation_system_disabled.":
+          reservationCreationError.value = t(
+            "errors.reservation_system_disabled"
+          );
+          break;
+        case "Reservation_start_too_far_in_future.":
+          reservationCreationError.value = t(
+            "errors.reservation_start_too_far_in_future",
+            {
+              days: location.value.reservation_start_limit,
+              email: location.value.email,
+            }
+          );
           break;
       }
       if (!reservationCreationError.value) {
@@ -216,15 +316,20 @@ async function onSubmit() {
     "end": "End",
     "message": "Message",
     "reserve_now_button": "Reserve now",
+    "allows_reserving_days_in_future": "allows reserving {days} days in the future.",
+    "allows_reservations_up_to_days": "allows reservations up to {days} days.",
     "errors": {
       "user_not_verified": "Confirm your e-mail address before placing a reservation.",
-      "has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
+      "product_has_open_reservation": "This product is currently not available.",
+      "user_has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
       "date_range_too_long": "Products can't be reserved for longer than {days} days. Reach out on {email} to discuss a longer period.",
       "overlapping_reservation": "The product is already reserved for this period.",
       "start_before_today": "The start of the reservation is before today.",
       "end_before_today": "The end of the reservation is before today.",
       "start_and_end_equal": "The start and end of the reservation can't be on the same day.",
       "end_before_start": "The end can't be befor the start of the reservation.",
+      "reservation_system_disabled": "Reservations are not allowed for this location.",
+      "reservation_start_too_far_in_future": "Reservations can't start more than {days} days in the future. Reach out on {email} to discuss.",
       "general": "Something went wrong while creating the reservation, please try again."
     }
   },
@@ -236,15 +341,20 @@ async function onSubmit() {
     "end": "Ende",
     "message": "Nachricht",
     "reserve_now_button": "Jetzt reservieren",
+    "allows_reserving_days_in_future": "erlaubt Reservierungen bis zu {days} Tage im Voraus.",
+    "allows_reservations_up_to_days": "erlaubt Reservierungen von bis zu {days} Tagen.",
     "errors": {
       "user_not_verified": "Bestätige deine E-Mail-Adresse, bevor du reservierst.",
-      "has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
+      "product_has_open_reservation": "Diesen Gegenstand ist derzeit nicht verfügbar.",
+      "user_has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
       "date_range_too_long": "Produkte können nicht länger als {days} Tage reserviert werden. Kontaktiere uns unter {email}, um einen längeren Zeitraum zu besprechen.",
       "overlapping_reservation": "Das Produkt ist für diesen Termin bereits reserviert.",
       "start_before_today": "Der Beginn der Reservierung liegt vor dem heutigen Tag.",
       "end_before_today": "Das Enddatum der Reservierung liegt vor dem heutigen Tag.",
       "start_and_end_equal": "Beginn und Ende der Reservierung dürfen nicht am selben Tag liegen.",
       "end_before_start": "Ende kann nicht vor Beginn der Reservierung liegen.",
+      "reservation_system_disabled": "Reservierungen sind für diesen Standort nicht erlaubt.",
+      "reservation_start_too_far_in_future": "Reservierungen können nicht mehr als {days} Tage im Voraus beginnen. Kontaktiere uns unter {email}, um dies zu besprechen.",
       "general": "Beim Erstellen deiner Reservierung ist ein Fehler aufgetreten, bitte versuche es erneut."
     }
   }

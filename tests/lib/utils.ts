@@ -10,3 +10,32 @@ export async function waitForHydration(page: Page) {
 export async function waitForClientMount(element: Locator) {
   await expect(element).toHaveAttribute("data-client-mounted", "true");
 }
+
+/**
+ * Returns a date N days in the future (midnight UTC)
+ */
+export function getFutureDate(days: number): Date {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  date.setUTCHours(0, 0, 0, 0);
+  return date;
+}
+
+/**
+ * Returns a date N days in the past (midnight UTC)
+ */
+export function getPastDate(days: number): Date {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  date.setUTCHours(0, 0, 0, 0);
+  return date;
+}
+
+/**
+ * Returns today at midnight UTC
+ */
+export function getToday(): Date {
+  const date = new Date();
+  date.setUTCHours(0, 0, 0, 0);
+  return date;
+}

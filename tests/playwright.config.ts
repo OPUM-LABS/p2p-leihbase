@@ -22,13 +22,12 @@ await selectors.register("shadow", createShadowRootEngine);
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig<ConfigOptions>({
-  testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: 1,
+  retries: 0,
   /* Opt out of parallel tests on CI. */
   workers: Number(process.env.PLAYWRIGHT_WORKERS) || undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -39,22 +38,30 @@ export default defineConfig<ConfigOptions>({
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "http://127.0.0.1:3001",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: "setup",
+      testDir: "./setup",
       testMatch: /global\.setup\.ts/,
     },
     {
+      name: "API Tests",
+      testDir: "./api",
+      dependencies: ["setup"],
+    },
+    {
       name: "Desktop Chrome",
+      testDir: "./browser",
       use: devices["Desktop Chrome"],
       dependencies: ["setup"],
     },
     {
       name: "Mobile Chrome",
+      testDir: "./browser",
       use: devices["Pixel 5"],
       dependencies: ["setup"],
     },
@@ -65,6 +72,7 @@ export default defineConfig<ConfigOptions>({
     command: "mise run //...:start:test",
     url: "http://127.0.0.1:3000/favicon.ico",
     reuseExistingServer: false,
-    // stdout: "pipe",
+    stdout: "pipe",
+    stderr: "pipe",
   },
 });

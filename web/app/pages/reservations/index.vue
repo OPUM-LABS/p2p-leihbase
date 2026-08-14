@@ -93,7 +93,7 @@ const { data, refresh, status } = await useAsyncData<{
       sort: "-start",
       requestKey: "user_reservations",
     });
-    const products = await pb.collection("public_products").getFullList({
+    const products = await pb.collection("products").getFullList({
       filter: reservations.map((r) => `id="${r.product}"`).join("||"),
       requestKey: "reservations_product",
     });

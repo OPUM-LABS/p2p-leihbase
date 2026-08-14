@@ -77,3 +77,8 @@ export function subtractDays(date: Date, days: number) {
   var d = new Date(date);
   return new Date(d.setDate(d.getDate() - days));
 }
+
+export function addDays(date: Date, days: number) {
+  var d = new Date(date);
+  return new Date(d.setDate(d.getDate() + days));
+}

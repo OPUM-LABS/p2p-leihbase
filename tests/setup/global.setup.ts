@@ -22,6 +22,17 @@ setup.describe("setup", () => {
     try {
       await pb.collection("leihbase").create({
         name: "Leihbase",
+        privacy_policy_link: "https://example.com",
+        footer_links: [
+          {
+            text: "Imprint",
+            link: "https://example.com",
+          },
+          {
+            text: "Privacy Policy",
+            link: "https://example.com",
+          },
+        ],
       });
     } catch (err) {
       console.log("Error creating leihbase record", err.response.data);
@@ -36,19 +47,22 @@ setup.describe("setup", () => {
         address: "Example Street 1, Example City",
         email: "location@example.com",
         slug: "test-store",
+        reservation_system: "multiple",
         opening_hours: {
-          tuesday: [
-            {
-              from: "18:00",
-              to: "19:00",
-            },
-          ],
-          friday: [
-            {
-              from: "17:00",
-              to: "19:00",
-            },
-          ],
+          days: {
+            tuesday: [
+              {
+                from: "18:00",
+                to: "19:00",
+              },
+            ],
+            friday: [
+              {
+                from: "17:00",
+                to: "19:00",
+              },
+            ],
+          },
         },
       });
     } catch (err) {
@@ -56,7 +70,7 @@ setup.describe("setup", () => {
     }
 
     // Create test user
-    createUser();
+    createUser("test@example.com", "testtest");
   });
 
   // Wait for homepage to load with extra long timeout

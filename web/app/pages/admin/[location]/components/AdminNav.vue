@@ -9,6 +9,13 @@
     <Button variant="secondary" :to="`/admin/${location?.slug}/stats`">
       {{ t("statistics") }}
     </Button>
+    <Button
+      :disabled="!userStore.isAdmin"
+      variant="secondary"
+      :to="`/admin/${location?.slug}/settings`"
+    >
+      {{ t("settings") }}
+    </Button>
   </HorizontalScroll>
 </template>
 
@@ -16,6 +23,8 @@
 import Button from "@/components/core/Button.vue";
 import HorizontalScroll from "@/components/core/HorizontalScroll.vue";
 import type { RecordModel } from "pocketbase";
+
+const userStore = useUserStore();
 
 const { t } = useI18n({
   useScope: "local",
@@ -37,12 +46,14 @@ defineProps<{ location: RecordModel }>();
   "en": {
     "reservations": "Reservations",
     "products": "Products",
-    "statistics": "Statistics"
+    "statistics": "Statistics",
+    "settings": "Settings"
   },
   "de": {
     "reservations": "Reservierungen",
     "products": "Gegenständen",
-    "statistics": "Statistieken"
+    "statistics": "Statistieken",
+    "settings": "Einstellungen"
   }
 }
 </i18n>

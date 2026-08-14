@@ -195,11 +195,3 @@ configured:
   }
 }
 ```
-
-#### Config field
-
-In the config JSON field of a location are the following configurations
-available:
-
-`config.allow_same_day_reservations` - Allows a reservation to start on the same
-day as that another reservation ends

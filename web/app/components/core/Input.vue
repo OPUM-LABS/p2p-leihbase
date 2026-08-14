@@ -25,6 +25,7 @@
             .filter((v) => !!v)
             .join(' ')
         "
+        :autocomplete="autocomplete"
         v-model="model"
         :class="{ 'lb-input': true, 'has-prefix': !!$slots.prefix }"
         @blur="$emit('blur')"
@@ -56,6 +57,7 @@ const props = defineProps<{
   type?: string;
   description?: string;
   error?: string;
+  autocomplete?: string;
   dataTestid?: string;
 }>();
 if (props.value) {
