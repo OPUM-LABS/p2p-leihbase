@@ -244,16 +244,16 @@ async function handleSubmit(e: SubmitEvent) {
       "text": "Mehrere Reservierungen pro Produkt für verschiedene Zeiträume. Das Produkt ist während aktiver Reservierungen oder wenn vor der nächsten Reservierung keine neue mehr möglich ist, nicht verfügbar."
     },
     "max-reservation-days": {
-      "label": "Maximum reservation duration",
-      "description": "Maximum duration of reservation in days."
+      "label": "Maximale Reservierungsdauer",
+      "description": "Maximale Dauer der Reservierung in Tagen."
     },
     "reservation-start-limit": {
       "label": "Maximale Reservierungsstarttage",
       "description": "Maximale Vorlaufzeit in Tage für den Beginn einer Reservierung (0=unbegrenzt)."
     },
     "allow-same-day-reservations": {
-      "label": "Same day reservations",
-      "description": "Allow a new reservation to start on the same day as the previous reservation ends."
+      "label": "Reservierungen am selben Tag",
+      "description": "Ermöglicht den Beginn einer neuen Reservierung am selben Tag, an dem die vorherige Reservierung endet."
     },
     "success": "Einstellungen erfolgreich gespeichert.",
     "save": "Speichern"
