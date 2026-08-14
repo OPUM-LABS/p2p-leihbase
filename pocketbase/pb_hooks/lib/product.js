@@ -13,7 +13,9 @@ function hasActiveReservation(productId, excludeReservation, includeUnreturned =
     "reservations",
     [
       excludeReservation && excludeReservation.get("id") ? "id != {:id}" : "",
-      `product = {:product} && ${endedFilter} && cancelled != true`,
+      "product = {:product}",
+      endedFilter,
+      "cancelled != true",
     ]
       .filter((v) => !!v)
       .join(" && "),
