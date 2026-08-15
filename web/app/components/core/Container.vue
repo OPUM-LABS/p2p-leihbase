@@ -24,13 +24,13 @@ const props = defineProps<{
 
 <style scoped>
 section:not(.no-padding) {
-  padding: var(--fluid-spacing-8);
+  padding: var(--fluid-spacing-6);
 }
 section.padding-y {
-  padding: var(--fluid-spacing-8) 0;
+  padding: var(--fluid-spacing-6) 0;
 }
 section.padding-x {
-  padding: 0 var(--fluid-spacing-8);
+  padding: 0 var(--fluid-spacing-6);
 }
 section.width-xl {
   max-width: 1400px;

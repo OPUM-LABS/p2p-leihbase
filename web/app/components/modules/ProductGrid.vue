@@ -197,10 +197,11 @@ function getUrl(overwrites) {
 @use "@/assets/styles/_breakpoints.scss";
 
 header {
-  margin-bottom: var(--fluid-spacing-4);
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   align-items: center;
+  margin-bottom: var(--fluid-spacing-4);
+  gap: var(--fluid-spacing-4);
   @media screen and (min-width: breakpoints.$breakpoint-sm) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
