@@ -7,8 +7,6 @@ onRecordCreateRequest((e) => {
   );
   /** @type {typeof import('./lib/user')} */
   const { hasActiveReservationForProduct } = require(`${__hooks}/lib/user`);
-  /** @type {typeof import('./lib/product')} */
-  const { hasActiveReservation } = require(`${__hooks}/lib/product`);
 
   const { record } = e;
   if (!record) {
@@ -19,118 +17,50 @@ onRecordCreateRequest((e) => {
   const end = new Date(record.get("end").string().split(" ")[0]);
   const isSuperuser = e.hasSuperuserAuth();
   const requestUser = e.auth;
-  const requireUser = $os.getenv("CONFIG_RESERVATION_REQUIRE_USER") !== "false";
-
-  // Store location of product in reservation
-  $app.expandRecord(record, ["product"], null);
-  const product = record.expandedOne("product");
-  $app.expandRecord(product, ["location"], null);
-  const location = product.expandedOne("location");
-  const isAdmin = requestUser && requestUser.get("role") === "admin"
-  const isLocationUser =
-    requestUser &&
-    requestUser.get("manager_locations") &&
-    requestUser.get("manager_locations").includes(location.id);
-  record.set("location", product.get("location"));
 
   // Require e-mail verification
-  if (!requestUser?.verified()) {
+  if (!requestUser?.verified() && !isSuperuser) {
     throw new BadRequestError("User_not_verified.");
   }
 
-  // If reservation system is disabled, prevent reservations from regular users
-  if (
-    location.get("reservation_system") === "disabled" &&
-    !isSuperuser &&
-    !isAdmin &&
-    !isLocationUser
-  ) {
-    throw new BadRequestError("Reservation_system_disabled.");
+  // Populate product and owner
+  $app.expandRecord(record, ["product"], null);
+  const product = record.expandedOne("product");
+  if (!product) {
+    throw new BadRequestError("Product_not_found.");
   }
 
-  // If only a single reservation is allowed per product, verify if there is no
-  // other active reservation for this product (including unreturned ones)
-  if (
-    location.get("reservation_system") === "single" &&
-    !record.get("cancelled") &&
-    hasActiveReservation(record.getString("product"), record, true) &&
-    !isSuperuser &&
-    !isAdmin &&
-    !isLocationUser
-  ) {
-    throw new BadRequestError("Product_has_open_reservation.");
+  const ownerId = product.get("user");
+  if (ownerId) {
+    record.set("owner", ownerId);
   }
 
-  // Make sure there is not already an open reservation with the same user
-  // and product
-  if (
-    hasActiveReservationForProduct(
-      record.get("user"),
-      record.get("product"),
-      record
-    ) &&
-    !isSuperuser &&
-    !isAdmin &&
-    !isLocationUser
-  ) {
-    throw new BadRequestError("User_has_open_reservation.");
+  // Prevent user from renting their own product
+  if (requestUser && ownerId && requestUser.id === ownerId && !isSuperuser) {
+    throw new BadRequestError("Cannot_rent_own_product.");
   }
 
-  // Check reservation_start_limit
-  const reservationStartLimit = location.getInt("reservation_start_limit");
-  if (reservationStartLimit > 0) {
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-    const maxStartDate = new Date(today);
-    maxStartDate.setDate(maxStartDate.getDate() + reservationStartLimit);
-
-    if (start > maxStartDate && !isSuperuser && !isAdmin && !isLocationUser) {
-      throw new BadRequestError("Reservation_start_too_far_in_future.");
-    }
+  // Default status to 'requested' if not set
+  if (!record.get("status")) {
+    record.set("status", "requested");
   }
 
-  // Validate reservation start/end
-  validateStartEnd(
-    start,
-    end,
-    location.getInt("max_reservation_days") || 14,
-    isLocationUser || isAdmin || isSuperuser,
-  );
+  // Check max duration limit (default 30 days for P2P)
+  const maxDuration = product.getInt("max_duration_days") || 30;
+  validateStartEnd(start, end, maxDuration, isSuperuser);
 
-  // Make sure the reservation is linked to a user
-  if (requireUser && !record.get("user") && !isSuperuser && !isLocationUser) {
-    throw new BadRequestError("User_not_defined.");
-  }
-
-  // If send_confirmation isn't set yet, make sure to set it to false for admin
-  // or location users, so that no confirmations are send when creating
-  // reservations from the admin section or pocketbase interface
-  if (!record.get("send_confirmation") && (isSuperuser || isLocationUser)) {
-    record.set("send_confirmation", false);
-  }
-
-  // Set default note content
-  if (!record.get("note") && location.get("note_default")) {
-    record.set("note", location.get("note_default"));
-  }
-
-  // Make sure there is no overlapping reservation for the same product in the
-  // same timespan
-  const locationConfig = location.getString("config")
-    ? JSON.parse(location.getString("config")) || {}
-    : {};
-  const allowSameDayReservations =
-    isLocationUser || !!locationConfig["allow_same_day_reservations"];
-  if (hasOverlappingReservations(record, allowSameDayReservations)) {
+  // Check overlapping active reservations
+  if (hasOverlappingReservations(record, true)) {
     throw new BadRequestError("Overlapping_reservation.");
   }
 
-  // Strip html out of message field
-  // https://stackoverflow.com/a/51208595
-  record.set(
-    "message",
-    record.get("message").replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "")
-  );
+  // Strip html from message field
+  if (record.get("message")) {
+    record.set(
+      "message",
+      record.get("message").replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "")
+    );
+  }
 
   e.next();
 }, "reservations");
@@ -140,8 +70,6 @@ onRecordUpdateRequest((e) => {
   const { validateStartEnd, hasOverlappingReservations } = require(
     `${__hooks}/lib/reservation`
   );
-  /** @type {typeof import('./lib/user')} */
-  const { hasActiveReservationForProduct } = require(`${__hooks}/lib/user`);
 
   const { record } = e;
   if (!record) {
@@ -150,221 +78,61 @@ onRecordUpdateRequest((e) => {
 
   const requestUser = e.auth;
   const isSuperuser = e.hasSuperuserAuth();
-  const start = new Date(record.get("start").string().split(" ")[0]);
-  const end = new Date(record.get("end").string().split(" ")[0]);
-  $app.expandRecord(record, ["location"], null);
-  const location = record.expandedOne("location");
-  const isAdmin = requestUser && requestUser.get("role") === "admin";
-  const isLocationUser =
-    requestUser &&
-    requestUser.get("manager_locations") &&
-    requestUser.get("manager_locations").includes(location.id);
-
-  // Make sure there is not already an open reservation with the same user
-  // and product
-  if (
-    hasActiveReservationForProduct(
-      record.get("user"),
-      record.get("product"),
-      record
-    ) &&
-    !isSuperuser &&
-    !isAdmin &&
-    !isLocationUser
-  ) {
-    throw new BadRequestError("User_has_open_reservation.");
-  }
-
-  // Check reservation_start_limit
-  const reservationStartLimit = location.getInt("reservation_start_limit");
-  if (reservationStartLimit > 0) {
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-    const maxStartDate = new Date(today);
-    maxStartDate.setDate(maxStartDate.getDate() + reservationStartLimit);
-
-    if (start > maxStartDate && !isSuperuser && !isAdmin && !isLocationUser) {
-      throw new BadRequestError("Reservation_start_too_far_in_future.");
-    }
-  }
-
-  // Validate reservation start/end
-  validateStartEnd(
-    start,
-    end,
-    location.getInt("max_reservation_days") || 14,
-    isLocationUser || isAdmin || isSuperuser
-  );
-
-  // Make sure there is no overlapping reservation for the same product in the
-  // same timespan
-  const locationConfig = location.getString("config")
-    ? JSON.parse(location.getString("config")) || {}
-    : {};
-  const allowSameDayReservations =
-    isSuperuser || isLocationUser || !!locationConfig.allow_same_day_reservations;
-  if (hasOverlappingReservations(record, allowSameDayReservations)) {
-    throw new BadRequestError("Overlapping_reservation.");
-  }
-
-  e.next();
-}, "reservations");
-
-onRecordCreateRequest((e) => {
-  e.next();
-
-  const locale = $os.getenv("CONFIG_LOCALE") || "en";
-
-  /** @type {typeof import('./lib/reservation')} */
-  const { saveSentEmail } = require(`${__hooks}/lib/reservation`);
-  /** @type {typeof import('./lib/email')} */
-  const { sendLocationNotificationEmail, sendUserEmail } = require(
-    `${__hooks}/lib/email`
-  );
-  /** @type {typeof import('./lib/emails.en')} */
-  const {
-    reservationConfirmationEmail,
-    reservationConfirmationLocationEmail,
-  } = require(`${__hooks}/lib/emails.${locale}`);
-
-  const { record } = e;
-
-  const requestUser = e.auth;
-  $app.expandRecord(record, ["location"], null);
-  const location = record.expandedOne("location");
-
-  if (!record.get("send_confirmation")) {
-    // Prevent sending notifications if the reservation has been marked to not
-    // send those
-    return;
-  }
-
-  // TODO: only send notification when the user creating the reservation, is
-  // also the user involved in the reservation
-  // https://pocketbase.io/docs/js-routing/#retrieving-the-current-auth-state
-
-  $app.expandRecord(record, ["product", "user"], null);
-
-  const product = record.expandedOne("product");
-  const productName = product.get("name");
-
-  const user = record.expandedOne("user");
-
-  if (!user) {
-    // Don't send a confirmation if no user is defined
-    return;
-  }
-
-  const userName = user.get("name");
-
-  const start = new Date(record.get("start").string().split(" ")[0]);
-  const end = new Date(record.get("end").string().split(" ")[0]);
-
-  // Notify location
-  sendLocationNotificationEmail(
-    location,
-    reservationConfirmationLocationEmail({
-      productUrl: `${$app.settings().meta.appURL}/link/product/${product.get(
-        "id"
-      )}`,
-      productName,
-      userName,
-      userEmail: user.get("email"),
-      start,
-      end,
-      message: record.get("message"),
-    })
-  );
-
-  // Notify user, if the user is the one making the reservation
-  if (user && requestUser && requestUser.get("id") === user.get("id")) {
-    sendUserEmail(
-      user,
-      reservationConfirmationEmail({
-        productUrl: `${$app.settings().meta.appURL}/link/product/${product.get(
-          "id"
-        )}`,
-        productName,
-        userName,
-        start,
-        end,
-        deposit: product.get("deposit"),
-      })
-    );
-    // Store that email has been sent
-    saveSentEmail(record, "confirmation");
-  }
-}, "reservations");
-
-onRecordUpdateRequest((e) => {
-  e.next();
-
-  const locale = $os.getenv("CONFIG_LOCALE") || "en";
-
-  /** @type {typeof import('./lib/reservation')} */
-  const { removeSentEmail } = require(`${__hooks}/lib/reservation`);
-
-  /** @type {typeof import('./lib/email')} */
-  const { sendLocationNotificationEmail, sendUserEmail } = require(
-    `${__hooks}/lib/email`
-  );
-
-  /** @type {typeof import('./lib/emails.en')} */
-  const {
-    cancellationConfirmationEmail,
-    reservationCancellationLocationEmail,
-  } = require(`${__hooks}/lib/emails.${locale}`);
-
-  let { record } = e;
-  const requestUser = e.auth;
   const originalRecord = record.original();
-
-  // Reset end_reminder notification if the end date has been moved back
+  const start = new Date(record.get("start").string().split(" ")[0]);
   const end = new Date(record.get("end").string().split(" ")[0]);
-  const originalEnd = new Date(
-    originalRecord.get("end").string().split(" ")[0]
-  );
-  if (end > originalEnd) {
-    record = removeSentEmail(record, "end_reminder");
-  }
 
-  // Reservation got cancelled, send confirmations
-  if (!originalRecord.getBool("cancelled") && record.getBool("cancelled")) {
-    $app.expandRecord(record, ["product", "location", "user"], null);
-    const product = record.expandedOne("product");
-    const location = record.expandedOne("location");
-    const productName = product.get("name");
-    const user = record.expandedOne("user");
-    const start = new Date(record.get("start").string().split(" ")[0]);
-    const end = new Date(record.get("end").string().split(" ")[0]);
+  $app.expandRecord(record, ["product"], null);
+  const product = record.expandedOne("product");
 
-    // Notify the user if they do the cancellation themselves
-    if (user && requestUser && requestUser.get("id") === user.get("id")) {
-      sendUserEmail(
-        user,
-        cancellationConfirmationEmail({
-          productUrl: `${
-            $app.settings().meta.appURL
-          }/link/product/${product.get("id")}`,
-          productName,
-          userName: user.get("name"),
-        })
-      );
+  const isOwner = requestUser && (requestUser.id === record.get("owner") || (product && requestUser.id === product.get("user")));
+  const isBorrower = requestUser && requestUser.id === record.get("user");
+  const isAdmin = requestUser && requestUser.get("role") === "admin";
+
+  const newStatus = record.get("status");
+  const originalStatus = originalRecord ? originalRecord.get("status") : null;
+
+  // If status changed to 'accepted', copy exact pickup address from product to reservation handover_address
+  if (newStatus === "accepted" && originalStatus !== "accepted" && product) {
+    const pickupAddr = product.get("pickup_address");
+    if (pickupAddr) {
+      record.set("handover_address", pickupAddr);
     }
-
-    // Notify the location of the cancellation
-    sendLocationNotificationEmail(
-      location,
-      reservationCancellationLocationEmail({
-        productUrl: `${$app.settings().meta.appURL}/link/product/${product.get(
-          "id"
-        )}`,
-        productName,
-        userName: user.get("name"),
-        userEmail: user.get("email"),
-        start,
-        end,
-      })
-    );
   }
+
+  // Ensure only owner or admin can accept / decline requests
+  if ((newStatus === "accepted" || newStatus === "declined") && !isOwner && !isAdmin && !isSuperuser) {
+    throw new BadRequestError("Only_owner_can_accept_or_decline.");
+  }
+
+  // Check overlapping reservations if accepted or started
+  if (newStatus !== "declined" && newStatus !== "cancelled" && !record.getBool("cancelled")) {
+    if (hasOverlappingReservations(record, true)) {
+      throw new BadRequestError("Overlapping_reservation.");
+    }
+  }
+
+  e.next();
+}, "reservations");
+
+onRecordEnrich(({ record, requestInfo, next }) => {
+  if (!record) {
+    return next();
+  }
+
+  const requestUser = requestInfo?.auth;
+  const isSuperuser = requestInfo?.hasSuperuserAuth();
+  const isOwner = requestUser && requestUser.id === record.get("owner");
+  const isBorrower = requestUser && requestUser.id === record.get("user");
+  const isAdmin = requestUser && requestUser.get("role") === "admin";
+
+  const status = record.get("status");
+  const isAcceptedOrActive = status === "accepted" || status === "started" || status === "ended";
+
+  // Hide exact handover address unless user is owner, or borrower on an accepted booking
+  if (!isSuperuser && !isAdmin && !isOwner && !(isBorrower && isAcceptedOrActive)) {
+    record.hide("handover_address");
+  }
+
+  next();
 }, "reservations");

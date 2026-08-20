@@ -1,9 +1,26 @@
 <template>
   <header ref="header" :class="{ 'is-sticky': isSticky }">
-    <div>
+    <div class="nav-container">
+      <!-- Logo & Brand -->
       <NuxtLink to="/" class="logo">
-        <span v-html="(leihbase?.name || '').replace('\n', '<br />')" />
+        <span v-html="(leihbase?.name || 'Leihbase').replace('\n', '<br />')" />
       </NuxtLink>
+
+      <!-- Desktop Nav Items -->
+      <div class="desktop-nav">
+        <Button
+          v-if="isValid"
+          variant="primary"
+          outline
+          to="/items/new"
+          class="lend-btn"
+        >
+          <Plus class="icon-small" />
+          {{ t("lend_item") }}
+        </Button>
+      </div>
+
+      <!-- User / Menu Dropdown -->
       <DropdownMenu class="dropdown">
         <DropdownMenuTrigger
           :as="Button"
@@ -35,6 +52,27 @@
                 {{ t("login") }}
               </DropdownMenuItem>
             </li>
+
+            <li v-if="isValid">
+              <DropdownMenuItem :as="NuxtLink" to="/items/new">
+                {{ t("lend_item") }}
+              </DropdownMenuItem>
+            </li>
+            <li v-if="isValid">
+              <DropdownMenuItem :as="NuxtLink" to="/profile/my-items">
+                {{ t("my_items") }}
+              </DropdownMenuItem>
+            </li>
+            <li v-if="isValid">
+              <DropdownMenuItem :as="NuxtLink" to="/profile/requests">
+                {{ t("incoming_requests") }}
+              </DropdownMenuItem>
+            </li>
+            <li v-if="isValid">
+              <DropdownMenuItem :as="NuxtLink" to="/reservations">
+                {{ t("my_rentals") }}
+              </DropdownMenuItem>
+            </li>
             <li v-if="isValid">
               <DropdownMenuItem
                 :as="NuxtLink"
@@ -43,11 +81,6 @@
               >
                 {{ t("profile") }}
               </DropdownMenuItem>
-            </li>
-            <li v-if="isValid">
-              <NuxtLink to="/reservations">
-                {{ t("reservations") }}
-              </NuxtLink>
             </li>
             <li v-if="isValid && userStore.isManager">
               <DropdownMenuItem :as="NuxtLink" to="/admin">
@@ -67,7 +100,7 @@
 </template>
 
 <script setup>
-import { Menu, User } from "@iconoir/vue";
+import { Menu, Plus, User } from "@iconoir/vue";
 import { NuxtLink } from "#components";
 import Button from "../core/Button.vue";
 import DropdownMenu from "../core/dropdown-menu/DropdownMenu.vue";
@@ -111,7 +144,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 1rem 0 1rem;
+    padding: 0 1rem;
     height: var(--navbar-height);
     background-color: var(--primary-color);
     margin-left: var(--navbar-offset);
@@ -121,9 +154,6 @@ header {
     width: 100%;
     transition: border-radius 200ms;
     box-shadow: var(--shadow-sm);
-    @media screen and (min-width: breakpoints.$breakpoint-sm) {
-      padding: 0 1rem 0 1rem;
-    }
   }
   &.is-sticky {
     & > div {
@@ -139,19 +169,23 @@ header {
     text-decoration: none;
   }
 
-  nav {
-    & > ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-  }
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+    margin-right: 1rem;
 
-  .account {
-    font-size: 2rem;
-    a {
-      line-height: 0;
-      display: flex;
+    .lend-btn {
+      color: var(--header-text-color);
+      border-color: var(--header-text-color);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.875rem;
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+      }
     }
   }
 
@@ -159,6 +193,11 @@ header {
     display: inline-block;
     width: 1.5em;
     height: 1.5em;
+  }
+  .icon-small {
+    display: inline-block;
+    width: 1.1em;
+    height: 1.1em;
   }
 }
 
@@ -170,7 +209,7 @@ header {
     background-color: white;
     border-radius: var(--border-radius);
     padding: 0.25rem 0;
-    width: 10rem;
+    width: 13rem;
     right: 0.25rem;
     box-shadow: var(--shadow-sm);
     ul {
@@ -207,19 +246,25 @@ header {
 {
   "en": {
     "menu": "Menu",
+    "lend_item": "+ List Item",
+    "my_items": "My Listings",
+    "incoming_requests": "Incoming Requests",
+    "my_rentals": "My Borrowed Items",
     "sign_up": "Sign up",
     "login": "Login",
     "profile": "Profile",
-    "reservations": "Reservations",
     "admin": "Admin",
     "logout": "Logout"
   },
   "de": {
-    "menu": "Menu",
+    "menu": "Menü",
+    "lend_item": "+ Gegenstand anbieten",
+    "my_items": "Meine Gegenstände",
+    "incoming_requests": "Eingehende Anfragen",
+    "my_rentals": "Meine Ausleihen",
     "sign_up": "Registrieren",
     "login": "Einloggen",
     "profile": "Profil",
-    "reservations": "Reservierungen",
     "admin": "Admin",
     "logout": "Ausloggen"
   }

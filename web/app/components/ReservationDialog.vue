@@ -1,7 +1,7 @@
 <template>
-  <Dialog v-model:open="isOpen" inset :title="t('reserve')">
+  <Dialog v-model:open="isOpen" inset :title="t('request_to_borrow')">
     <div class="dialog">
-      <!-- Opening hours -->
+      <!-- Opening hours (only if tied to a physical location) -->
       <p
         v-if="location?.opening_hours"
         class="opening-hours"
@@ -13,18 +13,19 @@
           v-html="openingHoursToString(location?.opening_hours, locale)"
         ></span>
       </p>
+
       <form v-if="product" @submit.prevent="onSubmit">
         <Input
           type="text"
           :label="t('product')"
-          v-model="product.name"
+          :model-value="product.name"
           required
           disabled
           readonly
         />
         <DateInput
           :label="t('start')"
-          :key="`start-date-${location?.id}`"
+          :key="`start-date-${product?.id}`"
           v-model="start"
           :is-date-disallowed="isStartDateDisallowed"
           :show-outside-days="false"
@@ -34,7 +35,7 @@
         />
         <DateInput
           :label="t('end')"
-          :key="`end-date-${location?.id}`"
+          :key="`end-date-${product?.id}`"
           :popout-key="`end-date-popout-${start?.getTime()}`"
           v-model="end"
           :is-date-disallowed="isEndDateDisallowed"
@@ -43,11 +44,15 @@
           data-testid="end-input"
           required
         />
-        <Textarea :label="t('message')" v-model="message" />
+        <Textarea
+          :label="t('message')"
+          v-model="message"
+          :placeholder="t('message_placeholder')"
+        />
 
         <Alert
           v-if="reservationCreationError"
-          variant="error"
+          variant="danger"
           data-testid="reservation-form-error"
           class="alert"
         >
@@ -60,7 +65,7 @@
           type="submit"
           data-testid="reserve-submit"
         >
-          {{ t("reserve_now_button") }}
+          {{ t("send_request_button") }}
         </Button>
       </form>
     </div>
@@ -90,13 +95,14 @@ const { pb, user } = usePocketbase();
 const { t, locale } = useI18n({ useScope: "local" });
 const nuxtApp = useNuxtApp();
 const userStore = useUserStore();
+const router = useRouter();
 
 const { isOpen, product, location } = useReservationDialog();
 
 // Fields
 const start = ref<Date>();
 const end = ref<Date>();
-const message = ref<string>();
+const message = ref<string>("");
 
 const reservationCreationError = ref<string>();
 const isSubmittingReservation = ref(false);
@@ -107,9 +113,14 @@ const closedDates = computed(() =>
     getStartOfDate(new Date(d))
   )
 );
-const maxReservationDays = computed(
-  () => location.value?.max_reservation_days || 0
-);
+
+const maxReservationDays = computed(() => {
+  if (product.value?.max_duration_days) {
+    return product.value.max_duration_days;
+  }
+  return location.value?.max_reservation_days || 30;
+});
+
 const reservationStartLimit = computed(
   () => location.value?.reservation_start_limit || 0
 );
@@ -125,13 +136,15 @@ const endDateDescription = computed(() => {
   if (maxReservationDays.value <= 0) {
     return undefined;
   }
-  return `${location.value?.name} ${t("allows_reservations_up_to_days", { days: maxReservationDays.value })}`;
+  return t("allows_reservations_up_to_days", { days: maxReservationDays.value });
 });
 
 watch(isOpen, (newValue) => {
   if (!newValue) {
     start.value = undefined;
     end.value = undefined;
+    message.value = "";
+    reservationCreationError.value = undefined;
   }
 });
 
@@ -192,8 +205,8 @@ function isEndDateDisallowed(date: Date): boolean {
 }
 
 async function onSubmit() {
-  if (!location.value || !product.value) {
-    console.error("Can't create reservation, no location or product defined");
+  if (!product.value) {
+    console.error("Can't create reservation, no product defined");
     return;
   }
   if (!user.value?.id) {
@@ -205,14 +218,20 @@ async function onSubmit() {
   isSubmittingReservation.value = true;
   let reservation;
   try {
-    reservation = (await pb.collection("reservations").create({
-      user: user.value?.id,
+    const payload: any = {
+      user: user.value.id,
       product: product.value.id,
       start: start.value,
       end: end.value,
       message: message.value,
+      status: "requested",
       send_confirmation: true,
-    })) as Reservation;
+    };
+    if (location.value?.id) {
+      payload.location = location.value.id;
+    }
+
+    reservation = (await pb.collection("reservations").create(payload)) as Reservation;
   } catch (e) {
     isSubmittingReservation.value = false;
     if (e instanceof ClientResponseError && e.status === 400 && e.message) {
@@ -220,26 +239,18 @@ async function onSubmit() {
         case "User_not_verified.":
           reservationCreationError.value = t("errors.user_not_verified");
           break;
+        case "Cannot_rent_own_product.":
+          reservationCreationError.value = t("errors.cannot_rent_own_product");
+          break;
         case "Product_has_open_reservation.":
-          reservationCreationError.value = t(
-            "errors.product_has_open_reservation",
-            {
-              email: location.value.email,
-            }
-          );
+          reservationCreationError.value = t("errors.product_has_open_reservation");
           break;
         case "User_has_open_reservation.":
-          reservationCreationError.value = t(
-            "errors.user_has_open_reservation",
-            {
-              email: location.value.email,
-            }
-          );
+          reservationCreationError.value = t("errors.user_has_open_reservation");
           break;
         case "Date_range_too_long.":
           reservationCreationError.value = t("errors.date_range_too_long", {
-            days: location.value.max_reservation_days || 14,
-            email: location.value.email,
+            days: maxReservationDays.value,
           });
           break;
         case "Overlapping_reservation.":
@@ -257,24 +268,11 @@ async function onSubmit() {
         case "End_before_start.":
           reservationCreationError.value = t("errors.end_before_start");
           break;
-        case "Reservation_system_disabled.":
-          reservationCreationError.value = t(
-            "errors.reservation_system_disabled"
-          );
-          break;
-        case "Reservation_start_too_far_in_future.":
-          reservationCreationError.value = t(
-            "errors.reservation_start_too_far_in_future",
-            {
-              days: location.value.reservation_start_limit,
-              email: location.value.email,
-            }
-          );
-          break;
+        default:
+          reservationCreationError.value = e.message || t("errors.general");
       }
-      if (!reservationCreationError.value) {
-        reservationCreationError.value = t("errors.general");
-      }
+    } else {
+      reservationCreationError.value = t("errors.general");
     }
   }
 
@@ -286,6 +284,7 @@ async function onSubmit() {
   nuxtApp.callHook("app:user:reservation:create", reservation);
   isSubmittingReservation.value = false;
   isOpen.value = false;
+  router.push("/reservations");
 }
 </script>
 
@@ -309,53 +308,53 @@ async function onSubmit() {
 <i18n lang="json">
 {
   "en": {
-    "reserve": "Reserve",
+    "request_to_borrow": "Request to Borrow",
     "opening_hours_of": "Opening hours of",
     "product": "Product",
-    "start": "Start",
-    "end": "End",
-    "message": "Message",
-    "reserve_now_button": "Reserve now",
+    "start": "Pickup Date",
+    "end": "Return Date",
+    "message": "Note to Lender (Optional)",
+    "message_placeholder": "Introduce yourself or coordinate flexible pickup times...",
+    "send_request_button": "Send Borrow Request",
     "allows_reserving_days_in_future": "allows reserving {days} days in the future.",
-    "allows_reservations_up_to_days": "allows reservations up to {days} days.",
+    "allows_reservations_up_to_days": "Max rental duration: {days} days.",
     "errors": {
-      "user_not_verified": "Confirm your e-mail address before placing a reservation.",
-      "product_has_open_reservation": "This product is currently not available.",
-      "user_has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
-      "date_range_too_long": "Products can't be reserved for longer than {days} days. Reach out on {email} to discuss a longer period.",
-      "overlapping_reservation": "The product is already reserved for this period.",
-      "start_before_today": "The start of the reservation is before today.",
-      "end_before_today": "The end of the reservation is before today.",
-      "start_and_end_equal": "The start and end of the reservation can't be on the same day.",
-      "end_before_start": "The end can't be befor the start of the reservation.",
-      "reservation_system_disabled": "Reservations are not allowed for this location.",
-      "reservation_start_too_far_in_future": "Reservations can't start more than {days} days in the future. Reach out on {email} to discuss.",
-      "general": "Something went wrong while creating the reservation, please try again."
+      "user_not_verified": "Please verify your email address before requesting.",
+      "cannot_rent_own_product": "You cannot borrow your own listed item.",
+      "product_has_open_reservation": "This item is currently not available for these dates.",
+      "user_has_open_reservation": "You already have an active request for this item.",
+      "date_range_too_long": "This item cannot be borrowed for longer than {days} days.",
+      "overlapping_reservation": "The item is already booked for this timeframe.",
+      "start_before_today": "The pickup date cannot be in the past.",
+      "end_before_today": "The return date cannot be in the past.",
+      "start_and_end_equal": "Pickup and return date cannot be the same.",
+      "end_before_start": "Return date must be after pickup date.",
+      "general": "Something went wrong sending your request. Please try again."
     }
   },
   "de": {
-    "reserve": "Reservieren",
+    "request_to_borrow": "Ausleihe anfragen",
     "opening_hours_of": "Öffnungszeiten von",
     "product": "Gegenstand",
-    "start": "Start",
-    "end": "Ende",
-    "message": "Nachricht",
-    "reserve_now_button": "Jetzt reservieren",
+    "start": "Abholdatum",
+    "end": "Rückgabedatum",
+    "message": "Nachricht an den Verleiher (Optional)",
+    "message_placeholder": "Stelle dich kurz vor oder vereinbare Abholzeiten...",
+    "send_request_button": "Ausleihanfrage absenden",
     "allows_reserving_days_in_future": "erlaubt Reservierungen bis zu {days} Tage im Voraus.",
-    "allows_reservations_up_to_days": "erlaubt Reservierungen von bis zu {days} Tagen.",
+    "allows_reservations_up_to_days": "Maximale Leihdauer: {days} Tage.",
     "errors": {
-      "user_not_verified": "Bestätige deine E-Mail-Adresse, bevor du reservierst.",
-      "product_has_open_reservation": "Diesen Gegenstand ist derzeit nicht verfügbar.",
-      "user_has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
-      "date_range_too_long": "Produkte können nicht länger als {days} Tage reserviert werden. Kontaktiere uns unter {email}, um einen längeren Zeitraum zu besprechen.",
-      "overlapping_reservation": "Das Produkt ist für diesen Termin bereits reserviert.",
-      "start_before_today": "Der Beginn der Reservierung liegt vor dem heutigen Tag.",
-      "end_before_today": "Das Enddatum der Reservierung liegt vor dem heutigen Tag.",
-      "start_and_end_equal": "Beginn und Ende der Reservierung dürfen nicht am selben Tag liegen.",
-      "end_before_start": "Ende kann nicht vor Beginn der Reservierung liegen.",
-      "reservation_system_disabled": "Reservierungen sind für diesen Standort nicht erlaubt.",
-      "reservation_start_too_far_in_future": "Reservierungen können nicht mehr als {days} Tage im Voraus beginnen. Kontaktiere uns unter {email}, um dies zu besprechen.",
-      "general": "Beim Erstellen deiner Reservierung ist ein Fehler aufgetreten, bitte versuche es erneut."
+      "user_not_verified": "Bitte bestätige deine E-Mail-Adresse, bevor du anfragst.",
+      "cannot_rent_own_product": "Du kannst deinen eigenen Gegenstand nicht ausleihen.",
+      "product_has_open_reservation": "Dieser Gegenstand ist für diesen Zeitraum nicht verfügbar.",
+      "user_has_open_reservation": "Du hast bereits eine Anfrage für diesen Gegenstand offen.",
+      "date_range_too_long": "Dieser Gegenstand kann maximal {days} Tage geliehen werden.",
+      "overlapping_reservation": "Der Gegenstand ist in diesem Zeitraum bereits belegt.",
+      "start_before_today": "Das Abholdatum darf nicht in der Vergangenheit liegen.",
+      "end_before_today": "Das Rückgabedatum darf nicht in der Vergangenheit liegen.",
+      "start_and_end_equal": "Abholung und Rückgabe dürfen nicht am selben Tag sein.",
+      "end_before_start": "Das Rückgabedatum muss nach dem Abholdatum liegen.",
+      "general": "Beim Absenden deiner Anfrage ist ein Fehler aufgetreten."
     }
   }
 }

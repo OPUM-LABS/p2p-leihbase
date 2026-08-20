@@ -1,59 +1,52 @@
 /// <reference path="../pb_data/types.d.ts" />
 
+onRecordCreateRequest((e) => {
+  const { requestInfo, record } = e;
+  if (!record) {
+    throw new BadRequestError();
+  }
+
+  const requestUser = e.auth;
+  if (!e.hasSuperuserAuth() && requestUser) {
+    if (!requestUser.verified()) {
+      throw new BadRequestError("User_not_verified.");
+    }
+    // Set owning user to current authenticated user
+    record.set("user", requestUser.id);
+  }
+
+  if (record.get("active") === undefined || record.get("active") === null) {
+    record.set("active", true);
+  }
+
+  e.next();
+}, "products");
+
 onRecordEnrich(({ record, requestInfo, next }) => {
   if (!record) {
     return next();
   }
 
-  const isLocationUser = (
-    requestInfo?.auth?.get("manager_locations") || []
-  ).includes(record.get("location"));
+  const isOwner = requestInfo?.auth && requestInfo.auth.id === record.get("user");
   const isAdmin = requestInfo?.auth?.get("role") === "admin";
+  const isSuperuser = requestInfo?.hasSuperuserAuth();
 
-  // Don't show admin notes and owning user of product by default
+  // Hide internal notes and exact pickup address from public by default
   record.hide("notes");
-  record.hide("user");
+  record.hide("pickup_address");
 
-  // Do show notes and user when location manager or admin
-  if (isLocationUser || isAdmin || requestInfo?.hasSuperuserAuth()) {
+  // Reveal exact pickup address and internal notes only to owner, admin or superuser
+  if (isOwner || isAdmin || isSuperuser) {
     record.unhide("notes");
-    record.unhide("user");
+    record.unhide("pickup_address");
   }
 
   // When passing the 'computeAvailability' query parameter:
-  // Populate product data with `computeIsAvailable` showing if the product is
-  // currently available for borrowing.
   if (Boolean(requestInfo?.query.computeAvailability)) {
-    /** @type {typeof import('./lib/openingHours')} */
-    const { getNextOpenDate } = require(`${__hooks}/lib/openingHours`);
     /** @type {typeof import('./lib/product')} */
-    const { hasActiveReservation, getActiveReservationsForDateRange } = require(
-      `${__hooks}/lib/product`
-    );
-
+    const { hasActiveReservation } = require(`${__hooks}/lib/product`);
     record.withCustomData(true);
-    $app.expandRecord(record, ["location"], null);
-    const location = record.expandedOne("location");
-
-    if (location.get("reservation_system") === "multiple") {
-      const openingHours = JSON.parse(location.get("opening_hours"));
-      const nextOpenDate = getNextOpenDate(openingHours, 0);
-      const nextNextOpenDate = getNextOpenDate(openingHours, 1);
-      if (nextOpenDate && nextNextOpenDate) {
-        const reservations = getActiveReservationsForDateRange(
-          record.id,
-          nextOpenDate,
-          nextNextOpenDate
-        );
-        record.set(
-          "computedIsAvailable",
-          reservations && reservations.length === 0
-        );
-      }
-    } else {
-      // For single system, include unreturned reservations as active
-      record.set("computedIsAvailable", !hasActiveReservation(record.id, null, true));
-    }
+    record.set("computedIsAvailable", !hasActiveReservation(record.id, null, true));
   }
 
   next();

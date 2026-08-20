@@ -1,5 +1,5 @@
 <template>
-  <Container width="lg" centered>
+  <Container width="lg" centered class="page-container">
     <!-- Header -->
     <section class="lb-stack">
       <Heading is="h1" size="xl">{{ t("reservations") }}</Heading>
@@ -8,7 +8,7 @@
       </p>
     </section>
 
-    <!-- Active -->
+    <!-- Active & Pending Requests -->
     <section class="lb-stack">
       <Heading is="h2" size="lg">{{ t("active") }}</Heading>
       <ul v-if="current && current.length > 0" class="cards">
@@ -43,6 +43,7 @@
       </ul>
     </section>
   </Container>
+
   <ReservationDetailDialog
     :reservation="selectedReservation"
     :product="
@@ -51,7 +52,7 @@
         : undefined
     "
     :location="
-      selectedReservation
+      selectedReservation?.location
         ? data?.locations[selectedReservation?.location]
         : undefined
     "
@@ -61,10 +62,9 @@
 </template>
 
 <script setup lang="ts">
-import { getReservationStatus } from "@@/lib/reservation";
 import type { Location } from "@@/models/location";
 import type { Product } from "@@/models/product";
-import { ReservationStatus, type Reservation } from "@@/models/reservation";
+import { type Reservation } from "@@/models/reservation";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import ReservationCardButton from "./_components/ReservationCardButton.vue";
@@ -79,40 +79,51 @@ const { t } = useI18n({
   useScope: "local",
 });
 
-const { data, refresh, status } = await useAsyncData<{
+const { data, refresh } = await useAsyncData<{
   reservations: Reservation[];
   products: { [key: string]: Product };
   locations: { [key: string]: Location };
 }>(
   "user_reservations",
   async () => {
-    const reservations = await pb.collection("reservations").getFullList({
-      filter: pb.filter("user = {:user}", {
-        user: pb.authStore?.model?.["id"],
-      }),
+    const userId = pb.authStore?.record?.id;
+    if (!userId) return { reservations: [], products: {}, locations: {} };
+
+    const reservations = await pb.collection("reservations").getFullList<Reservation>({
+      filter: `user = '${userId}'`,
       sort: "-start",
-      requestKey: "user_reservations",
+      expand: "product,owner",
     });
-    const products = await pb.collection("products").getFullList({
-      filter: reservations.map((r) => `id="${r.product}"`).join("||"),
-      requestKey: "reservations_product",
-    });
-    const locations = await pb.collection("public_locations").getFullList({
-      filter: reservations.map((r) => `id="${r.location}"`).join("||"),
-      requestKey: "reservations_location",
-    });
+
+    const productIds = Array.from(new Set(reservations.map((r) => r.product).filter(Boolean)));
+    const locationIds = Array.from(new Set(reservations.map((r) => r.location).filter(Boolean)));
+
+    let productsList: Product[] = [];
+    if (productIds.length > 0) {
+      productsList = await pb.collection("products").getFullList<Product>({
+        filter: productIds.map((id) => `id='${id}'`).join("||"),
+      });
+    }
+
+    let locationsList: Location[] = [];
+    if (locationIds.length > 0) {
+      locationsList = await pb.collection("public_locations").getFullList<Location>({
+        filter: locationIds.map((id) => `id='${id}'`).join("||"),
+      });
+    }
+
     return {
-      reservations: structuredClone(reservations) as Reservation[],
-      products: products.reduce(
+      reservations: structuredClone(reservations),
+      products: productsList.reduce(
         (map, p) => {
-          map[p.id] = p as Product;
+          map[p.id] = p;
           return map;
         },
         {} as { [key: string]: Product }
       ),
-      locations: locations.reduce(
+      locations: locationsList.reduce(
         (map, p) => {
-          map[p.id] = p as Location;
+          map[p.id] = p;
           return map;
         },
         {} as { [key: string]: Location }
@@ -123,26 +134,18 @@ const { data, refresh, status } = await useAsyncData<{
 );
 
 const current = computed(() =>
-  (data.value?.reservations || []).filter((reservation) => {
-    if (
-      getReservationStatus(reservation) !== ReservationStatus.Ended &&
-      getReservationStatus(reservation) !== ReservationStatus.Cancelled
-    ) {
-      return true;
-    }
-    return false;
+  (data.value?.reservations || []).filter((r) => {
+    const isEnded = r.ended || r.status === "ended";
+    const isCancelled = r.cancelled || r.status === "cancelled" || r.status === "declined";
+    return !isEnded && !isCancelled;
   })
 );
 
 const past = computed(() =>
-  (data.value?.reservations || []).filter((reservation) => {
-    if (
-      getReservationStatus(reservation) === ReservationStatus.Ended ||
-      getReservationStatus(reservation) === ReservationStatus.Cancelled
-    ) {
-      return true;
-    }
-    return false;
+  (data.value?.reservations || []).filter((r) => {
+    const isEnded = r.ended || r.status === "ended";
+    const isCancelled = r.cancelled || r.status === "cancelled" || r.status === "declined";
+    return isEnded || isCancelled;
   })
 );
 
@@ -160,12 +163,17 @@ if (!isValid.value) {
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
 
+.page-container {
+  padding-block: var(--fluid-spacing-8);
+}
+
 section {
   margin-bottom: var(--fluid-spacing-8);
 }
 
 .intro {
   max-width: var(--max-text-width);
+  color: var(--color-gray-600);
 }
 
 .cards {
@@ -194,18 +202,18 @@ section {
 <i18n lang="json">
 {
   "en": {
-    "reservations": "Reservations",
-    "intro": "Here you can manage your reservations. Check your current and past loans, extend deadlines, or cancel reservations as needed.",
-    "active": "Active",
-    "no_active_reservations": "You currently have no active reservations.",
-    "past": "Past"
+    "reservations": "My Borrowed Items",
+    "intro": "Track your borrow requests, accepted pickups, and active rental deadlines.",
+    "active": "Active & Requested",
+    "no_active_reservations": "You currently have no active borrowing requests.",
+    "past": "Past Rentals"
   },
   "de": {
-    "reservations": "Reservierungen",
-    "intro": "Hier kannst du deine Reservierungen verwalten. Schau dir deine aktuellen und vergangenen Ausleihen an, verlängere Fristen oder storniere Reservierungen bei Bedarf.",
-    "active": "Aktive",
-    "no_active_reservations": "Du hast derzeit keine aktiven Reservierungen.",
-    "past": "Vergangene"
+    "reservations": "Meine Ausleihen",
+    "intro": "Verfolge deine Ausleihanfragen, bestätigte Abholorte und Rückgabefristen.",
+    "active": "Aktive & Angefragte Ausleihen",
+    "no_active_reservations": "Du hast derzeit keine aktiven Ausleihen.",
+    "past": "Vergangene Ausleihen"
   }
 }
 </i18n>

@@ -10,20 +10,37 @@ export const useReservationDialog = function () {
   const userStore = useUserStore();
   const { open: openVerificationDialog } = useVerificationDialog();
 
-  async function open(_location: Location, _product: Product) {
+  async function open(
+    arg1: Location | Product,
+    arg2?: Product | Location | null
+  ) {
+    let _product: Product;
+    let _location: Location | null = null;
+
+    if (arg2) {
+      // Called with (location, product)
+      _location = arg1 as Location;
+      _product = arg2 as Product;
+    } else {
+      // Called with (product)
+      _product = arg1 as Product;
+    }
+
     // Check authentication status
     if (!pb.authStore.isValid) {
-      userStore.setAuthenticationIntent(
-        "reservation",
-        `/l/${_location.slug}/p/${_product.id}`
-      );
+      const redirectUrl = _location?.slug
+        ? `/l/${_location.slug}/p/${_product.id}`
+        : `/items/${_product.id}`;
+      userStore.setAuthenticationIntent("reservation", redirectUrl);
       navigateTo("/signup");
       return;
     }
 
     // Checkout verification status
     if (!user.value?.verified) {
-      await pb.collection("users").authRefresh();
+      try {
+        await pb.collection("users").authRefresh();
+      } catch (e) {}
     }
     if (!user.value?.verified) {
       openVerificationDialog();
@@ -36,8 +53,13 @@ export const useReservationDialog = function () {
     location.value = _location;
   }
 
+  function close() {
+    isOpen.value = false;
+  }
+
   return {
     open,
+    close,
     isOpen,
     product,
     location,

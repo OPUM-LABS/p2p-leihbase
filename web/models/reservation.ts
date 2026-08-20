@@ -1,11 +1,14 @@
 import type { RecordModel } from "pocketbase";
+import type { Product } from "./product";
+import type { User } from "./user";
 
 export enum ReservationStatus {
-  New = "new",
-  Cancelled = "cancelled",
+  Requested = "requested",
+  Accepted = "accepted",
+  Declined = "declined",
   Started = "started",
   Ended = "ended",
-  Overdue = "overdue",
+  Cancelled = "cancelled",
 }
 
 export type Reservation = RecordModel & {
@@ -13,18 +16,26 @@ export type Reservation = RecordModel & {
   created: string;
 
   user: string;
+  owner?: string;
   product: string;
-  location: string;
+  location?: string;
 
-  start: Date;
-  end: Date;
+  start: Date | string;
+  end: Date | string;
 
-  cancelled: boolean;
-  started: boolean;
-  ended: boolean;
+  status?: ReservationStatus | string;
+  cancelled?: boolean;
+  started?: boolean;
+  ended?: boolean;
 
-  message: string;
-  note: string;
+  message?: string;
+  note?: string;
+  owner_note?: string;
+  handover_address?: string;
 
-  expand: any;
+  expand?: {
+    user?: User;
+    owner?: User;
+    product?: Product;
+  };
 };
