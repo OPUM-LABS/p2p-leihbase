@@ -9,7 +9,7 @@
 
 ## 🌟 Overview
 
-**P2P Leihbase** is a modern, lightweight web application designed to empower circular economy sharing within local communities, neighborhoods, and lending stores (*Leihladen*). 
+**P2P Leihbase** is a modern, lightweight web application designed to empower circular economy sharing within local communities and neighborhoods. 
 
 Users can list their own items, browse borrowable tools, kitchen appliances, electronics, or outdoor gear, request loans, coordinate handover and return appointments interactively, and manage the entire lending lifecycle.
 
@@ -29,7 +29,7 @@ Users can list their own items, browse borrowable tools, kitchen appliances, ele
 - **Calendar Integration:** Automated `.ics` calendar file attachments and direct **Google Calendar** / **Apple / Outlook** links sent in confirmation emails.
 
 ### 🌐 Multilingual (i18n)
-- Seamless support for **German (`de`)** and **English (`en`)**.
+- Seamless support for **German (`de`)** and **English (`en`)**. (at the moment)
 - In-app language switcher in navbar and footer.
 - User profile language preferences with automatic localization for transactional emails and notifications.
 
