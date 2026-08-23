@@ -196,7 +196,7 @@ routerAdd("POST", "/api/leihbase/send-timeslot-proposals", (e) => {
 
     try {
       $app.expandRecord(reservation, ["product", "user"], null);
-    } catch (_) {}
+    } catch (_) { }
 
     const product = reservation.expandedOne("product") || (reservation.get("product") ? $app.findRecordById("products", reservation.get("product")) : null);
     const borrower = reservation.expandedOne("user") || (reservation.get("user") ? $app.findRecordById("users", reservation.get("user")) : null);
@@ -204,12 +204,12 @@ routerAdd("POST", "/api/leihbase/send-timeslot-proposals", (e) => {
     if (reservation.get("owner")) {
       try {
         owner = $app.findRecordById("users", reservation.get("owner"));
-      } catch (_) {}
+      } catch (_) { }
     }
     if (!owner && product && product.get("user")) {
       try {
         owner = $app.findRecordById("users", product.get("user"));
-      } catch (_) {}
+      } catch (_) { }
     }
 
     const borrowerId = borrower ? borrower.id : reservation.getString("user");

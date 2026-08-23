@@ -139,9 +139,6 @@
                 <span v-else class="author-tag is-other">
                   👉 {{ t('timeslot.proposed_by_other', { name: slot.proposedByName || (isOwner ? t('timeslot.borrower') : t('timeslot.lender')) }) }}
                 </span>
-                <span v-if="isProposalInvalid(slot)" class="slot-invalid-tag">
-                  ⚠️ {{ t('timeslot.invalid_slot_dates') }}
-                </span>
               </div>
             </div>
 
@@ -152,7 +149,6 @@
                 variant="primary"
                 size="sm"
                 class="select-slot-btn"
-                :disabled="isProposalInvalid(slot)"
                 :loading="isSaving && selectedSlotId === slot.id"
                 @click="confirmSlot(slot)"
               >
@@ -219,14 +215,10 @@
             {{ isOwner ? t('timeslot.propose_subtitle_owner') : t('timeslot.propose_subtitle_borrower') }}
           </span>
 
-          <!-- Range info hint badge -->
+          <!-- Max duration info for return tab -->
           <div v-if="activeTab === 'return' && maxAllowedReturnDateStr" class="duration-hint-badge">
             <Clock class="hint-icon" />
             <span>{{ t('timeslot.max_return_hint', { days: effectiveMaxDuration, maxDate: formatSlotDate(maxAllowedReturnDateStr) }) }}</span>
-          </div>
-          <div v-else-if="activeTab === 'pickup' && resStartStr" class="duration-hint-badge">
-            <Clock class="hint-icon" />
-            <span>{{ t('timeslot.pickup_range_hint', { startDate: formatSlotDate(resStartStr), endDate: formatSlotDate(resEndStr) }) }}</span>
           </div>
 
           <!-- 4 Preset template chips -->
@@ -328,37 +320,6 @@
             </button>
           </div>
         </form>
-
-        <!-- Batch Send Proposals Action Box -->
-        <div v-if="editable && myCurrentProposals.length > 0" class="send-proposals-section">
-          <div class="send-proposals-content">
-            <div class="send-proposals-text">
-              <span class="send-title">
-                {{ t('timeslot.send_section_title', { count: myCurrentProposals.length }) }}
-              </span>
-              <p v-if="isCurrentGroupSent" class="send-subtext is-sent">
-                ✓ {{ t('timeslot.last_sent_at', { time: lastNotifiedTimeStr }) }}
-              </p>
-              <p v-else class="send-subtext is-pending">
-                ⏳ {{ t('timeslot.not_sent_yet_notice', { otherRole: isOwner ? t('timeslot.borrower') : t('timeslot.lender') }) }}
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="primary"
-              size="sm"
-              class="send-proposals-btn"
-              :loading="isSendingProposals"
-              @click="sendProposalsToOtherParty"
-            >
-              <Mail class="btn-icon" />
-              <span>{{ t('timeslot.send_proposals_btn', { otherRole: isOwner ? t('timeslot.borrower') : t('timeslot.lender') }) }}</span>
-            </Button>
-          </div>
-          <Alert v-if="sendSuccessMessage" variant="success" class="send-alert">
-            {{ sendSuccessMessage }}
-          </Alert>
-        </div>
       </div>
     </div>
   </div>
@@ -372,7 +333,6 @@ import {
   CheckCircle,
   Clock,
   InfoCircle,
-  Mail,
   WarningTriangle,
   Xmark,
 } from "@iconoir/vue";
@@ -568,25 +528,11 @@ const isTimeslotDateDisallowed = (date: Date): boolean => {
   if (isBlockedByOther) return true;
 
   if (activeTab.value === "pickup") {
-    // Pickup cannot be before reservation start
-    if (resStartStr.value && dateStr < resStartStr.value) {
-      return true;
-    }
-    // Pickup cannot be after confirmed return slot
     if (returnGroup.value.confirmedSlot?.date && dateStr > returnGroup.value.confirmedSlot.date) {
       return true;
     }
-    // Pickup cannot be after reservation end
     if (resEndStr.value && dateStr > resEndStr.value) {
       return true;
-    }
-    // If return is confirmed, pickup cannot be more than maxDuration days before return
-    if (returnGroup.value.confirmedSlot?.date) {
-      const returnDate = parseDateString(returnGroup.value.confirmedSlot.date);
-      const minPickupDate = formatDateToYMD(addDays(returnDate, -effectiveMaxDuration.value));
-      if (minPickupDate && dateStr < minPickupDate) {
-        return true;
-      }
     }
   } else if (activeTab.value === "return") {
     const pickupDateStr = effectivePickupDateStr.value;
@@ -600,27 +546,6 @@ const isTimeslotDateDisallowed = (date: Date): boolean => {
 
   return false;
 };
-
-function isProposalInvalid(slot: TimeslotItem): boolean {
-  if (!slot?.date) return false;
-  const todayYMD = formatDateToYMD(new Date());
-  if (slot.date < todayYMD) return true;
-
-  if (activeTab.value === "pickup") {
-    if (resStartStr.value && slot.date < resStartStr.value) return true;
-    if (resEndStr.value && slot.date > resEndStr.value) return true;
-    if (returnGroup.value.confirmedSlot?.date && slot.date > returnGroup.value.confirmedSlot.date) return true;
-    if (returnGroup.value.confirmedSlot?.date) {
-      const returnDate = parseDateString(returnGroup.value.confirmedSlot.date);
-      const minPickupDate = formatDateToYMD(addDays(returnDate, -effectiveMaxDuration.value));
-      if (minPickupDate && slot.date < minPickupDate) return true;
-    }
-  } else if (activeTab.value === "return") {
-    if (effectivePickupDateStr.value && slot.date < effectivePickupDateStr.value) return true;
-    if (maxAllowedReturnDateStr.value && slot.date > maxAllowedReturnDateStr.value) return true;
-  }
-  return false;
-}
 
 const isCustomDateBlocked = computed(() => {
   if (!customDate.value) return false;
@@ -769,12 +694,6 @@ function formatErrorMessage(err: any): string {
   if (rawMsg.includes("Return_before_start")) {
     return t("timeslot.error_return_before_pickup");
   }
-  if (rawMsg.includes("Pickup_before_start")) {
-    return t("timeslot.error_pickup_before_start");
-  }
-  if (rawMsg.includes("Pickup_after_end")) {
-    return t("timeslot.error_pickup_after_end");
-  }
   if (rawMsg.includes("autocancelled")) {
     return t("timeslot.error_network");
   }
@@ -821,10 +740,6 @@ const submitCustomSlot = async () => {
   }
 
   if (type === "pickup") {
-    if (resStartStr.value && customDate.value < resStartStr.value) {
-      errorMessage.value = t("timeslot.error_pickup_before_start");
-      return;
-    }
     if (returnGroup.value.confirmedSlot?.date && customDate.value > returnGroup.value.confirmedSlot.date) {
       errorMessage.value = t("timeslot.error_pickup_after_return");
       return;
@@ -832,16 +747,6 @@ const submitCustomSlot = async () => {
     if (resEndStr.value && customDate.value > resEndStr.value) {
       errorMessage.value = t("timeslot.error_pickup_after_end");
       return;
-    }
-    if (returnGroup.value.confirmedSlot?.date) {
-      const returnDate = parseDateString(returnGroup.value.confirmedSlot.date);
-      const minPickupDate = formatDateToYMD(addDays(returnDate, -effectiveMaxDuration.value));
-      if (minPickupDate && customDate.value < minPickupDate) {
-        errorMessage.value = t("timeslot.error_max_duration_exceeded", {
-          days: effectiveMaxDuration.value,
-        });
-        return;
-      }
     }
   } else if (type === "return") {
     const pickupDate = effectivePickupDateStr.value;
@@ -901,55 +806,8 @@ const handleCancel = () => {
 };
 
 const confirmSlot = async (slot: TimeslotItem) => {
-  errorMessage.value = null;
-  const type = activeTab.value;
-  const todayYMD = formatDateToYMD(new Date());
-
-  if (slot.date < todayYMD) {
-    errorMessage.value = t("timeslot.error_date_past");
-    return;
-  }
-
-  if (type === "pickup") {
-    if (resStartStr.value && slot.date < resStartStr.value) {
-      errorMessage.value = t("timeslot.error_pickup_before_start");
-      return;
-    }
-    if (resEndStr.value && slot.date > resEndStr.value) {
-      errorMessage.value = t("timeslot.error_pickup_after_end");
-      return;
-    }
-    if (returnGroup.value.confirmedSlot?.date && slot.date > returnGroup.value.confirmedSlot.date) {
-      errorMessage.value = t("timeslot.error_pickup_after_return");
-      return;
-    }
-    const targetEndDate = returnGroup.value.confirmedSlot?.date || resEndStr.value;
-    if (targetEndDate) {
-      const pDate = parseDateString(slot.date);
-      const eDate = parseDateString(targetEndDate);
-      const maxMs = 1000 * 60 * 60 * 24 * effectiveMaxDuration.value;
-      if (eDate.getTime() - pDate.getTime() > maxMs) {
-        errorMessage.value = t("timeslot.error_max_duration_exceeded", {
-          days: effectiveMaxDuration.value,
-        });
-        return;
-      }
-    }
-  } else if (type === "return") {
-    const pickupDate = effectivePickupDateStr.value;
-    if (pickupDate && slot.date < pickupDate) {
-      errorMessage.value = t("timeslot.error_return_before_pickup");
-      return;
-    }
-    if (maxAllowedReturnDateStr.value && slot.date > maxAllowedReturnDateStr.value) {
-      errorMessage.value = t("timeslot.error_max_duration_exceeded", {
-        days: effectiveMaxDuration.value,
-      });
-      return;
-    }
-  }
-
   selectedSlotId.value = slot.id;
+  const type = activeTab.value;
   const currentGroup = type === "pickup" ? pickupGroup.value : returnGroup.value;
 
   const updatedSlots: ReservationTimeslots = {
@@ -1004,81 +862,6 @@ const deleteProposal = async (slotId: string) => {
 
   await saveTimeslots(updatedSlots);
 };
-
-const myCurrentProposals = computed(() => {
-  const currentUid = props.currentUserId || pb.authStore?.record?.id;
-  return currentProposals.value.filter((s) => s.proposedBy === currentUid);
-});
-
-const currentGroup = computed(() => {
-  return activeTab.value === "pickup" ? pickupGroup.value : returnGroup.value;
-});
-
-const isSendingProposals = ref(false);
-const sendSuccessMessage = ref<string | null>(null);
-
-const lastNotifiedAt = computed(() => {
-  return (currentGroup.value as any)?.lastNotifiedAt || null;
-});
-
-const isCurrentGroupSent = computed(() => {
-  const group = currentGroup.value as any;
-  if (!group || !group.lastNotifiedAt) return false;
-  return group.lastNotifiedCount === myCurrentProposals.value.length;
-});
-
-const lastNotifiedTimeStr = computed(() => {
-  if (!lastNotifiedAt.value) return null;
-  try {
-    const d = new Date(lastNotifiedAt.value);
-    return d.toLocaleTimeString(locale.value === "de" ? "de-DE" : "en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      day: "2-digit",
-      month: "2-digit",
-    });
-  } catch (_) {
-    return null;
-  }
-});
-
-const sendProposalsToOtherParty = async () => {
-  if (myCurrentProposals.value.length === 0) return;
-  isSendingProposals.value = true;
-  errorMessage.value = null;
-  sendSuccessMessage.value = null;
-  try {
-    await pb.send("/api/leihbase/send-timeslot-proposals", {
-      method: "POST",
-      body: {
-        reservationId: localReservation.value.id,
-        type: activeTab.value,
-      },
-    });
-
-    const updated = await pb.collection("reservations").getOne<Reservation>(localReservation.value.id, {
-      expand: "user,owner,product",
-    });
-    localReservation.value = updated;
-    emit("updated", updated);
-
-    sendSuccessMessage.value = t("timeslot.proposals_sent_success");
-    setTimeout(() => {
-      sendSuccessMessage.value = null;
-    }, 5000);
-  } catch (err: any) {
-    console.error("Failed to send timeslot proposals:", err);
-    errorMessage.value = formatErrorMessage(err);
-  } finally {
-    isSendingProposals.value = false;
-  }
-};
-
-defineExpose({
-  sendProposalsToOtherParty,
-  myCurrentProposals,
-  activeTab,
-});
 </script>
 
 <style scoped>
@@ -1423,17 +1206,6 @@ defineExpose({
   font-weight: 600;
 }
 
-.slot-invalid-tag {
-  font-size: 11px;
-  color: #c92a2a;
-  background-color: #ffe3e3;
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-block;
-  margin-left: 6px;
-  font-weight: 600;
-}
-
 .slot-actions {
   display: flex;
   align-items: center;
@@ -1732,53 +1504,6 @@ defineExpose({
   color: #2563eb;
   flex-shrink: 0;
 }
-
-.send-proposals-section {
-  margin-top: 14px;
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 8px;
-  padding: 12px 14px;
-}
-
-.send-proposals-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.send-proposals-text {
-  flex: 1;
-  min-width: 200px;
-}
-
-.send-title {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #166534;
-  display: block;
-}
-
-.send-subtext {
-  font-size: 12px;
-  margin: 2px 0 0 0;
-}
-
-.send-subtext.is-sent {
-  color: #15803d;
-}
-
-.send-subtext.is-pending {
-  color: #b45309;
-  font-weight: 500;
-}
-
-.send-alert {
-  margin-top: 8px;
-  font-size: 12.5px;
-}
 </style>
 
 <i18n lang="json">
@@ -1820,18 +1545,10 @@ defineExpose({
       "note_placeholder": "z.B. Vor der Arbeit, flexibel...",
       "cancel": "Abbrechen",
       "save_proposal": "Vorschlag speichern",
-      "send_section_title": "{count} Terminvorschlag hinterlegt | {count} Terminvorschläge hinterlegt",
-      "send_proposals_btn": "Terminvorschläge an {otherRole} senden",
-      "last_sent_at": "Zuletzt übermittelt: {time}",
-      "not_sent_yet_notice": "Noch nicht an {otherRole} übermittelt. Klicke auf Senden, um eine Benachrichtigung zu schicken.",
-      "proposals_sent_success": "Terminvorschläge wurden erfolgreich per E-Mail übermittelt!",
       "max_return_hint": "Max. Ausleihdauer: {days} Tage (Rückgabe bis spätestens {maxDate})",
-      "pickup_range_hint": "Abholung ab {startDate} bis spätestens {endDate}",
-      "invalid_slot_dates": "Termin außerhalb des Zeitraums",
       "date_conflict_warning": "Dieser Tag ist bereits durch eine andere Buchung belegt.",
       "error_slot_exists": "Dieses Zeitfenster wurde bereits vorgeschlagen.",
       "error_date_past": "Das gewählte Datum kann nicht in der Vergangenheit liegen.",
-      "error_pickup_before_start": "Das Abholdatum kann nicht vor dem Beginn der Reservierung liegen.",
       "error_pickup_after_return": "Das Abholdatum kann nicht nach dem Rückgabedatum liegen.",
       "error_pickup_after_end": "Das Abholdatum kann nicht nach dem Buchungszeitraum liegen.",
       "error_return_before_pickup": "Das Rückgabedatum kann nicht vor dem Abholdatum liegen.",
@@ -1880,18 +1597,10 @@ defineExpose({
       "note_placeholder": "e.g. Before work, flexible...",
       "cancel": "Cancel",
       "save_proposal": "Save proposal",
-      "send_section_title": "{count} timeslot proposal ready | {count} timeslot proposals ready",
-      "send_proposals_btn": "Send timeslot proposals to {otherRole}",
-      "last_sent_at": "Last sent: {time}",
-      "not_sent_yet_notice": "Not yet sent to {otherRole}. Click send to notify them.",
-      "proposals_sent_success": "Timeslot proposals were successfully sent by email!",
       "max_return_hint": "Max. rental duration: {days} days (Return by {maxDate} latest)",
-      "pickup_range_hint": "Pickup from {startDate} until {endDate}",
-      "invalid_slot_dates": "Timeslot outside reservation period",
       "date_conflict_warning": "This date is already booked by another reservation.",
       "error_slot_exists": "This timeslot has already been suggested.",
       "error_date_past": "The selected date cannot be in the past.",
-      "error_pickup_before_start": "The pickup date cannot be before the start of the reservation.",
       "error_pickup_after_return": "The pickup date cannot be after the return date.",
       "error_pickup_after_end": "The pickup date cannot be after the reservation window.",
       "error_return_before_pickup": "The return date cannot be before the pickup date.",
