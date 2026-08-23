@@ -7,9 +7,23 @@ on:
     tags:
       - "v*.*.*"
       - "v*"
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "screenshots/**"
+      - ".gitignore"
+      - ".env.example"
+      - "LICENSE"
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "screenshots/**"
+      - ".gitignore"
+      - ".env.example"
+      - "LICENSE"
   workflow_dispatch:
 
 env:
