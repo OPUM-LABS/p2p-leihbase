@@ -64,7 +64,7 @@ Users can list their own items, browse borrowable tools, kitchen appliances, ele
 Clone the repository and create your local `.env` configuration from the provided template:
 
 ```bash
-git clone https://github.com/<your-user>/p2p-leihbase.git
+git clone https://github.com/OPUM-LABS/p2p-leihbase.git
 cd p2p-leihbase
 
 # Copy template to .env
