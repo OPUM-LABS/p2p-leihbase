@@ -12,7 +12,7 @@
         <LoadingSpinner v-if="status === 'pending'" size="sm" />
         <template v-else>
           {{
-            isToday(date) ? t("Today") : formatDate(date, "ddd, DD.MM", locale)
+            isToday(date) ? t('admin.tabs.today.today') : formatDate(date, "ddd, DD.MM", locale)
           }}
         </template>
       </Heading>
@@ -26,7 +26,7 @@
       <Switch
         id="show-cancelled"
         class="show-cancelled"
-        :label="t('show_cancelled')"
+        :label="t('admin.tabs.today.show_cancelled')"
         orientation="horizontal"
         v-model="showCancelled"
         @change="refresh()"
@@ -46,10 +46,10 @@
   <p v-else-if="status !== 'pending'">
     <i>
       {{
-        t("no_reservations_on_date", {
+        t('admin.tabs.today.no_reservations_on_date', {
           date: isToday(date)
-            ? t("today")
-            : t("on") + " " + formatDate(date, "DD.MM", locale),
+            ? t('admin.tabs.today.today')
+            : t('admin.tabs.today.on') + " " + formatDate(date, "DD.MM", locale),
         })
       }}.
     </i>
@@ -154,22 +154,3 @@ h3 {
   }
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "today": "today",
-    "Today": "Today",
-    "no_reservations_on_date": "No reservations starting or ending {date}",
-    "on": "at",
-    "show_cancelled": "Show cancelled"
-  },
-  "de": {
-    "today": "heute",
-    "Today": "Heute",
-    "no_reservations_on_date": "Es gibt keine Reservierungen, die {date} starten oder enden",
-    "on": "am",
-    "show_cancelled": "Stornierungen anzeigen"
-  }
-}
-</i18n>

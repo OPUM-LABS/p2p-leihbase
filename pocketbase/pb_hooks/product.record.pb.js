@@ -22,14 +22,21 @@ onRecordCreateRequest((e) => {
   e.next();
 }, "products");
 
-onRecordEnrich(({ record, requestInfo, next }) => {
+onRecordEnrich((e) => {
+  const record = e.record;
   if (!record) {
-    return next();
+    return e.next();
   }
 
-  const isOwner = requestInfo?.auth && requestInfo.auth.id === record.get("user");
-  const isAdmin = requestInfo?.auth?.get("role") === "admin";
-  const isSuperuser = requestInfo?.hasSuperuserAuth();
+  const reqInfo = typeof e.requestInfo === "function" ? e.requestInfo() : e.requestInfo;
+  const authUser = reqInfo?.auth || e.auth;
+
+  const isOwner = Boolean(authUser && authUser.id === record.get("user"));
+  const isAdmin = Boolean(authUser && authUser.get("role") === "admin");
+  const isSuperuser = Boolean(
+    (typeof e.hasSuperuserAuth === "function" && e.hasSuperuserAuth()) ||
+    (typeof reqInfo?.hasSuperuserAuth === "function" && reqInfo.hasSuperuserAuth())
+  );
 
   // Hide internal notes and exact pickup address from public by default
   record.hide("notes");
@@ -42,12 +49,12 @@ onRecordEnrich(({ record, requestInfo, next }) => {
   }
 
   // When passing the 'computeAvailability' query parameter:
-  if (Boolean(requestInfo?.query.computeAvailability)) {
+  if (Boolean(reqInfo?.query?.computeAvailability)) {
     /** @type {typeof import('./lib/product')} */
     const { hasActiveReservation } = require(`${__hooks}/lib/product`);
     record.withCustomData(true);
     record.set("computedIsAvailable", !hasActiveReservation(record.id, null, true));
   }
 
-  next();
+  e.next();
 }, "products");

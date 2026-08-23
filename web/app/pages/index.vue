@@ -6,10 +6,10 @@
         <PageAlert />
         <div class="hero-content">
           <Heading is="h1" size="2xl" class="hero-title">
-            {{ t("hero_title") }}
+            {{ t('home.hero_title') }}
           </Heading>
           <p class="hero-subtitle">
-            {{ t("hero_subtitle") }}
+            {{ t('home.hero_subtitle') }}
           </p>
 
           <!-- Search & Filter Controls -->
@@ -19,7 +19,7 @@
               <input
                 v-model="searchQuery"
                 type="text"
-                :placeholder="t('search_placeholder')"
+                :placeholder="t('home.search_placeholder')"
                 class="search-input"
               />
             </div>
@@ -28,7 +28,7 @@
               <input
                 v-model="locationFilter"
                 type="text"
-                :placeholder="t('location_placeholder')"
+                :placeholder="t('home.location_placeholder')"
                 class="search-input"
               />
             </div>
@@ -38,7 +38,7 @@
               class="hero-cta-btn"
             >
               <Plus class="btn-icon" />
-              {{ t("lend_item_btn") }}
+              {{ t('home.lend_item_btn') }}
             </Button>
           </div>
         </div>
@@ -50,9 +50,9 @@
       <Container width="lg" centered>
         <div class="section-header">
           <div>
-            <Heading is="h2" size="xl">{{ t("browse_items_title") }}</Heading>
+            <Heading is="h2" size="xl">{{ t('home.browse_items_title') }}</Heading>
             <p class="section-subtitle">
-              {{ t("items_count", { count: filteredProducts.length }) }}
+              {{ t('home.items_count', { count: filteredProducts.length }) }}
             </p>
           </div>
         </div>
@@ -64,13 +64,13 @@
         <!-- Empty State -->
         <Card v-else-if="filteredProducts.length === 0" class="empty-state">
           <Search class="empty-icon" />
-          <Heading is="h3" size="md">{{ t("no_items_found") }}</Heading>
-          <p>{{ t("no_items_found_desc") }}</p>
+          <Heading is="h3" size="md">{{ t('home.no_items_found') }}</Heading>
+          <p>{{ t('home.no_items_found_desc') }}</p>
           <Button v-if="searchQuery || locationFilter" variant="secondary" @click="resetFilters">
-            {{ t("clear_filters") }}
+            {{ t('home.clear_filters') }}
           </Button>
           <Button v-else variant="primary" to="/items/new">
-            {{ t("be_the_first_to_list") }}
+            {{ t('home.be_the_first_to_list') }}
           </Button>
         </Card>
 
@@ -85,11 +85,7 @@
             <Card class="p2p-product-card">
               <div class="image-wrapper">
                 <ProductImage
-                  :src="
-                    product.images && product.images.length > 0
-                      ? `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.id}/${product.images[0]}${thumbs.sm}`
-                      : null
-                  "
+                  :src="getProductImageUrl(product.id, product.images?.[0], thumbs.sm)"
                   fallback="/images/fallback-product-image-600x600.png"
                   aspect-ratio="1:1"
                 />
@@ -97,7 +93,7 @@
                   class="availability-tag"
                   :class="{ available: product.computedIsAvailable !== false, busy: product.computedIsAvailable === false }"
                 >
-                  {{ product.computedIsAvailable !== false ? t("available") : t("borrowed") }}
+                  {{ product.computedIsAvailable !== false ? t('home.available') : t('home.borrowed') }}
                 </span>
               </div>
 
@@ -109,10 +105,10 @@
                 <div class="card-meta">
                   <span class="location-pill">
                     <MapPin class="meta-icon" />
-                    {{ product.postal_code }} {{ product.city || t("nearby") }}
+                    {{ product.postal_code }} {{ product.city || t('home.nearby') }}
                   </span>
                   <span v-if="product.deposit" class="deposit-pill">
-                    {{ t("deposit") }}: {{ product.deposit }}€
+                    {{ t('home.deposit') }}: {{ product.deposit }}€
                   </span>
                 </div>
               </div>
@@ -125,28 +121,28 @@
     <!-- Why P2P Sharing Section -->
     <section class="benefits-section">
       <Container width="lg" centered>
-        <Heading is="h2" size="xl" class="benefits-title">{{ t("why_share_title") }}</Heading>
+        <Heading is="h2" size="xl" class="benefits-title">{{ t('home.why_share_title') }}</Heading>
         <div class="benefits-grid">
           <Card class="benefit-card">
             <div class="benefit-icon-wrapper">
               <Community class="benefit-icon" />
             </div>
-            <Heading is="h3" size="md">{{ t("benefit_community_title") }}</Heading>
-            <p>{{ t("benefit_community_desc") }}</p>
+            <Heading is="h3" size="md">{{ t('home.benefit_community_title') }}</Heading>
+            <p>{{ t('home.benefit_community_desc') }}</p>
           </Card>
           <Card class="benefit-card">
             <div class="benefit-icon-wrapper">
               <Leaf class="benefit-icon" />
             </div>
-            <Heading is="h3" size="md">{{ t("benefit_eco_title") }}</Heading>
-            <p>{{ t("benefit_eco_desc") }}</p>
+            <Heading is="h3" size="md">{{ t('home.benefit_eco_title') }}</Heading>
+            <p>{{ t('home.benefit_eco_desc') }}</p>
           </Card>
           <Card class="benefit-card">
             <div class="benefit-icon-wrapper">
               <Lock class="benefit-icon" />
             </div>
-            <Heading is="h3" size="md">{{ t("benefit_privacy_title") }}</Heading>
-            <p>{{ t("benefit_privacy_desc") }}</p>
+            <Heading is="h3" size="md">{{ t('home.benefit_privacy_title') }}</Heading>
+            <p>{{ t('home.benefit_privacy_desc') }}</p>
           </Card>
         </div>
       </Container>
@@ -165,18 +161,29 @@ import PageAlert from "@/components/page-alert/PageAlert.vue";
 import ProductImage from "@/components/ProductImage.vue";
 import type { Product } from "~~/models/product";
 
-const { t } = useI18n({ useScope: "local" });
-const { pb } = usePocketbase();
+const { t } = useI18n();
+const { pb, isValid, user } = usePocketbase();
 const config = useRuntimeConfig();
 const {
   product: { thumbs },
 } = useAppConfig();
-const { leihbase } = useLeihbase();
+const { leihbase } = storeToRefs(useLeihbase());
 
 const isLoading = ref(true);
 const products = ref<Product[]>([]);
 const searchQuery = ref("");
 const locationFilter = ref("");
+
+// Auto-apply postal code filter from logged-in user's profile
+watch(
+  () => pb.authStore.record?.postal_code || user.value?.postal_code,
+  (newPlz) => {
+    if (newPlz && !locationFilter.value) {
+      locationFilter.value = newPlz;
+    }
+  },
+  { immediate: true }
+);
 
 async function loadProducts() {
   try {
@@ -219,8 +226,14 @@ onMounted(() => {
   loadProducts();
 });
 
+const runtimeConfig = useRuntimeConfig();
+
+const appTitle = computed(
+  () => `${leihbase.value?.name || "Leihbase"} - P2P Sharing Platform`
+);
+
 useHead({
-  title: `${leihbase.value?.name || "Leihbase"} - P2P Sharing Platform`,
+  title: appTitle,
 });
 </script>
 
@@ -502,56 +515,3 @@ useHead({
   padding: 4rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "hero_title": "Borrow & Lend in Your Neighborhood",
-    "hero_subtitle": "Why buy when you can borrow? Discover tools, camping gear, and appliances shared by neighbors nearby.",
-    "search_placeholder": "What are you looking to borrow?",
-    "location_placeholder": "Postal code or City",
-    "lend_item_btn": "List an Item",
-    "browse_items_title": "Available in the Community",
-    "items_count": "{count} items available to borrow",
-    "available": "Available",
-    "borrowed": "Reserved",
-    "nearby": "Nearby",
-    "deposit": "Deposit",
-    "no_items_found": "No items found matching your search",
-    "no_items_found_desc": "Try adjusting your search terms or postal code, or be the first in your area to list an item!",
-    "clear_filters": "Clear Filters",
-    "be_the_first_to_list": "List the First Item",
-    "why_share_title": "Why Peer-to-Peer Sharing?",
-    "benefit_community_title": "Stronger Neighborhoods",
-    "benefit_community_desc": "Connect with people nearby and foster a cooperative sharing culture.",
-    "benefit_eco_title": "Sustainable & Circular",
-    "benefit_eco_desc": "Cut down unnecessary purchases and resource consumption by utilizing idle equipment.",
-    "benefit_privacy_title": "Privacy by Default",
-    "benefit_privacy_desc": "Exact pickup addresses are only revealed after the lender approves your request."
-  },
-  "de": {
-    "hero_title": "Leihen & Verleihen in deiner Nachbarschaft",
-    "hero_subtitle": "Warum kaufen, wenn man leihen kann? Entdecke Werkzeuge, Campingausrüstung und Haushaltsgeräte von Nachbarn in deiner Nähe.",
-    "search_placeholder": "Was suchst du zum Ausleihen?",
-    "location_placeholder": "PLZ oder Stadt",
-    "lend_item_btn": "Gegenstand anbieten",
-    "browse_items_title": "Gegenstände in deiner Community",
-    "items_count": "{count} Gegenstände zum Ausleihen verfügbar",
-    "available": "Verfügbar",
-    "borrowed": "Reserviert",
-    "nearby": "In der Nähe",
-    "deposit": "Kaution",
-    "no_items_found": "Keine Gegenstände für deine Suche gefunden",
-    "no_items_found_desc": "Probiere andere Suchbegriffe oder Postleitzahlen, oder stelle als Erstes einen Gegenstand ein!",
-    "clear_filters": "Filter zurücksetzen",
-    "be_the_first_to_list": "Ersten Gegenstand einstellen",
-    "why_share_title": "Warum gemeinsam teilen?",
-    "benefit_community_title": "Starke Nachbarschaft",
-    "benefit_community_desc": "Lerne Menschen in deiner Umgebung kennen und stärke das Miteinander.",
-    "benefit_eco_title": "Nachhaltig & Ressourcenschonend",
-    "benefit_eco_desc": "Vermeide unnötige Neukäufe und nutze vorhandene Dinge optimal aus.",
-    "benefit_privacy_title": "Geschützte Privatsphäre",
-    "benefit_privacy_desc": "Genaue Abholadressen werden erst nach Bestätigung durch den Verleiher sichtbar."
-  }
-}
-</i18n>

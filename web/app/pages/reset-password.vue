@@ -1,12 +1,12 @@
 <template>
   <Container width="sm" centered class="container">
-    <Alert v-if="success" class="alert">{{ t("submit_success") }}</Alert>
+    <Alert v-if="success" class="alert">{{ t('auth.reset_password.submit_success') }}</Alert>
     <Alert v-else-if="error" variant="error" class="alert">{{
-      t("submit_general_error")
+      t('auth.reset_password.submit_general_error')
     }}</Alert>
     <Card class="lb-stack">
-      <Heading is="h1" size="xl" cap>{{ t("title") }}</Heading>
-      <p>{{ t("text") }}</p>
+      <Heading is="h1" size="xl" cap>{{ t('auth.reset_password.title') }}</Heading>
+      <p>{{ t('auth.reset_password.text') }}</p>
       <form @submit.prevent="handleSubmit" class="lb-stack">
         <Input
           label="E-mail"
@@ -16,13 +16,13 @@
           v-model="email"
           required
         />
-        <Button size="lg" type="submit">{{ t("submit") }}</Button>
+        <Button size="lg" type="submit">{{ t('auth.reset_password.submit') }}</Button>
       </form>
     </Card>
     <footer>
-      <a href="/login">{{ t("login") }}</a>
+      <a href="/login">{{ t('auth.reset_password.login') }}</a>
       •
-      <a href="/signup">{{ t("signup") }}</a>
+      <a href="/signup">{{ t('auth.reset_password.signup') }}</a>
     </footer>
   </Container>
 </template>
@@ -42,7 +42,7 @@ const { t } = useI18n({
 const { pb } = usePocketbase();
 
 useHead({
-  title: t("page_title"),
+  title: t("auth.reset_password.page_title"),
 });
 
 const email = ref<string>();
@@ -85,30 +85,3 @@ button {
   align-self: flex-start;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "page_title": "Reset password",
-    "title": "Reset password",
-    "text": "Enter the email address you used when you joined and we'll send you instructions to reset your password.",
-    "submit": "Submit",
-    "login": "Login",
-    "signup": "Sign up",
-    "submit_success": "We send you an e-mail with instruction on how to reset your password",
-    "submit_general_error": "Something went wrong, please try again or send us an e-mail"
-  },
-  "de": {
-    "page_title": "Passwort zurücksetzen",
-    "title": "Passwort zurücksetzen",
-    "text": "Bitte gib die E-Mail-Adresse ein, mit der du dich registriert hast. Wir senden dir dann Anweisungen zum Zurücksetzen deines Passworts zu.",
-    "submit": "Senden",
-    "login": "Einloggen",
-    "signup": "Registrieren",
-    "submit_success": "Wir haben dir eine E-Mail mit Anweisungen zum Zurücksetzen deines Passworts geschickt.",
-    "submit_general_error": "Es ist ein Fehler aufgetreten. Bitte versuche es erneut oder sende uns eine E-Mail."
-  }
-}
-</i18n>
-
-p

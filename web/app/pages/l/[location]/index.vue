@@ -24,7 +24,7 @@
         </Button>
       </section>
       <Heading is="h1" size="xl" class="heading">
-        {{ location?.name || t("no_location_found") }}
+        {{ location?.name || t('location_hub.index.no_location_found') }}
       </Heading>
       <!-- Description -->
       <div
@@ -34,7 +34,7 @@
       ></div>
       <!-- Opening hours -->
       <div v-if="location?.opening_hours">
-        <strong>{{ t("opening_hours") }}:</strong><br />
+        <strong>{{ t('location_hub.index.opening_hours') }}:</strong><br />
         <span
           v-html="openingHoursToString(location?.opening_hours, locale)"
         ></span>
@@ -99,16 +99,3 @@ h2 {
   margin-bottom: 1rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "no_location_found": "No location found",
-    "opening_hours": "Opening hours"
-  },
-  "de": {
-    "no_location_found": "Kein Ort gefunden",
-    "opening_hours": "Aktuelle Öffnungszeiten"
-  }
-}
-</i18n>

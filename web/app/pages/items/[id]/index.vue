@@ -1,5 +1,5 @@
 <template>
-  <Container width="lg" class="page-container">
+  <Container width="lg" centered class="page-container">
     <div v-if="isLoading" class="loading-state">
       <LoadingSpinner />
     </div>
@@ -27,7 +27,7 @@
               @click="selectedImageIndex = idx"
             >
               <img
-                :src="`${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.id}/${img}${thumbs.sm}`"
+                :src="getProductImageUrl(product.id, img, thumbs.sm) || ''"
               />
             </button>
           </div>
@@ -36,17 +36,17 @@
         <!-- Description & Information -->
         <Card class="details-card lb-stack">
           <div>
-            <span class="category-tag">{{ t("p2p_item") }}</span>
+            <span class="category-tag">{{ t('items.detail.p2p_item') }}</span>
             <Heading is="h1" size="xl" class="product-title">{{ product.name }}</Heading>
           </div>
 
           <div v-if="product.description" class="section">
-            <Heading is="h2" size="md">{{ t("description") }}</Heading>
+            <Heading is="h2" size="md">{{ t('items.detail.description') }}</Heading>
             <div class="lb-richtext" v-html="product.description"></div>
           </div>
 
           <div v-if="product.terms_condition" class="section">
-            <Heading is="h2" size="md">{{ t("terms") }}</Heading>
+            <Heading is="h2" size="md">{{ t('items.detail.terms') }}</Heading>
             <div class="lb-richtext" v-html="product.terms_condition"></div>
           </div>
         </Card>
@@ -59,20 +59,20 @@
           <div class="availability-row">
             <AvailabilityBadge :available="product.computedIsAvailable !== false" />
             <span v-if="product.deposit" class="deposit-label">
-              {{ t("deposit") }}: <strong>{{ product.deposit }}€</strong>
+              {{ t('items.detail.deposit') }}: <strong>{{ product.deposit }}€</strong>
             </span>
           </div>
 
           <div class="duration-hint">
             <Calendar class="hint-icon" />
-            <span>{{ t("max_rental_days", { days: product.max_duration_days || 14 }) }}</span>
+            <span>{{ t('items.detail.max_rental_days', { days: product.max_duration_days || 14 }) }}</span>
           </div>
 
           <!-- If Owner -->
           <div v-if="isOwner" class="owner-actions">
             <Button variant="primary" :to="`/items/${product.id}/edit`" class="full-btn">
               <Edit class="btn-icon" />
-              {{ t("edit_listing") }}
+              {{ t('items.detail.edit_listing') }}
             </Button>
           </div>
 
@@ -85,7 +85,7 @@
               class="full-btn"
               @click="openBorrowDialog"
             >
-              {{ t("request_to_borrow") }}
+              {{ t('items.detail.request_to_borrow') }}
             </Button>
             <Button
               v-else
@@ -94,21 +94,29 @@
               class="full-btn"
               :to="`/login?redirect=/items/${product.id}`"
             >
-              {{ t("login_to_borrow") }}
+              {{ t('items.detail.login_to_borrow') }}
             </Button>
           </div>
+
+          <!-- Upcoming Reservations (if any) -->
+          <ReservationsBox
+            v-if="reservations && reservations.length > 0"
+            :title="t('reservations.box.title')"
+            :reservations="reservations"
+            class="upcoming-reservations"
+          />
         </Card>
 
         <!-- Approximate Location & Privacy Card -->
         <Card class="location-card">
           <Heading is="h2" size="sm" class="sidebar-heading">
             <MapPin class="heading-icon" />
-            {{ t("pickup_location") }}
+            {{ t('items.detail.pickup_location') }}
           </Heading>
 
           <div class="location-details">
             <p class="city-line">
-              <strong>{{ product.postal_code }} {{ product.city || t("location_not_set") }}</strong>
+              <strong>{{ product.postal_code }} {{ product.city || t('items.detail.location_not_set') }}</strong>
             </p>
             <p v-if="product.approx_location_note" class="approx-note">
               {{ product.approx_location_note }}
@@ -117,7 +125,7 @@
 
           <div class="privacy-note">
             <Lock class="lock-icon" />
-            <small>{{ t("privacy_explanation") }}</small>
+            <small>{{ t('items.detail.privacy_explanation') }}</small>
           </div>
         </Card>
 
@@ -125,7 +133,7 @@
         <Card v-if="product.expand?.user" class="owner-card">
           <Heading is="h2" size="sm" class="sidebar-heading">
             <UserIcon class="heading-icon" />
-            {{ t("offered_by") }}
+            {{ t('items.detail.offered_by') }}
           </Heading>
 
           <div class="owner-profile">
@@ -133,7 +141,7 @@
               <UserIcon class="default-avatar" />
             </div>
             <div class="owner-meta">
-              <p class="owner-name">{{ product.expand.user.name }}</p>
+              <p class="owner-name">{{ product.expand.user.nickname || product.expand.user.name }}</p>
               <p v-if="product.expand.user.bio" class="owner-bio">
                 {{ product.expand.user.bio }}
               </p>
@@ -155,17 +163,26 @@ import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import LoadingSpinner from "@/components/core/LoadingSpinner.vue";
 import ProductImage from "@/components/ProductImage.vue";
-import { useReservationDialog } from "@/stores/reservationDialog";
+import ReservationsBox from "@/components/ReservationsBox.vue";
+import { getFutureReservationsByProduct } from "@/composables/reservation";
 import type { Product } from "~~/models/product";
 
-const { t } = useI18n({ useScope: "local" });
+const { t } = useI18n();
 const { pb, isValid } = usePocketbase();
 const route = useRoute();
+const nuxtApp = useNuxtApp();
 const config = useRuntimeConfig();
 const {
   product: { thumbs },
 } = useAppConfig();
 const reservationDialog = useReservationDialog();
+
+const { reservations, refresh: refreshReservations } =
+  await getFutureReservationsByProduct(route.params.id as string);
+
+nuxtApp.hook("app:user:reservation:create", () => {
+  refreshReservations();
+});
 
 const isLoading = ref(true);
 const error = ref("");
@@ -183,7 +200,11 @@ const activeImageUrl = computed(() => {
     product.value.images.length > 0 &&
     product.value.images[selectedImageIndex.value]
   ) {
-    return `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.value.id}/${product.value.images[selectedImageIndex.value]}${thumbs.lg}`;
+    return getProductImageUrl(
+      product.value.id,
+      product.value.images[selectedImageIndex.value],
+      thumbs.lg
+    );
   }
   return null;
 });
@@ -444,36 +465,3 @@ useHead({
   padding: 4rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "p2p_item": "Peer-to-Peer Rental",
-    "description": "Description",
-    "terms": "Lending Terms & Handover Care",
-    "deposit": "Security Deposit",
-    "max_rental_days": "Borrow for up to {days} days",
-    "edit_listing": "Edit My Listing",
-    "request_to_borrow": "Request to Borrow",
-    "login_to_borrow": "Log in to Request",
-    "pickup_location": "Pickup Location",
-    "location_not_set": "Location not specified",
-    "privacy_explanation": "Approximate area shown. Exact street address is revealed upon lender's booking confirmation.",
-    "offered_by": "Offered by Lender"
-  },
-  "de": {
-    "p2p_item": "Nachbarschafts-Verleih",
-    "description": "Beschreibung",
-    "terms": "Leihbedingungen & Übergabehinweise",
-    "deposit": "Kaution",
-    "max_rental_days": "Ausleihe bis zu {days} Tage möglich",
-    "edit_listing": "Mein Inserat bearbeiten",
-    "request_to_borrow": "Ausleihe anfragen",
-    "login_to_borrow": "Einloggen zum Anfragen",
-    "pickup_location": "Abholort",
-    "location_not_set": "Kein Ort angegeben",
-    "privacy_explanation": "Ungefährer Bereich. Genaue Abholadresse wird nach Bestätigung durch den Verleiher sichtbar.",
-    "offered_by": "Verliehen von"
-  }
-}
-</i18n>

@@ -3,14 +3,14 @@
     <table cellspacing="0">
       <thead>
         <tr>
-          <th>{{ t("start") }}</th>
-          <th>{{ t("end") }}</th>
-          <th>{{ t("product") }}</th>
-          <th>{{ t("user") }}</th>
-          <th>{{ t("picked_up") }}</th>
-          <th>{{ t("returned") }}</th>
-          <th>{{ t("deposit") }}</th>
-          <th>{{ t("note") }}</th>
+          <th>{{ t('admin.reservations_table.start') }}</th>
+          <th>{{ t('admin.reservations_table.end') }}</th>
+          <th>{{ t('admin.reservations_table.product') }}</th>
+          <th>{{ t('admin.reservations_table.user') }}</th>
+          <th>{{ t('admin.reservations_table.picked_up') }}</th>
+          <th>{{ t('admin.reservations_table.returned') }}</th>
+          <th>{{ t('admin.reservations_table.deposit') }}</th>
+          <th>{{ t('admin.reservations_table.note') }}</th>
         </tr>
       </thead>
       <tbody>
@@ -167,28 +167,3 @@ sl-tooltip :deep(ol) {
   padding-left: 1.333rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "start": "Start",
-    "end": "End",
-    "product": "Product",
-    "user": "User",
-    "picked_up": "Picked Up",
-    "returned": "Returned",
-    "deposit": "Deposit",
-    "note": "Note"
-  },
-  "de": {
-    "start": "Start",
-    "end": "Ende",
-    "product": "Produkt",
-    "user": "Nutzer",
-    "picked_up": "Abgeholt",
-    "returned": "Zurückgegeben",
-    "deposit": "Pfand",
-    "note": "Notiz"
-  }
-}
-</i18n>

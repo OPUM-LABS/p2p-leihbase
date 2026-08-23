@@ -1,8 +1,8 @@
 <template>
   <span class="availability-badge">
     <AvailabilityCircle :available="available" />
-    <span v-if="props.available">{{ t("available") }}</span>
-    <span v-else>{{ t("unavailable") }}</span>
+    <span v-if="props.available">{{ t('common.available') }}</span>
+    <span v-else>{{ t('common.unavailable') }}</span>
   </span>
 </template>
 
@@ -31,16 +31,3 @@ const props = defineProps({
   font-size: var(--font-size-sm);
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "available": "Available",
-    "unavailable": "Not available"
-  },
-  "de": {
-    "available": "Gerade verfügbar",
-    "unavailable": "Gerade nicht verfügbar"
-  }
-}
-</i18n>

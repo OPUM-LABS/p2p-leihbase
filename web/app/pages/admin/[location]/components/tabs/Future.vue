@@ -1,5 +1,5 @@
 <template>
-  <TabHeader :title="t('future_title')" />
+  <TabHeader :title="t('admin.tabs.future.future_title')" />
   <LoadingSpinner v-if="status === 'pending'" />
   <AdminReservationTable
     v-else-if="futureReservations && futureReservations.length > 0"
@@ -9,7 +9,7 @@
   />
   <p v-else>
     <i>
-      {{ t("no_future_reservations") }}
+      {{ t('admin.tabs.future.no_future_reservations') }}
     </i>
   </p>
 </template>
@@ -56,16 +56,3 @@ const {
   { lazy: true }
 );
 </script>
-
-<i18n lang="json">
-{
-  "en": {
-    "no_future_reservations": "There are no future reservations.",
-    "future_title": "Future reservations"
-  },
-  "de": {
-    "no_future_reservations": "Es gibt keine zukünftige Reservierungen.",
-    "future_title": "Anstehende Reservierungen"
-  }
-}
-</i18n>

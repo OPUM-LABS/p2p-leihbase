@@ -9,7 +9,7 @@ export type User = RecordModel & {
   city?: string;
   postal_code?: string;
   address?: string;
-  phone?: string;
+  nickname?: string;
   role: "user" | "manager" | "admin";
   manager_locations?: string[];
 };

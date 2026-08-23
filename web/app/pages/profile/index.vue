@@ -4,24 +4,34 @@
     <Card class="lb-stack">
       <div class="heading row">
         <Heading is="h1" size="xl" cap data-testid="profile-h1">
-          {{ t("profile") }}
+          {{ t('profile.index.profile') }}
         </Heading>
-        <Button to="/profile/edit" size="md">{{ t("edit_profile") }}</Button>
+        <Button to="/profile/edit" size="md">{{ t('profile.index.edit_profile') }}</Button>
       </div>
-      <KeyValue :title="t('name')" :value="user?.name" />
-      <KeyValue :title="t('email')" :value="user?.email" />
+      <KeyValue :title="t('profile.index.nickname')" :value="user?.nickname || t('profile.index.not_set')" />
+      <KeyValue :title="t('profile.index.name')" :value="user?.name" />
+      <KeyValue :title="t('profile.index.email')" :value="user?.email" />
+      <KeyValue
+        :title="t('profile.index.language')"
+        :value="(user?.locale || 'de') === 'en' ? t('common.language_en') : t('common.language_de')"
+      />
+
+      <Divider spacing="sm" />
+      <Heading is="h2" size="sm" class="section-title">{{ t('profile.index.master_data') }}</Heading>
+      <KeyValue :title="t('profile.index.street_address')" :value="user?.address || t('profile.index.not_set')" />
+      <KeyValue :title="t('profile.index.postal_code')" :value="user?.postal_code || t('profile.index.not_set')" />
+      <KeyValue :title="t('profile.index.city')" :value="user?.city || t('profile.index.not_set')" />
+
       <Alert v-if="!user?.verified" variant="warning" size="sm">
         <span>
-          {{ t("unverified") }}
-          <Link to="/profile/verify-email">{{ t("more_info") }}</Link
+          {{ t('profile.index.unverified') }}
+          <Link to="/profile/verify-email">{{ t('profile.index.more_info') }}</Link
           >.
         </span>
       </Alert>
       <Divider spacing="md" />
       <p>
-        <!-- <Link href="/profile/change-email">{{ t("change_email") }}</Link> -->
-        <!-- <br /> -->
-        <Link to="/profile/change-password">{{ t("change_password") }}</Link>
+        <Link to="/profile/change-password">{{ t('profile.index.change_password') }}</Link>
       </p>
     </Card>
   </Container>
@@ -38,21 +48,29 @@ import KeyValue from "@/components/core/KeyValue.vue";
 import Link from "@/components/core/Link.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 
-const { isValid, user, logout } = usePocketbase();
+import { onMounted } from "vue";
+
+const { pb, isValid, user } = usePocketbase();
 const userStore = useUserStore();
 const { t } = useI18n({
   useScope: "local",
 });
 
 useHead({
-  title: t("profile"),
+  title: t("profile.index.profile"),
 });
 
-if (!isValid.value || !user.value?.id) {
-  logout();
-  userStore.logout();
+if (!isValid.value) {
   navigateTo("/login");
 }
+
+onMounted(async () => {
+  if (isValid.value) {
+    try {
+      await pb.collection("users").authRefresh();
+    } catch (_) {}
+  }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -68,32 +86,3 @@ p:last-child {
   margin: 0;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "profile": "Profile",
-    "edit_profile": "Edit",
-    "name": "Name",
-    "email": "E-mail",
-    "password": "Password",
-    "unverified": "Your email address hasn't been confirmed yet.",
-    "more_info": "More info",
-    "change_email": "Update e-mail",
-    "change_password": "Update password",
-    "logout": "Logout"
-  },
-  "de": {
-    "profile": "Profil",
-    "edit_profile": "Bearbeiten",
-    "name": "Name",
-    "email": "E-Mail Address",
-    "password": "Passwort",
-    "unverified": "Deine E-Mail-Adresse wurde noch nicht bestätigt.",
-    "more_info": "Mehr Infos",
-    "change_email": "E-Mail Address ändern",
-    "change_password": "Passwort ändern",
-    "logout": "Ausloggen"
-  }
-}
-</i18n>

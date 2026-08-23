@@ -16,7 +16,7 @@
       <div class="title">
         <Heading is="h2" size="lg" :id="id + '-title'" gap>{{ title }}</Heading>
         <button @click="close">
-          <span class="sr-only">{{ t("close") }}</span>
+          <span class="sr-only">{{ t('common.close') }}</span>
           <Xmark />
         </button>
       </div>
@@ -71,7 +71,7 @@ watch(open, (newValue) => {
     dialog.value.showModal();
   } else {
     dialog.value.close();
-    emit("close");
+    emit("common.close");
   }
   wasOpen.value = newValue || wasOpen.value;
 });
@@ -203,14 +203,3 @@ header {
   overflow-y: auto;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "close": "Close"
-  },
-  "de": {
-    "close": "Schließen"
-  }
-}
-</i18n>

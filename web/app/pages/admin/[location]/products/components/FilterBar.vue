@@ -2,30 +2,30 @@
   <HorizontalScroll class="filter-bar">
     <!-- Status filter -->
     <Select
-      :label="t('status')"
+      :label="t('admin.filter_bar.status')"
       hide-label
       v-model="status"
       @input="$emit('input')"
     >
-      <option value="" :aria-label="t('all')">{{ t("status") }}</option>
-      <option value="active">{{ t("active") }}</option>
-      <option value="inactive">{{ t("inactive") }}</option>
+      <option value="" :aria-label="t('admin.filter_bar.all')">{{ t('admin.filter_bar.status') }}</option>
+      <option value="active">{{ t('admin.filter_bar.active') }}</option>
+      <option value="inactive">{{ t('admin.filter_bar.inactive') }}</option>
     </Select>
     <!-- Completeness filter -->
     <Select
-      :label="t('missing_info')"
+      :label="t('admin.filter_bar.missing_info')"
       hide-label
       v-model="missing"
       @input="$emit('input')"
     >
-      <option value="" :aria-label="t('all')">{{ t("missing_info") }}</option>
-      <option value="photo">{{ t("no_photo") }}</option>
-      <option value="description">{{ t("no_description") }}</option>
+      <option value="" :aria-label="t('admin.filter_bar.all')">{{ t('admin.filter_bar.missing_info') }}</option>
+      <option value="photo">{{ t('admin.filter_bar.no_photo') }}</option>
+      <option value="description">{{ t('admin.filter_bar.no_description') }}</option>
     </Select>
     <!-- Text filter -->
     <Input
       id="admin-product-input"
-      :placeholder="`${t('search')}...`"
+      :placeholder="`${t('admin.filter_bar.search')}...`"
       v-model="query"
       class="text-search"
       @input="$emit('input')"
@@ -43,7 +43,7 @@
       "
     >
       <Xmark />
-      {{ t("clear_filters") }}
+      {{ t('admin.filter_bar.clear_filters') }}
     </Button>
   </HorizontalScroll>
 </template>
@@ -81,30 +81,3 @@ defineEmits<{ input: [] }>();
   flex-shrink: 0;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "status": "Status",
-    "all": "All",
-    "active": "Active",
-    "inactive": "Inactive",
-    "missing_info": "Missing info",
-    "no_photo": "No photo",
-    "no_description": "No description",
-    "search": "Search",
-    "clear_filters": "Clear filters"
-  },
-  "de": {
-    "status": "Status",
-    "all": "Alle",
-    "active": "Aktiv",
-    "inactive": "Inaktiv",
-    "missing_info": "Fehlende Infos",
-    "no_photo": "Kein Foto",
-    "no_description": "Keine Beschreibung",
-    "search": "Suche",
-    "clear_filters": "Filter zurücksetzen"
-  }
-}
-</i18n>

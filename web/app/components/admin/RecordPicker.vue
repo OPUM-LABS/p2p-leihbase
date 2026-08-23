@@ -22,7 +22,7 @@
     </table>
     <table v-else cellspacing="0">
       <tr>
-        <td>{{ t("no_results") }}</td>
+        <td>{{ t('admin.record_picker.no_results') }}</td>
       </tr>
     </table>
   </Dialog>
@@ -149,14 +149,3 @@ table td {
   padding: 0.25rem 0.5rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "no_results": "No search results"
-  },
-  "de": {
-    "no_results": "Keine Suchergebnisse"
-  }
-}
-</i18n>

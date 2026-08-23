@@ -30,12 +30,29 @@ setBasePath(
 const { pb, isValid, logout } = usePocketbase();
 const userStore = useUserStore();
 const {
-  public: { plausibleTrackingDomain, locale: defaultLocale },
+  public: { plausibleTrackingDomain },
 } = useRuntimeConfig();
-const { locale, setLocale } = useI18n();
+const { locale, setLocale, setLocaleCookie } = useI18n();
 
-// Set default locale based on runtime config
-setLocale(defaultLocale);
+async function syncUserLocale() {
+  const userLocale = pb.authStore.record?.locale;
+  if (userLocale && userLocale !== locale.value) {
+    const i18nCookie = useCookie("i18n_redirected", {
+      maxAge: 365 * 24 * 60 * 60,
+      path: "/",
+      sameSite: "lax",
+    });
+    i18nCookie.value = userLocale;
+    try {
+      await setLocale(userLocale);
+      if (typeof setLocaleCookie === "function") {
+        setLocaleCookie(userLocale);
+      }
+    } catch (e) {
+      console.warn("Failed to set user locale:", e);
+    }
+  }
+}
 
 // Fetch Leihbase collection on a central location
 // await for the result before processing the rest of the page
@@ -68,10 +85,19 @@ useHead({
 
 if (isValid.value) {
   await userStore.login({ user: pb.authStore.record as User });
+  await syncUserLocale();
 } else {
-  logout();
   userStore.logout();
 }
+
+watch(isValid, async (valid) => {
+  if (valid) {
+    await userStore.login({ user: pb.authStore.record as User });
+    await syncUserLocale();
+  } else {
+    userStore.logout();
+  }
+});
 </script>
 
 <style lang="scss" scoped>

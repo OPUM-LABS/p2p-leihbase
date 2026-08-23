@@ -1,7 +1,7 @@
 <template>
-  <Container width="md" class="page-container">
+  <Container width="md" centered class="page-container">
     <div class="header-section">
-      <Heading is="h1" size="xl">{{ t("edit_item_title") }}</Heading>
+      <Heading is="h1" size="xl">{{ t('items.edit.edit_item_title') }}</Heading>
     </div>
 
     <div v-if="isLoading" class="loading-state">
@@ -14,20 +14,20 @@
 
       <!-- Basic Info -->
       <Card class="form-card">
-        <Heading is="h2" size="md" class="card-heading">{{ t("basic_info") }}</Heading>
+        <Heading is="h2" size="md" class="card-heading">{{ t('items.edit.basic_info') }}</Heading>
         
         <div class="field-stack">
           <Input
             v-model="form.name"
             id="item-name"
-            :label="t('item_name')"
+            :label="t('items.edit.item_name')"
             required
           />
 
           <Textarea
             v-model="form.description"
             id="item-description"
-            :label="t('description')"
+            :label="t('items.edit.description')"
             rows="4"
           />
 
@@ -37,34 +37,34 @@
             collection="products"
             :record-id="route.params.id as string"
             id="item-images"
-            :label="t('images')"
+            :label="t('items.edit.images')"
           />
 
           <Switch
             v-model="form.active"
             id="item-active"
-            :label="t('active_status')"
-            :description="t('active_status_desc')"
+            :label="t('items.edit.active_status')"
+            :description="t('items.edit.active_status_desc')"
           />
         </div>
       </Card>
 
       <!-- Location & Privacy Section -->
       <Card class="form-card">
-        <Heading is="h2" size="md" class="card-heading">{{ t("location_privacy") }}</Heading>
+        <Heading is="h2" size="md" class="card-heading">{{ t('items.edit.location_privacy') }}</Heading>
 
         <div class="two-cols">
           <Input
             v-model="form.city"
             id="item-city"
-            :label="t('city')"
+            :label="t('items.edit.city')"
             required
           />
 
           <Input
             v-model="form.postal_code"
             id="item-postal-code"
-            :label="t('postal_code')"
+            :label="t('items.edit.postal_code')"
             required
           />
         </div>
@@ -72,18 +72,18 @@
         <Input
           v-model="form.approx_location_note"
           id="item-approx"
-          :label="t('approx_area')"
+          :label="t('items.edit.approx_area')"
         />
 
         <div class="private-box">
           <div class="private-badge">
             <Lock class="icon-lock" />
-            <span>{{ t("private_info") }}</span>
+            <span>{{ t('items.edit.private_info') }}</span>
           </div>
           <Input
             v-model="form.pickup_address"
             id="item-pickup-address"
-            :label="t('exact_pickup_address')"
+            :label="t('items.edit.exact_pickup_address')"
             required
           />
         </div>
@@ -91,7 +91,7 @@
 
       <!-- Rental Conditions -->
       <Card class="form-card">
-        <Heading is="h2" size="md" class="card-heading">{{ t("rental_terms") }}</Heading>
+        <Heading is="h2" size="md" class="card-heading">{{ t('items.edit.rental_terms') }}</Heading>
 
         <div class="two-cols">
           <Input
@@ -99,7 +99,7 @@
             id="item-deposit"
             type="number"
             min="0"
-            :label="t('deposit')"
+            :label="t('items.edit.deposit')"
           />
 
           <Input
@@ -108,14 +108,14 @@
             type="number"
             min="1"
             max="365"
-            :label="t('max_duration')"
+            :label="t('items.edit.max_duration')"
           />
         </div>
 
         <Textarea
           v-model="form.terms_condition"
           id="item-terms"
-          :label="t('special_terms')"
+          :label="t('items.edit.special_terms')"
           rows="3"
         />
       </Card>
@@ -127,14 +127,14 @@
           size="lg"
           :loading="isSubmitting"
         >
-          {{ t("save_changes") }}
+          {{ t('items.edit.save_changes') }}
         </Button>
         <Button
           variant="secondary"
           size="lg"
           :to="`/items/${route.params.id}`"
         >
-          {{ t("cancel") }}
+          {{ t('items.edit.cancel') }}
         </Button>
         <Button
           variant="danger"
@@ -142,7 +142,7 @@
           class="delete-btn"
           @click.prevent="handleDelete"
         >
-          {{ t("delete_item") }}
+          {{ t('items.edit.delete_item') }}
         </Button>
       </div>
     </form>
@@ -163,7 +163,7 @@ import Textarea from "@/components/core/Textarea.vue";
 import ImageInput from "@/components/ImageInput.vue";
 import type { Product } from "~~/models/product";
 
-const { t } = useI18n({ useScope: "local" });
+const { t } = useI18n();
 const { pb, isValid } = usePocketbase();
 const route = useRoute();
 const router = useRouter();
@@ -176,6 +176,8 @@ const isLoading = ref(true);
 const isSubmitting = ref(false);
 const errorMessage = ref("");
 const successMessage = ref("");
+
+const initialImages = ref<string[]>([]);
 
 const form = reactive({
   name: "",
@@ -204,7 +206,8 @@ onMounted(async () => {
 
     form.name = item.name || "";
     form.description = item.description || "";
-    form.images = item.images || [];
+    form.images = [...(item.images || [])];
+    initialImages.value = [...(item.images || [])];
     form.active = item.active !== false;
     form.city = item.city || "";
     form.postal_code = item.postal_code || "";
@@ -238,29 +241,38 @@ async function handleSubmit() {
     formData.append("max_duration_days", String(form.max_duration_days || 14));
     formData.append("terms_condition", form.terms_condition);
 
-    // Keep remaining existing images
-    for (const img of form.images) {
-      formData.append("images", img);
+    // Remove deleted images using PocketBase "images-" modifier
+    const removedImages = initialImages.value.filter(
+      (img) => !form.images.includes(img)
+    );
+    for (const img of removedImages) {
+      formData.append("images-", img);
     }
-    // Append new uploaded images
+
+    // Append new uploaded images using PocketBase "images+" modifier
     for (const file of form.newImages) {
-      formData.append("images", file);
+      formData.append("images+", file);
     }
 
     await pb.collection("products").update(route.params.id as string, formData);
-    successMessage.value = t("save_success");
+    successMessage.value = t("items.edit.save_success");
     setTimeout(() => {
       router.push(`/items/${route.params.id}`);
     }, 800);
   } catch (err: any) {
-    errorMessage.value = err?.message || "Failed to update item.";
+    const msg = err?.data?.message || err?.message || "";
+    if (msg.includes("User_not_verified") || err?.response?.data?.message?.includes("User_not_verified")) {
+      errorMessage.value = t("items.new.error_user_not_verified");
+    } else {
+      errorMessage.value = err?.message || "Failed to update item.";
+    }
   } finally {
     isSubmitting.value = false;
   }
 }
 
 async function handleDelete() {
-  if (!confirm(t("confirm_delete"))) return;
+  if (!confirm(t("items.edit.confirm_delete"))) return;
   try {
     await pb.collection("products").delete(route.params.id as string);
     router.push("/profile/my-items");
@@ -344,56 +356,3 @@ async function handleDelete() {
   padding: 3rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "edit_item_title": "Edit Listing",
-    "basic_info": "1. Basic Details",
-    "item_name": "Item Title",
-    "description": "Description",
-    "images": "Photos",
-    "active_status": "Visible in Search",
-    "active_status_desc": "Disable to pause borrowing requests temporarily.",
-    "location_privacy": "2. Location & Privacy",
-    "city": "City",
-    "postal_code": "Postal Code",
-    "approx_area": "Neighborhood / District (Public)",
-    "private_info": "Protected Pickup Information",
-    "exact_pickup_address": "Exact Handover Address",
-    "rental_terms": "3. Rental Terms & Deposit",
-    "deposit": "Security Deposit (€)",
-    "max_duration": "Max Rental Duration (Days)",
-    "special_terms": "Handover / Care Instructions",
-    "save_changes": "Save Changes",
-    "cancel": "Cancel",
-    "delete_item": "Delete Item",
-    "confirm_delete": "Are you sure you want to delete this listing permanently?",
-    "save_success": "Changes saved successfully!"
-  },
-  "de": {
-    "edit_item_title": "Gegenstand bearbeiten",
-    "basic_info": "1. Grundlegende Details",
-    "item_name": "Titel des Gegenstands",
-    "description": "Beschreibung",
-    "images": "Fotos",
-    "active_status": "In Suche sichtbar",
-    "active_status_desc": "Deaktivieren, um Anfragen vorübergehend zu pausieren.",
-    "location_privacy": "2. Standort & Privatsphäre",
-    "city": "Stadt",
-    "postal_code": "Postleitzahl",
-    "approx_area": "Stadtteil / Viertel (Öffentlich)",
-    "private_info": "Geschützte Abholadresse",
-    "exact_pickup_address": "Genaue Abholadresse",
-    "rental_terms": "3. Leihbedingungen & Kaution",
-    "deposit": "Kaution (€)",
-    "max_duration": "Maximale Leihdauer (Tage)",
-    "special_terms": "Übergabe- & Pflegehinweise",
-    "save_changes": "Änderungen speichern",
-    "cancel": "Abbrechen",
-    "delete_item": "Gegenstand löschen",
-    "confirm_delete": "Möchtest du diesen Gegenstand wirklich unwiderruflich löschen?",
-    "save_success": "Änderungen erfolgreich gespeichert!"
-  }
-}
-</i18n>

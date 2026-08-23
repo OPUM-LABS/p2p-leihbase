@@ -10,7 +10,7 @@ function validateStartEnd(
   start,
   end,
   maxReservationDays,
-  isManager 
+  isManager
 ) {
   var startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
@@ -46,32 +46,47 @@ function validateStartEnd(
 /**
  * Checks if a reservation has other overlapping reservations
  * @param {core.Record} reservation
- * @param {boolean} allowSameDay
+ * @param {boolean} [allowSameDay=false]
  * @returns {boolean}
  */
-function hasOverlappingReservations(reservation, allowSameDay) {
-  // A cancelled reservation is allowed to have an overlap
-  if (reservation.get("cancelled")) {
+function hasOverlappingReservations(reservation, allowSameDay = false) {
+  // A cancelled, declined, or already ended reservation is allowed to have an overlap
+  if (
+    reservation.get("cancelled") ||
+    reservation.get("status") === "cancelled" ||
+    reservation.get("status") === "declined" ||
+    reservation.get("ended") ||
+    reservation.get("status") === "ended"
+  ) {
     return false;
   }
+
+  const startRaw = reservation.get("start");
+  const endRaw = reservation.get("end");
+  const startStr = startRaw ? (typeof startRaw === "string" ? startRaw : startRaw.string()).split(" ")[0].split("T")[0] : "";
+  const endStr = endRaw ? (typeof endRaw === "string" ? endRaw : endRaw.string()).split(" ")[0].split("T")[0] : "";
+
+  const startOfStartDate = `${startStr} 00:00:00.000Z`;
+  const endOfEndDate = `${endStr} 23:59:59.999Z`;
+
   // When allowing same day reservations the start of one reservation can be on
   // the same day as the end of another reservation
   const startEndComparison = allowSameDay
-    ? "start < {:end} && end > {:start}"
-    : "start <= {:end} && end >= {:start}";
+    ? "start < {:endOfEndDate} && end > {:startOfStartDate}"
+    : "start <= {:endOfEndDate} && end >= {:startOfStartDate}";
   const records = $app.findRecordsByFilter(
     "reservations",
     reservation.get("id")
-      ? `id != {:id} && product = {:product} && cancelled != true && ${startEndComparison}`
-      : `product = {:product} && cancelled != true && ${startEndComparison}`,
+      ? `id != {:id} && product = {:product} && cancelled != true && status != 'cancelled' && status != 'declined' && ended != true && status != 'ended' && ${startEndComparison}`
+      : `product = {:product} && cancelled != true && status != 'cancelled' && status != 'declined' && ended != true && status != 'ended' && ${startEndComparison}`,
     null,
     1,
     0,
     {
       id: reservation.get("id"),
       product: reservation.get("product"),
-      start: reservation.get("start"),
-      end: reservation.get("end"),
+      startOfStartDate,
+      endOfEndDate,
     }
   );
   return records.length > 0;
@@ -111,18 +126,20 @@ function removeSentEmail(reservation, type) {
  * @returns { { to: { address: string }[], subject: string, html: string } }
  */
 function getReminderEmail(reservation, type) {
-  const locale = $os.getenv("CONFIG_LOCALE") || "en";
+  $app.expandRecord(reservation, ["location", "user", "product"], null);
+  const location = reservation.expandedOne("location");
+  const product = reservation.expandedOne("product");
+  const user = reservation.expandedOne("user");
+
+  const userLocale = user ? (user.getString("locale") || $os.getenv("CONFIG_LOCALE") || "de") : ($os.getenv("CONFIG_LOCALE") || "de");
+  const locale = userLocale.toLowerCase().startsWith("de") ? "de" : "en";
+
   /** @type {typeof import('./emails.en')} */
   const {
     reservationStartReminderEmail,
     reservationEndReminderEmail,
   } = require(`${__hooks}/lib/emails.${locale}`);
   const { getOpeningHoursDay } = require(`${__hooks}/lib/openingHours`);
-
-  $app.expandRecord(reservation, ["location", "user", "product"], null);
-  const location = reservation.expandedOne("location");
-  const product = reservation.expandedOne("product");
-  const user = reservation.expandedOne("user");
   const start = new Date(reservation.get("start").string().split(" ")[0]);
   const end = new Date(reservation.get("end").string().split(" ")[0]);
 

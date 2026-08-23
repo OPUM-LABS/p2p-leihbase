@@ -35,7 +35,7 @@ migrate((app) => {
 
   usersCollection.fields.add(new Field({
     "autogeneratePattern": "",
-    "hidden": true,
+    "hidden": false,
     "id": "user_address",
     "max": 255,
     "min": 0,
@@ -50,11 +50,11 @@ migrate((app) => {
 
   usersCollection.fields.add(new Field({
     "autogeneratePattern": "",
-    "hidden": true,
-    "id": "user_phone",
-    "max": 50,
+    "hidden": false,
+    "id": "user_nickname",
+    "max": 100,
     "min": 0,
-    "name": "phone",
+    "name": "nickname",
     "pattern": "",
     "presentable": false,
     "primaryKey": false,
@@ -143,7 +143,7 @@ migrate((app) => {
 
   productsCollection.fields.add(new Field({
     "autogeneratePattern": "",
-    "hidden": true,
+    "hidden": false,
     "id": "prod_pickup_address",
     "max": 255,
     "min": 0,
@@ -282,7 +282,7 @@ migrate((app) => {
   usersCollection.fields.removeById("user_city");
   usersCollection.fields.removeById("user_postal_code");
   usersCollection.fields.removeById("user_address");
-  usersCollection.fields.removeById("user_phone");
+  usersCollection.fields.removeById("user_nickname");
   usersCollection.fields.removeById("user_bio");
   app.save(usersCollection);
 

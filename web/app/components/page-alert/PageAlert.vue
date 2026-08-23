@@ -1,22 +1,22 @@
 <template>
   <Alert v-if="type === PageAlertType.AFTER_LOGIN">
-    {{ t("success_login") }}
+    {{ t('alerts.success_login') }}
   </Alert>
   <Alert v-else-if="type === PageAlertType.AFTER_LOGIN_RESERVATION_INTENT">
-    {{ t("success_login_with_intent") }}
+    {{ t('alerts.success_login_with_intent') }}
   </Alert>
   <Alert v-else-if="type === PageAlertType.AFTER_SIGNUP">
-    {{ t("success_signup") }}
+    {{ t('alerts.success_signup') }}
   </Alert>
   <Alert v-else-if="type === PageAlertType.AFTER_SIGNUP_RESERVATION_INTENT">
     <span>
-      <strong>{{ t("success_signup_with_intent_bold") }}</strong>
+      <strong>{{ t('alerts.success_signup_with_intent_bold') }}</strong>
       <br />
-      {{ t("success_signup_with_intent") }}
+      {{ t('alerts.success_signup_with_intent') }}
     </span>
   </Alert>
   <Alert v-else-if="type === PageAlertType.AFTER_LOGOUT" variant="info">
-    {{ t("success_logout") }}
+    {{ t('alerts.success_logout') }}
   </Alert>
 </template>
 
@@ -48,24 +48,3 @@ if (userStore.banner) {
   margin-bottom: var(--fluid-spacing-4);
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "success_login": "Logged in successfully!",
-    "success_login_with_intent": "Logged in successfully! You can now continue reserving the product.",
-    "success_signup": "Signed up successfully! A confirmation e-mail has been sent to your e-mail address.",
-    "success_signup_with_intent_bold": "Signed up successfully! A confirmation e-mail has been sent to your e-mail address.",
-    "success_signup_with_intent": "Reserve the product after confirming your e-mail address.",
-    "success_logout": "You are logged out."
-  },
-  "de": {
-    "success_login": "Erfolgreich eingeloggt!",
-    "success_login_with_intent": "Erfolgreich eingeloggt! Der Gegenstand kann nun reserviert werden.",
-    "success_signup": "Erfolgreich registriert! Eine Bestätigungs-E-Mail wurde an deine E-Mail-Adresse gesendet.",
-    "success_signup_with_intent_bold": "Erfolgreich registriert! Eine Bestätigungs-E-Mail wurde an deine E-Mail-Adresse gesendet.",
-    "success_signup_with_intent": "Reserviere den Gegenstand, nachdem du deine E-Mail-Adresse bestätigt hast.",
-    "success_logout": "Du bist abgemeldet."
-  }
-}
-</i18n>

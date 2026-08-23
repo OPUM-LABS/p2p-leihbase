@@ -5,7 +5,7 @@
       <div class="lb-stack">
         <Heading is="h1" size="xl">Admin</Heading>
         <Heading is="h2" size="lg" class="heading">
-          {{ t("locations") }}
+          {{ t('admin.index.locations') }}
         </Heading>
         <div v-if="locations && locations.length > 0" class="locations">
           <ul>
@@ -18,7 +18,7 @@
                 <strong>
                   {{ location.name }}
                   <Badge :variant="location.active ? 'success' : 'error'">
-                    {{ t(location.active ? "active" : "inactive") }}
+                    {{ t(location.active ? "admin.index.active" : "admin.index.inactive") }}
                   </Badge>
                 </strong>
                 <template v-if="location.address">
@@ -42,7 +42,7 @@ import Heading from "@/components/core/Heading.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import type { Location } from "~~/models/location";
 
-const { t } = useI18n({ useScope: "local" });
+const { t } = useI18n();
 const { pb, isValid } = usePocketbase();
 
 if (!isValid.value) {
@@ -120,18 +120,3 @@ if (!locations.value || locations.value.length === 0) {
   gap: 0;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "locations": "Locations",
-    "active": "Active",
-    "inactive": "Inactive"
-  },
-  "de": {
-    "locations": "Standorte",
-    "active": "Aktiv",
-    "inactive": "Inaktiv"
-  }
-}
-</i18n>

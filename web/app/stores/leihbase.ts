@@ -5,10 +5,29 @@ export const useLeihbase = defineStore("leihbase", () => {
 
   const { data: leihbases, refresh } = useAsyncData(
     "leihbase",
-    () => pb.collection("leihbase").getFullList(),
-    { immediate: false }
+    async () => {
+      try {
+        const list = await pb.collection("leihbase").getFullList();
+        if (list && list.length > 0) {
+          return list;
+        }
+      } catch (err) {
+        console.warn("Could not fetch leihbase collection:", err);
+      }
+      try {
+        const config: any = await pb.send("/api/app-config", { method: "GET" });
+        if (config) {
+          return [config as Leihbase];
+        }
+      } catch (err) {
+        console.warn("Could not fetch /api/app-config:", err);
+      }
+      return [];
+    },
+    { immediate: true }
   );
-  const leihbase = computed(() => leihbases.value?.[0] as Leihbase);
+
+  const leihbase = computed(() => (leihbases.value?.[0] as Leihbase) || null);
 
   return { leihbase, fetch: refresh };
 });

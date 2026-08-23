@@ -1,20 +1,20 @@
 <template>
   <HorizontalScroll is="nav" class="nav">
     <Button variant="secondary" :to="`/admin/${location?.slug}`">
-      {{ t("reservations") }}
+      {{ t('admin.nav.reservations') }}
     </Button>
     <Button variant="secondary" :to="`/admin/${location?.slug}/products`">
-      {{ t("products") }}
+      {{ t('admin.nav.products') }}
     </Button>
     <Button variant="secondary" :to="`/admin/${location?.slug}/stats`">
-      {{ t("statistics") }}
+      {{ t('admin.nav.statistics') }}
     </Button>
     <Button
       :disabled="!userStore.isAdmin"
       variant="secondary"
       :to="`/admin/${location?.slug}/settings`"
     >
-      {{ t("settings") }}
+      {{ t('admin.nav.settings') }}
     </Button>
   </HorizontalScroll>
 </template>
@@ -40,20 +40,3 @@ defineProps<{ location: RecordModel }>();
   margin-bottom: var(--fluid-spacing-8) !important;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "reservations": "Reservations",
-    "products": "Products",
-    "statistics": "Statistics",
-    "settings": "Settings"
-  },
-  "de": {
-    "reservations": "Reservierungen",
-    "products": "Gegenständen",
-    "statistics": "Statistieken",
-    "settings": "Einstellungen"
-  }
-}
-</i18n>

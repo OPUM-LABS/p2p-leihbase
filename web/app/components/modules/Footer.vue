@@ -1,7 +1,7 @@
 <template>
   <footer>
     <template
-      v-if="leihbase.footer_links"
+      v-if="leihbase?.footer_links"
       v-for="(link, index) in leihbase.footer_links"
     >
       <NuxtLink :to="link.link" target="_blank">
@@ -14,15 +14,13 @@
     </NuxtLink>
     <span v-if="leihbase?.contact_link">—</span>
     <NuxtLink v-if="leihbase?.contact_link" :to="leihbase?.contact_link">
-      {{ t("contact") }}
+      {{ t('footer.contact') }}
     </NuxtLink>
   </footer>
 </template>
 
 <script setup>
-const { t } = useI18n({
-  useScope: "local",
-});
+const { t } = useI18n();
 
 const { leihbase } = storeToRefs(useLeihbase());
 </script>
@@ -50,18 +48,3 @@ footer {
   }
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "imprint": "Imprint",
-    "privacy_policy": "Privacy Policy",
-    "contact": "Contact"
-  },
-  "de": {
-    "imprint": "Impressum",
-    "privacy_policy": "Datenschutz",
-    "contact": "Kontakt"
-  }
-}
-</i18n>

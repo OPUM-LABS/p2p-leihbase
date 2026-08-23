@@ -1,13 +1,13 @@
 <template>
-  <Container width="lg" class="page-container">
+  <Container width="lg" centered class="page-container">
     <div class="header-row">
       <div>
-        <Heading is="h1" size="xl">{{ t("my_items_title") }}</Heading>
-        <p class="subtitle">{{ t("my_items_subtitle") }}</p>
+        <Heading is="h1" size="xl">{{ t('profile.my_items.my_items_title') }}</Heading>
+        <p class="subtitle">{{ t('profile.my_items.my_items_subtitle') }}</p>
       </div>
       <Button variant="primary" to="/items/new" class="add-btn">
         <Plus class="icon" />
-        {{ t("add_new_item") }}
+        {{ t('profile.my_items.add_new_item') }}
       </Button>
     </div>
 
@@ -18,9 +18,9 @@
     <!-- Empty State -->
     <Card v-else-if="items.length === 0" class="empty-state">
       <Package class="empty-icon" />
-      <Heading is="h2" size="md">{{ t("no_items_yet") }}</Heading>
-      <p>{{ t("no_items_desc") }}</p>
-      <Button variant="primary" to="/items/new">{{ t("add_first_item") }}</Button>
+      <Heading is="h2" size="md">{{ t('profile.my_items.no_items_yet') }}</Heading>
+      <p>{{ t('profile.my_items.no_items_desc') }}</p>
+      <Button variant="primary" to="/items/new">{{ t('profile.my_items.add_first_item') }}</Button>
     </Card>
 
     <!-- Items Grid -->
@@ -28,11 +28,7 @@
       <Card v-for="item in items" :key="item.id" class="item-card">
         <div class="image-wrapper">
           <ProductImage
-            :src="
-              item.images && item.images.length > 0
-                ? `${config.public.pocketbase.clientBaseUrl}/api/files/products/${item.id}/${item.images[0]}${thumbs.sm}`
-                : null
-            "
+            :src="getProductImageUrl(item.id, item.images?.[0], thumbs.sm)"
             fallback="/images/fallback-product-image-600x600.png"
             aspect-ratio="1:1"
           />
@@ -40,7 +36,7 @@
             class="status-pill"
             :class="{ active: item.active !== false, paused: item.active === false }"
           >
-            {{ item.active !== false ? t("status_active") : t("status_paused") }}
+            {{ item.active !== false ? t('profile.my_items.status_active') : t('profile.my_items.status_paused') }}
           </span>
         </div>
 
@@ -49,11 +45,11 @@
           <div class="meta-row">
             <span class="location-tag">
               <MapPin class="meta-icon" />
-              {{ item.city || t("unknown_location") }}
+              {{ item.city || t('profile.my_items.unknown_location') }}
               <template v-if="item.approx_location_note">({{ item.approx_location_note }})</template>
             </span>
             <span v-if="item.deposit" class="deposit-tag">
-              {{ t("deposit") }}: {{ item.deposit }}€
+              {{ t('profile.my_items.deposit') }}: {{ item.deposit }}€
             </span>
           </div>
 
@@ -63,14 +59,14 @@
               size="sm"
               :to="`/items/${item.id}`"
             >
-              {{ t("view") }}
+              {{ t('profile.my_items.view') }}
             </Button>
             <Button
               variant="primary"
               size="sm"
               :to="`/items/${item.id}/edit`"
             >
-              {{ t("edit") }}
+              {{ t('profile.my_items.edit') }}
             </Button>
           </div>
         </div>
@@ -89,7 +85,7 @@ import LoadingSpinner from "@/components/core/LoadingSpinner.vue";
 import ProductImage from "@/components/ProductImage.vue";
 import type { Product } from "~~/models/product";
 
-const { t } = useI18n({ useScope: "local" });
+const { t } = useI18n();
 const { pb, isValid } = usePocketbase();
 const config = useRuntimeConfig();
 const {
@@ -125,7 +121,7 @@ onMounted(() => {
 });
 
 useHead({
-  title: t("my_items_title"),
+  title: t("profile.my_items.my_items_title"),
 });
 </script>
 
@@ -273,36 +269,3 @@ useHead({
   padding: 3rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "my_items_title": "My Listed Items",
-    "my_items_subtitle": "Manage your offerings and availability for sharing.",
-    "add_new_item": "List New Item",
-    "no_items_yet": "No items listed yet",
-    "no_items_desc": "Got a tool, gadget, or outdoor gear lying around? Share it with neighbors and earn community trust.",
-    "add_first_item": "List Your First Item",
-    "status_active": "Active",
-    "status_paused": "Paused",
-    "unknown_location": "Location not set",
-    "deposit": "Deposit",
-    "view": "View",
-    "edit": "Edit"
-  },
-  "de": {
-    "my_items_title": "Meine Gegenstände",
-    "my_items_subtitle": "Verwalte deine Angebote und Verfügbarkeit zum Verleihen.",
-    "add_new_item": "Neuen Gegenstand einstellen",
-    "no_items_yet": "Noch keine Gegenstände eingestellt",
-    "no_items_desc": "Hast du Werkzeug, Technik oder Outdoor-Ausrüstung? Teile es mit deinen Nachbarn.",
-    "add_first_item": "Ersten Gegenstand einstellen",
-    "status_active": "Aktiv",
-    "status_paused": "Pausiert",
-    "unknown_location": "Kein Standort",
-    "deposit": "Kaution",
-    "view": "Ansehen",
-    "edit": "Bearbeiten"
-  }
-}
-</i18n>

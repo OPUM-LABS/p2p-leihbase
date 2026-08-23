@@ -7,15 +7,26 @@
  */
 function hasActiveReservation(productId, excludeReservation, includeUnreturned = false) {
   /** @type {typeof import('./date')} */
-  const { endOfDate } = require(`${__hooks}/lib/date`);
-  const endedFilter = includeUnreturned ? "(end > {:endOfToday} || ended != true)" : "end > {:endOfToday}";
+  const { startOfDate, endOfDate } = require(`${__hooks}/lib/date`);
+  const now = new Date();
+  const startOfToday = startOfDate(now);
+  const endOfToday = endOfDate(now);
+
+  const activePeriodFilter = includeUnreturned
+    ? "((start <= {:endOfToday} && end >= {:startOfToday}) || (started = true || status = 'started'))"
+    : "(start <= {:endOfToday} && end >= {:startOfToday})";
+
   const records = $app.findRecordsByFilter(
     "reservations",
     [
       excludeReservation && excludeReservation.get("id") ? "id != {:id}" : "",
       "product = {:product}",
-      endedFilter,
       "cancelled != true",
+      "status != 'cancelled'",
+      "status != 'declined'",
+      "ended != true",
+      "status != 'ended'",
+      activePeriodFilter,
     ]
       .filter((v) => !!v)
       .join(" && "),
@@ -25,7 +36,8 @@ function hasActiveReservation(productId, excludeReservation, includeUnreturned =
     {
       id: excludeReservation && excludeReservation.get("id"),
       product: productId,
-      endOfToday: endOfDate(new Date()),
+      startOfToday,
+      endOfToday,
     }
   );
   return records.length > 0;
@@ -43,7 +55,7 @@ function getActiveReservationsForDateRange(product, startDate, endDate) {
   const { startOfDate, endOfDate } = require(`${__hooks}/lib/date`);
   return $app.findRecordsByFilter(
     "reservations",
-    "cancelled != true && product = {:product} && start < {:endOfEndDate} && end >= {:startOfStartDate}",
+    "cancelled != true && status != 'cancelled' && status != 'declined' && ended != true && status != 'ended' && product = {:product} && start < {:endOfEndDate} && end >= {:startOfStartDate}",
     null,
     1,
     0,

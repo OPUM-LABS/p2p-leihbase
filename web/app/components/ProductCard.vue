@@ -8,11 +8,7 @@
     :data-client-mounted="isClientMounted"
   >
     <ProductImage
-      :src="
-        product.images && product.images.length > 0
-          ? `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.id}/${product.images[0]}${thumbs.sm}`
-          : null
-      "
+      :src="getProductImageUrl(product.id, product.images?.[0], thumbs.sm)"
       fallback="/images/fallback-product-image-600x600.png"
       aspect-ratio="1:1"
       border-radius="top"
@@ -23,7 +19,7 @@
     <div class="content">
       <sl-tooltip
         v-if="product.computedIsAvailable === false"
-        content="Gerade nicht verfügbar"
+        :content="t('common.unavailable')"
         distance="0"
       >
         <AvailabilityCircle class="availability-circle" :available="false" />

@@ -11,6 +11,27 @@ export enum ReservationStatus {
   Cancelled = "cancelled",
 }
 
+export interface TimeslotItem {
+  id: string;
+  date: string; // YYYY-MM-DD
+  startTime: string; // HH:mm
+  endTime: string; // HH:mm
+  label?: string; // e.g. "Abends (18:00 – 20:00)"
+  proposedBy: string; // user id
+  proposedByName?: string;
+  createdAt: string;
+}
+
+export interface TimeslotGroup {
+  proposals: TimeslotItem[];
+  confirmedSlot?: TimeslotItem | null;
+}
+
+export interface ReservationTimeslots {
+  pickup?: TimeslotGroup;
+  return?: TimeslotGroup;
+}
+
 export type Reservation = RecordModel & {
   id: string;
   created: string;
@@ -32,6 +53,7 @@ export type Reservation = RecordModel & {
   note?: string;
   owner_note?: string;
   handover_address?: string;
+  timeslots?: ReservationTimeslots;
 
   expand?: {
     user?: User;

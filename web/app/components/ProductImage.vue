@@ -13,7 +13,7 @@
     </template>
     <template v-else>
       <p class="message">
-        {{ t("no_image_message") }}
+        {{ t('common.no_image_message') }}
       </p>
       <img :src="fallback" loading="lazy" />
     </template>
@@ -28,14 +28,19 @@ const { t } = useI18n({
 
 withDefaults(
   defineProps<{
-    src: string | null;
-    fallback: string;
-    loading: string;
+    src?: string | null;
+    fallback?: string;
+    loading?: "lazy" | "eager";
     objectFit?: "cover" | "contain";
-    aspectRatio?: "1:1" | null;
+    aspectRatio?: string | null;
     borderRadius?: "all" | "top";
   }>(),
-  { objectFit: "cover", borderRadius: "all" }
+  {
+    objectFit: "cover",
+    borderRadius: "all",
+    loading: "lazy",
+    fallback: "/images/fallback-product-image-600x600.png",
+  }
 );
 </script>
 
@@ -87,14 +92,3 @@ img {
   right: 0.333rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "no_image_message": "This item has no photo yet."
-  },
-  "de": {
-    "no_image_message": "Diesen Gegenstand haben wir noch nicht fotografiert."
-  }
-}
-</i18n>

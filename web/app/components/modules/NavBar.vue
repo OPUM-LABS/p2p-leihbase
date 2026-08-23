@@ -3,21 +3,18 @@
     <div class="nav-container">
       <!-- Logo & Brand -->
       <NuxtLink to="/" class="logo">
-        <span v-html="(leihbase?.name || 'Leihbase').replace('\n', '<br />')" />
+        <img
+          v-if="appLogo"
+          :src="appLogo"
+          :alt="appName"
+          class="logo-image"
+        />
+        <span v-else v-html="appName.replace('\n', '<br />')" />
       </NuxtLink>
 
       <!-- Desktop Nav Items -->
       <div class="desktop-nav">
-        <Button
-          v-if="isValid"
-          variant="primary"
-          outline
-          to="/items/new"
-          class="lend-btn"
-        >
-          <Plus class="icon-small" />
-          {{ t("lend_item") }}
-        </Button>
+        <LanguageSwitcher variant="navbar" />
       </div>
 
       <!-- User / Menu Dropdown -->
@@ -27,10 +24,14 @@
           variant="primary"
           outline
           data-testid="menu-button"
+          class="menu-trigger"
         >
-          <span class="sr-only">{{ t("menu") }}</span>
+          <span class="sr-only">{{ t('nav.menu') }}</span>
           <User class="icon" />
           <Menu class="icon" />
+          <span v-if="isValid && pendingCount > 0" class="menu-indicator-badge">
+            {{ pendingCount > 99 ? '99+' : pendingCount }}
+          </span>
         </DropdownMenuTrigger>
         <DropdownMenuPopover ref="popover" class="popover">
           <ul>
@@ -40,7 +41,7 @@
                 data-testid="signup-link"
                 to="/signup"
               >
-                {{ t("sign_up") }}
+                {{ t('nav.sign_up') }}
               </DropdownMenuItem>
             </li>
             <li v-if="!isValid">
@@ -49,28 +50,29 @@
                 data-testid="login-link"
                 to="/login"
               >
-                {{ t("login") }}
+                {{ t('nav.login') }}
               </DropdownMenuItem>
             </li>
 
             <li v-if="isValid">
               <DropdownMenuItem :as="NuxtLink" to="/items/new">
-                {{ t("lend_item") }}
+                {{ t('nav.lend_item') }}
               </DropdownMenuItem>
             </li>
             <li v-if="isValid">
               <DropdownMenuItem :as="NuxtLink" to="/profile/my-items">
-                {{ t("my_items") }}
+                {{ t('nav.my_items') }}
               </DropdownMenuItem>
             </li>
             <li v-if="isValid">
-              <DropdownMenuItem :as="NuxtLink" to="/profile/requests">
-                {{ t("incoming_requests") }}
+              <DropdownMenuItem :as="NuxtLink" to="/profile/requests" class="menu-item-with-badge">
+                <span>{{ t('nav.incoming_requests') }}</span>
+                <span v-if="pendingCount > 0" class="sub-badge">{{ pendingCount }}</span>
               </DropdownMenuItem>
             </li>
             <li v-if="isValid">
               <DropdownMenuItem :as="NuxtLink" to="/reservations">
-                {{ t("my_rentals") }}
+                {{ t('nav.my_rentals') }}
               </DropdownMenuItem>
             </li>
             <li v-if="isValid">
@@ -79,17 +81,17 @@
                 data-testid="account-link"
                 to="/profile"
               >
-                {{ t("profile") }}
+                {{ t('nav.profile') }}
               </DropdownMenuItem>
             </li>
             <li v-if="isValid && userStore.isManager">
               <DropdownMenuItem :as="NuxtLink" to="/admin">
-                {{ t("admin") }}
+                {{ t('nav.admin') }}
               </DropdownMenuItem>
             </li>
             <li v-if="isValid">
               <DropdownMenuItem as="button" @click.prevent="handleLogout">
-                {{ t("logout") }}
+                {{ t('nav.logout') }}
               </DropdownMenuItem>
             </li>
           </ul>
@@ -100,25 +102,66 @@
 </template>
 
 <script setup>
-import { Menu, Plus, User } from "@iconoir/vue";
+import { Menu, User } from "@iconoir/vue";
 import { NuxtLink } from "#components";
 import Button from "../core/Button.vue";
 import DropdownMenu from "../core/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuItem from "../core/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuPopover from "../core/dropdown-menu/DropdownMenuPopover.vue";
 import DropdownMenuTrigger from "../core/dropdown-menu/DropdownMenuTrigger.vue";
+import LanguageSwitcher from "./LanguageSwitcher.vue";
 import { PageAlertType } from "../page-alert/PageAlert.model.js";
 
-const { t } = useI18n({
-  useScope: "local",
-});
-const { isValid, logout } = usePocketbase();
+const { t } = useI18n();
+const runtimeConfig = useRuntimeConfig();
+const { isValid, logout, pb } = usePocketbase();
 const userStore = useUserStore();
 const { leihbase } = storeToRefs(useLeihbase());
+const { pendingCount, fetchPendingCount } = usePendingRequests();
+
+const appName = computed(
+  () => leihbase.value?.name || runtimeConfig.public.appName || "Leihbase"
+);
+const appLogo = computed(() => {
+  if (leihbase.value?.logo_url) {
+    return leihbase.value.logo_url;
+  }
+  if (leihbase.value?.logo) {
+    return pb.files.getURL(leihbase.value, leihbase.value.logo);
+  }
+  if (leihbase.value?.image) {
+    return pb.files.getURL(leihbase.value, leihbase.value.image);
+  }
+  return runtimeConfig.public.appLogo || "";
+});
 
 const header = ref();
+const route = useRoute();
 
 const { isSticky } = useIsSticky(header);
+
+onMounted(() => {
+  if (isValid.value) {
+    fetchPendingCount();
+  }
+});
+
+watch(isValid, (valid) => {
+  if (valid) {
+    fetchPendingCount();
+  } else {
+    pendingCount.value = 0;
+  }
+});
+
+watch(
+  () => route.path,
+  () => {
+    if (isValid.value) {
+      fetchPendingCount();
+    }
+  }
+);
 
 function handleLogout() {
   logout();
@@ -167,6 +210,17 @@ header {
     font-weight: var(--font-weight-black);
     line-height: 1;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+
+    .logo-image {
+      max-height: calc(var(--navbar-height) - 1.25rem);
+      max-width: 180px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
   }
 
   .desktop-nav {
@@ -175,29 +229,13 @@ header {
     gap: 1rem;
     margin-left: auto;
     margin-right: 1rem;
-
-    .lend-btn {
-      color: var(--header-text-color);
-      border-color: var(--header-text-color);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.875rem;
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.15);
-      }
-    }
+    color: var(--header-text-color);
   }
 
   .icon {
     display: inline-block;
     width: 1.5em;
     height: 1.5em;
-  }
-  .icon-small {
-    display: inline-block;
-    width: 1.1em;
-    height: 1.1em;
   }
 }
 
@@ -235,38 +273,65 @@ header {
           &:active {
             background-color: var(--secondary-color);
           }
+          &.menu-item-with-badge {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .sub-badge {
+              background-color: #e03131;
+              color: #ffffff;
+              font-size: 0.7rem;
+              font-weight: 700;
+              line-height: 1;
+              padding: 0.2rem 0.45rem;
+              border-radius: 9999px;
+              margin-left: 0.5rem;
+            }
+          }
+        }
+        &.menu-divider {
+          border-top: 1px solid var(--border-color, #eee);
+          margin-top: 0.25rem;
+          padding-top: 0.25rem;
         }
       }
     }
   }
 }
-</style>
 
-<i18n lang="json">
-{
-  "en": {
-    "menu": "Menu",
-    "lend_item": "+ List Item",
-    "my_items": "My Listings",
-    "incoming_requests": "Incoming Requests",
-    "my_rentals": "My Borrowed Items",
-    "sign_up": "Sign up",
-    "login": "Login",
-    "profile": "Profile",
-    "admin": "Admin",
-    "logout": "Logout"
-  },
-  "de": {
-    "menu": "Menü",
-    "lend_item": "+ Gegenstand anbieten",
-    "my_items": "Meine Gegenstände",
-    "incoming_requests": "Eingehende Anfragen",
-    "my_rentals": "Meine Ausleihen",
-    "sign_up": "Registrieren",
-    "login": "Einloggen",
-    "profile": "Profil",
-    "admin": "Admin",
-    "logout": "Ausloggen"
+.menu-trigger {
+  position: relative;
+  overflow: visible !important;
+
+  .menu-indicator-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #e03131;
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 0.25rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 2px var(--primary-color, #2b8a3e);
+    animation: pulse-badge 2s infinite ease-in-out;
+    z-index: 2;
   }
 }
-</i18n>
+
+@keyframes pulse-badge {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+</style>

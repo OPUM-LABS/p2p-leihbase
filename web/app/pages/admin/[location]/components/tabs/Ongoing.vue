@@ -1,5 +1,5 @@
 <template>
-  <TabHeader :title="t('ongoing_title')" />
+  <TabHeader :title="t('admin.tabs.ongoing.ongoing_title')" />
   <LoadingSpinner v-if="status === 'pending'" />
   <AdminReservationTable
     v-else-if="ongoingReservations && ongoingReservations.length > 0"
@@ -9,7 +9,7 @@
   />
   <p v-else>
     <i>
-      {{ t("no_ongoing_reservations") }}
+      {{ t('admin.tabs.ongoing.no_ongoing_reservations') }}
     </i>
   </p>
 </template>
@@ -59,16 +59,3 @@ const {
   { lazy: true }
 );
 </script>
-
-<i18n lang="json">
-{
-  "en": {
-    "no_ongoing_reservations": "There are no ongoing reservations.",
-    "ongoing_title": "Ongoing reservations"
-  },
-  "de": {
-    "no_ongoing_reservations": "Es gibt keine laufende Reservierungen.",
-    "ongoing_title": "Laufende Reservierungen"
-  }
-}
-</i18n>

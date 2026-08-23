@@ -2,16 +2,16 @@
   <Container width="sm" centered>
     <PageAlert />
     <Card class="lb-stack">
-      <Heading is="h1" size="xl" cap>{{ t("title") }}</Heading>
+      <Heading is="h1" size="xl" cap>{{ t('profile.verify_email.title') }}</Heading>
 
       <VerifyEmail>
         <template #verified>
-          <Button to="/profile">{{ t("return") }}</Button>
+          <Button to="/profile">{{ t('profile.verify_email.return') }}</Button>
         </template>
       </VerifyEmail>
 
       <!-- Back button -->
-      <Link to="/profile">{{ t("return") }}</Link>
+      <Link to="/profile">{{ t('profile.verify_email.return') }}</Link>
     </Card>
   </Container>
 </template>
@@ -25,17 +25,15 @@ import Link from "@/components/core/Link.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 import VerifyEmail from "@/components/VerifyEmail.vue";
 
-const { pb, isValid, logout } = usePocketbase();
+const { pb, isValid } = usePocketbase();
 const userStore = useUserStore();
-const { t } = useI18n({ useScope: "local" });
+const { t } = useI18n();
 
 useHead({
-  title: t("title"),
+  title: t("profile.verify_email.title"),
 });
 
-if (!isValid.value || !pb.authStore?.record?.id) {
-  logout();
-  userStore.logout();
+if (!isValid.value) {
   navigateTo("/login");
 }
 </script>
@@ -47,16 +45,3 @@ p {
   margin: 0;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "title": "Verify e-mail",
-    "return": "Return to profile"
-  },
-  "de": {
-    "title": "E-Mail bestätigen",
-    "return": "Zurück zum Profil"
-  }
-}
-</i18n>

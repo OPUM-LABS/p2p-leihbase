@@ -3,9 +3,9 @@
     <PageAlert class="banner" />
 
     <AdminNav :location="location" />
-    <AdminHeader :title="t('title')" :location="location">
+    <AdminHeader :title="t('admin.location.title')" :location="location">
       <Button @click="handleNewReservationClick">
-        {{ t("new_reservation") }}
+        {{ t('admin.location.new_reservation') }}
       </Button>
     </AdminHeader>
 
@@ -13,7 +13,7 @@
       <Tab
         v-if="overdueReservations.length > 0"
         id="overdue"
-        :title="t('tab_overdue')"
+        :title="t('admin.location.tab_overdue')"
         :warning="true"
       >
         <section>
@@ -24,7 +24,7 @@
           />
         </section>
       </Tab>
-      <Tab id="today" :title="t('tab_shift')">
+      <Tab id="today" :title="t('admin.location.tab_shift')">
         <section>
           <TodayTab
             :location="location"
@@ -33,7 +33,7 @@
           />
         </section>
       </Tab>
-      <Tab id="ongoing" :title="t('tab_ongoing')">
+      <Tab id="ongoing" :title="t('admin.location.tab_ongoing')">
         <section>
           <OngoingTab
             :location="location"
@@ -42,7 +42,7 @@
           />
         </section>
       </Tab>
-      <Tab id="future" :title="t('tab_future')">
+      <Tab id="future" :title="t('admin.location.tab_future')">
         <section>
           <FutureTab
             :location="location"
@@ -51,7 +51,7 @@
           />
         </section>
       </Tab>
-      <Tab id="past" :title="t('tab_past')">
+      <Tab id="past" :title="t('admin.location.tab_past')">
         <section>
           <PastTab
             :location="location"
@@ -151,26 +151,3 @@ section {
   }
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "title": "Reservations",
-    "new_reservation": "New reservation",
-    "tab_past": "Past",
-    "tab_shift": "Today",
-    "tab_ongoing": "Ongoing",
-    "tab_future": "Future",
-    "tab_overdue": "Overdue"
-  },
-  "de": {
-    "title": "Reservierungen",
-    "new_reservation": "Neue Reservierung",
-    "tab_past": "Vergangene",
-    "tab_shift": "Heutige",
-    "tab_ongoing": "Laufende",
-    "tab_future": "Anstehende",
-    "tab_overdue": "Überfällige"
-  }
-}
-</i18n>

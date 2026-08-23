@@ -1,10 +1,10 @@
 <template>
   <div>
     <header>
-      <Heading is="h2" size="lg">{{ props.title || t("products") }}</Heading>
+      <Heading is="h2" size="lg">{{ props.title || t('home.products') }}</Heading>
       <Input
         id="product-grid-input"
-        :placeholder="`${t('search')}...`"
+        :placeholder="`${t('home.search')}...`"
         v-model="query"
         @input="onSearchInput"
         @blur="onSearchBlur"
@@ -27,7 +27,7 @@
       </ul>
       <div v-show="!showAllCategories" class="more-categories">
         <button @click="showAllCategories = true">
-          {{ t("more_categories") }}
+          {{ t('home.more_categories') }}
           <NavArrowDown />
         </button>
       </div>
@@ -42,7 +42,7 @@
       </template>
     </div>
     <div v-else>
-      <p>{{ t("no_products_found") }} 🙃</p>
+      <p>{{ t('home.no_products_found') }} 🙃</p>
     </div>
     <section v-if="totalPages > 1" class="page-navigation">
       <Button
@@ -51,7 +51,7 @@
         class="page-button previous-page"
       >
         <ArrowLeft class="icon" />
-        {{ t("previous_page") }}
+        {{ t('home.previous_page') }}
       </Button>
       <Button
         :to="
@@ -59,7 +59,7 @@
         "
         class="page-button next-page"
       >
-        {{ t("next_page") }}
+        {{ t('home.next_page') }}
         <ArrowRight class="icon" />
       </Button>
     </section>
@@ -314,24 +314,3 @@ header {
   height: 1em;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "products": "Products",
-    "search": "Search",
-    "more_categories": "More categories",
-    "previous_page": "Previous page",
-    "next_page": "Next page",
-    "no_products_found": "No products found"
-  },
-  "de": {
-    "products": "Gegenstände",
-    "search": "Suchen",
-    "more_categories": "Mehr kategorien",
-    "previous_page": "Vorherige Seite",
-    "next_page": "Nächste Seite",
-    "no_products_found": "Keine Produkte gefunden"
-  }
-}
-</i18n>

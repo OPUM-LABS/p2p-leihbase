@@ -3,19 +3,19 @@
     <PageAlert class="banner" />
 
     <AdminNav v-if="location" :location="location" />
-    <AdminHeader v-if="location" :title="t('title')" :location="location" />
+    <AdminHeader v-if="location" :title="t('admin.stats.title')" :location="location" />
 
     <div class="dates">
       <DateInput
         id="date-start"
-        :label="t('from')"
+        :label="t('admin.stats.from')"
         v-model="dateStart"
         required
         @input="() => refresh()"
       />
       <DateInput
         id="date-end"
-        :label="t('to')"
+        :label="t('admin.stats.to')"
         v-model="dateEnd"
         required
         @input="() => refresh()"
@@ -24,22 +24,22 @@
 
     <div class="cols">
       <div class="lb-stack">
-        <Heading is="h3" size="md">{{ t("reservations") }}</Heading>
+        <Heading is="h3" size="md">{{ t('admin.stats.reservations') }}</Heading>
         <p>
-          {{ reservations?.length }} {{ t("created_reservations") }}<br />
-          {{ borrowings?.length }} {{ t("borrowings") }}<br />
-          {{ cancelled?.length || 0 }} {{ t("cancellations") }}
+          {{ reservations?.length }} {{ t('admin.stats.created_reservations') }}<br />
+          {{ borrowings?.length }} {{ t('admin.stats.borrowings') }}<br />
+          {{ cancelled?.length || 0 }} {{ t('admin.stats.cancellations') }}
         </p>
 
-        <Heading is="h3" size="md">{{ t("Users") }}</Heading>
+        <Heading is="h3" size="md">{{ t('admin.stats.users_title') }}</Heading>
         <p>
-          {{ borrowingsWithUser?.length }} {{ t("borrowings_with_user") }}<br />
-          {{ accounts }} {{ t("users") }}
+          {{ borrowingsWithUser?.length }} {{ t('admin.stats.borrowings_with_user') }}<br />
+          {{ accounts }} {{ t('admin.stats.users') }}
         </p>
       </div>
 
       <div class="lb-stack">
-        <Heading is="h3" size="md">{{ t("most_borrowed_products") }}</Heading>
+        <Heading is="h3" size="md">{{ t('admin.stats.most_borrowed_products') }}</Heading>
         <ol>
           <li v-for="(product, index) in products">
             <a target="_blank" :href="`/link/product/${product.product.id}`">
@@ -162,34 +162,3 @@ ol {
   padding-left: 2rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "title": "Statistics",
-    "from": "From",
-    "to": "To",
-    "reservations": "Reservations",
-    "created_reservations": "Created reservations",
-    "borrowings": "Borrowings",
-    "cancellations": "Cancellations",
-    "Users": "Users",
-    "users": "users",
-    "borrowings_with_user": "Borrowings (with user defined)",
-    "most_borrowed_products": "Most borrowed products"
-  },
-  "de": {
-    "title": "Statistiken",
-    "from": "Von",
-    "to": "Bis",
-    "reservations": "Reservierungen",
-    "created_reservations": "Angelegte Reservierungen",
-    "borrowings": "Ausleihe",
-    "cancellations": "Annulierungen",
-    "Users": "Nutzer",
-    "users": "Nutzer",
-    "borrowings_with_user": "Ausleihe (mit Nutzer definiert)",
-    "most_borrowed_products": "Die meisten ausgeliehenen Gegenstände"
-  }
-}
-</i18n>

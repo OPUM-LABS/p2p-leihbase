@@ -2,17 +2,21 @@ export function usePocketbase() {
   const nuxtApp = useNuxtApp();
   const { $pocketbase: pb } = nuxtApp;
 
-  const isValid = useState(() => pb?.authStore.isValid);
-  const user = useState(() => pb?.authStore.record);
+  const isValid = useState<boolean>("pb_auth_isValid", () => Boolean(pb?.authStore?.isValid));
+  const user = useState<any>("pb_auth_user", () => pb?.authStore?.record ?? null);
 
-  pb.authStore.onChange(() => {
-    isValid.value = pb.authStore.isValid;
-    user.value = pb.authStore.record;
-  });
+  if (pb?.authStore) {
+    pb.authStore.onChange(() => {
+      isValid.value = Boolean(pb.authStore.isValid);
+      user.value = pb.authStore.record;
+    });
+  }
 
   async function login(email: string, password: string) {
-    await pb.collection("users").authWithPassword(email, password);
-    isValid.value = pb.authStore.isValid;
+    const authData = await pb.collection("users").authWithPassword(email, password);
+    isValid.value = Boolean(pb.authStore.isValid);
+    user.value = pb.authStore.record;
+    return authData;
   }
 
   function logout() {

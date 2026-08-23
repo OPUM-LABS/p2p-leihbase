@@ -7,20 +7,26 @@
  * @returns {boolean}
  */
 function hasActiveReservationForProduct(user, product, reservation) {
-  const { endOfDate } = require(`${__hooks}/lib/date`);
-  // A cancelled reservation is allowed to have a second reservation for the same product
-  if (reservation.get("cancelled")) {
+  const { startOfDate } = require(`${__hooks}/lib/date`);
+  // A cancelled, declined, or ended reservation is allowed to have another reservation
+  if (
+    reservation.get("cancelled") ||
+    reservation.get("status") === "cancelled" ||
+    reservation.get("status") === "declined" ||
+    reservation.get("ended") ||
+    reservation.get("status") === "ended"
+  ) {
     return false;
   }
   // A reservation without a user can't already have an open reservation
   if (!reservation.get("user")) {
     return false;
   }
- const records = $app.findRecordsByFilter(
+  const records = $app.findRecordsByFilter(
     "reservations",
     reservation.get("id")
-      ? `id != {:id} && user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`
-      : `user = {:user} && product = {:product} && end > {:endOfToday} && cancelled != true`,
+      ? `id != {:id} && user = {:user} && product = {:product} && end >= {:startOfToday} && cancelled != true && status != 'cancelled' && status != 'declined' && ended != true && status != 'ended'`
+      : `user = {:user} && product = {:product} && end >= {:startOfToday} && cancelled != true && status != 'cancelled' && status != 'declined' && ended != true && status != 'ended'`,
     null,
     1,
     0,
@@ -28,7 +34,7 @@ function hasActiveReservationForProduct(user, product, reservation) {
       id: reservation.get("id"),
       user,
       product,
-      endOfToday: endOfDate(new Date()),
+      startOfToday: startOfDate(new Date()),
     }
   );
   return records.length > 0;

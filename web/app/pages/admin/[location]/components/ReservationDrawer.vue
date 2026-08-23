@@ -2,7 +2,7 @@
   <Drawer :headerOffset="false" inset v-model:open="open">
     <header>
       <Heading is="h2" size="lg" cap>{{
-        state === "new" ? t("new") : t("edit")
+        state === "new" ? t('admin.reservation_drawer.new') : t('admin.reservation_drawer.edit')
       }}</Heading>
       <div class="buttons">
         <Button
@@ -19,12 +19,12 @@
       </div>
     </header>
     <Alert v-if="props.reservation?.cancelled" variant="warning">{{
-      t("reservation_is_cancelled")
+      t('admin.reservation_drawer.reservation_is_cancelled')
     }}</Alert>
     <form @submit.prevent="handleSubmit">
       <RecordPickerInput
         id="reservation-drawer-product-input"
-        :label="t('product')"
+        :label="t('admin.reservation_drawer.product')"
         collection="products"
         :columns="['name']"
         v-model="productId"
@@ -32,45 +32,45 @@
       />
       <RecordPickerInput
         id="reservation-drawer-user-input"
-        :label="t('user')"
+        :label="t('admin.reservation_drawer.user')"
         collection="users"
         :columns="['name', 'email']"
         v-model="userId"
       />
       <DateInput
         id="reservation-drawer-start-input"
-        :label="t('start')"
+        :label="t('admin.reservation_drawer.start')"
         v-model="start"
         required
       />
       <DateInput
         id="reservation-drawer-end-input"
-        :label="t('end')"
+        :label="t('admin.reservation_drawer.end')"
         v-model="end"
         required
       />
       <Switch
         id="reservation-drawer-started-input"
-        :label="t('collected')"
+        :label="t('admin.reservation_drawer.collected')"
         v-model="started"
       />
       <Switch
         id="reservation-drawer-ended-input"
-        :label="t('returned')"
+        :label="t('admin.reservation_drawer.returned')"
         v-model="ended"
       />
       <!-- Deposit -->
       <!-- Show as description the default deposit of this product (when known) -->
       <Input
         id="reservation-drawer-deposit-input"
-        :label="t('deposit')"
+        :label="t('admin.reservation_drawer.deposit')"
         v-model="deposit"
         type="number"
         :description="
           productId &&
           productId === reservation?.product &&
           reservation?.expand?.product?.deposit
-            ? t('deposit_description', [
+            ? t('admin.reservation_drawer.deposit_description', [
                 reservation?.expand?.product?.name,
                 formatCurrency(reservation?.expand?.product?.deposit, locale),
               ])
@@ -81,16 +81,16 @@
       </Input>
       <RichTextarea
         id="reservation-drawer-note-input"
-        :label="t('note')"
+        :label="t('admin.reservation_drawer.note')"
         v-model="note"
       />
       <Switch
         id="reservation-drawer-cancelled-input"
-        :label="t('cancelled')"
+        :label="t('admin.reservation_drawer.cancelled')"
         v-model="cancelled"
       />
       <div class="sent-emails">
-        <strong>{{ t("sent_emails") }}</strong>
+        <strong>{{ t('admin.reservation_drawer.sent_emails') }}</strong>
         <ul
           v-if="
             props.reservation?.sent_emails &&
@@ -98,18 +98,18 @@
           "
         >
           <li v-for="email in props.reservation?.sent_emails">
-            <Mail /> {{ t("email_" + email) }}
+            <Mail /> {{ t('admin.reservation_drawer.email_' + email) }}
           </li>
         </ul>
         <p v-else>
-          {{ t("sent_emails_none") }}
+          {{ t('admin.reservation_drawer.sent_emails_none') }}
         </p>
       </div>
       <Alert v-if="error" variant="error">{{ error }}</Alert>
       <footer>
-        <Button :loading="isSubmitting" type="submit">{{ t("save") }}</Button>
+        <Button :loading="isSubmitting" type="submit">{{ t('admin.reservation_drawer.save') }}</Button>
         <Button variant="secondary" @click="handleCancelClick">{{
-          t("cancel")
+          t('admin.reservation_drawer.cancel')
         }}</Button>
       </footer>
     </form>
@@ -118,15 +118,15 @@
   <Dialog
     v-model:open="removeDialogOpen"
     inset
-    :title="t('remove_dialog.title')"
+    :title="t('admin.reservation_drawer.remove_dialog.title')"
   >
-    <p class="remove-dialog-text">{{ t("remove_dialog.text") }}</p>
+    <p class="remove-dialog-text">{{ t('admin.reservation_drawer.remove_dialog.text') }}</p>
     <footer>
       <Button :loading="isRemoving" @click="handleRemoveDialogConfirmClick">
-        {{ t("remove_dialog.confirm") }}
+        {{ t('admin.reservation_drawer.remove_dialog.confirm') }}
       </Button>
       <Button variant="secondary" @click="handleRemoveDialogCancelClick">
-        {{ t("remove_dialog.cancel") }}
+        {{ t('admin.reservation_drawer.remove_dialog.cancel') }}
       </Button>
     </footer>
   </Dialog>
@@ -239,25 +239,25 @@ async function handleSubmit() {
     if (err instanceof Error) {
       switch (err?.message) {
         case "Overlapping_reservation.":
-          error.value = t("errors.overlapping_reservation");
+          error.value = t("admin.reservation_drawer.errors.overlapping_reservation");
           break;
         case "Start_before_today.":
-          error.value = t("errors.start_before_today");
+          error.value = t("admin.reservation_drawer.errors.start_before_today");
           break;
         case "End_before_today.":
-          error.value = t("errors.end_before_today");
+          error.value = t("admin.reservation_drawer.errors.end_before_today");
           break;
         case "Start_and_end_equal.":
-          error.value = t("errors.start_and_end_equal");
+          error.value = t("admin.reservation_drawer.errors.start_and_end_equal");
           break;
         case "End_before_start.":
-          error.value = t("errors.end_before_start");
+          error.value = t("admin.reservation_drawer.errors.end_before_start");
           break;
         default:
-          error.value = t("errors.general");
+          error.value = t("admin.reservation_drawer.errors.general");
       }
     } else {
-      error.value = t("errors.general");
+      error.value = t("admin.reservation_drawer.errors.general");
     }
   }
 }
@@ -345,80 +345,3 @@ footer {
   width: 1.2em;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "new": "New Reservation",
-    "edit": "Edit Reservation",
-    "reservation_is_cancelled": "This reservation is cancelled",
-    "product": "Product",
-    "user": "User",
-    "start": "Start",
-    "end": "End",
-    "cancelled": "Cancelled",
-    "collected": "Picked up",
-    "returned": "Returned",
-    "deposit": "Deposit",
-    "deposit_description": "Deposit of {0} is {1}",
-    "note": "Note",
-    "save": "Save",
-    "cancel": "Cancel",
-    "sent_emails": "Sent E-mails",
-    "sent_emails_none": "None",
-    "email_confirmation": "Reservation confirmation",
-    "email_start_reminder": "Reservation start reminder",
-    "email_end_reminder": "Reservation end reminder",
-    "remove_dialog": {
-      "title": "Remove reservieration",
-      "text": "Are you sure you want to remove this reservation? There is no way to undo this.",
-      "confirm": "Remove reservation",
-      "cancel": "Cancel"
-    },
-    "errors": {
-      "overlapping_reservation": "There is already a reservation for this product during the given period.",
-      "start_before_today": "The start of the reservation is before today.",
-      "end_before_today": "The end of the reservation is before today.",
-      "start_and_end_equal": "The start and end of the reservation can't be on the same day.",
-      "end_before_start": "The end can't be befor the start of the reservation.",
-      "general": "Something went wrong while creating the reservation, please try again."
-    }
-  },
-  "de": {
-    "new": "Neue Reservierung",
-    "edit": "Reservierung bearbeiten",
-    "reservation_is_cancelled": "Diese Reservierung ist annuliert",
-    "product": "Produkt",
-    "user": "Nutzer:in",
-    "start": "Start",
-    "end": "Ende",
-    "cancelled": "Annuliert",
-    "collected": "Abgeholt",
-    "returned": "Zurückgegeben",
-    "deposit": "Pfand",
-    "deposit_description": "Pfand von {0} ist {1}",
-    "note": "Notiz  ",
-    "save": "Speichern",
-    "cancel": "Abbrechen",
-    "sent_emails": "Gesendete E-Mails",
-    "sent_emails_none": "Keine",
-    "email_confirmation": "Reservierungsbestätigung",
-    "email_start_reminder": "Erinnerung: Abholung",
-    "email_end_reminder": "Erinnerung: Zurückbringen",
-    "remove_dialog": {
-      "title": "Reservierung entfernen",
-      "text": "Bist du sicher, dass du diese Reservierung endgültig entfernen möchtest?",
-      "confirm": "Reservierung entfernen",
-      "cancel": "Annulieren"
-    },
-    "errors": {
-      "overlapping_reservation": "Das Produkt ist für diesen Termin bereits reserviert.",
-      "start_before_today": "Der Beginn der Reservierung liegt vor dem heutigen Tag.",
-      "end_before_today": "Das Enddatum der Reservierung liegt vor dem heutigen Tag",
-      "start_and_end_equal": "Beginn und Ende der Reservierung dürfen nicht am selben Tag liegen.",
-      "end_before_start": "Ende kann nicht vor Beginn der Reservierung liegen.",
-      "general": "Beim Erstellen deiner Reservierung ist ein Fehler aufgetreten, bitte versuche es erneut."
-    }
-  }
-}
-</i18n>

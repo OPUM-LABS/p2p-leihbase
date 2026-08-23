@@ -1,3 +1,20 @@
 .bin
 node_modules
 .DS_Store
+
+# Environment and Secrets
+.env
+.env.*
+!.env.example
+
+# Nuxt / Web build artifacts
+web/.nuxt
+web/.output
+web/dist
+.output
+.nuxt
+
+# PocketBase local database & uploaded files
+pocketbase/pb_data/*.db*
+pocketbase/pb_data/storage/
+pocketbase/pb_data/.notify

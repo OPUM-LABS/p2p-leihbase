@@ -4,11 +4,7 @@
     <section class="product">
       <div class="media-col">
         <ProductImage
-          :src="
-            product?.images && product?.images.length > 0
-              ? `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.id}/${product.images[imageIndex]}${thumbs.lg}`
-              : null
-          "
+          :src="getProductImageUrl(product?.id, product?.images?.[imageIndex], thumbs.lg)"
           fallback="/images/fallback-product-image-1200x1200.png"
           class="main-image"
           object-fit="contain"
@@ -25,7 +21,7 @@
             @click="imageIndex = index"
           >
             <img
-              :src="`${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.id}/${image}${thumbs.sm}`"
+              :src="getProductImageUrl(product.id, image, thumbs.sm) || ''"
             />
           </button>
         </div>
@@ -52,26 +48,26 @@
             v-html="product?.description"
           ></div>
           <!-- Deposit -->
-          <KeyValue v-if="product?.deposit" :title="t('deposit')">
+          <KeyValue v-if="product?.deposit" :title="t('location_hub.product.deposit')">
             {{ formatCurrency(product.deposit, locale) }}
           </KeyValue>
         </div>
 
         <div v-if="userStore.isManager" class="info-admin">
           <Heading is="h2" size="sm">
-            {{ t("admin_notes") }}
-            <Tooltip :html="t('admin_notes_tooltip')">
+            {{ t('location_hub.product.admin_notes') }}
+            <Tooltip :html="t('location_hub.product.admin_notes_tooltip')">
               <Lock />
             </Tooltip>
           </Heading>
           <span v-if="product?.notes" v-html="product?.notes" />
           <span v-else>
-            <i>{{ t("admin_notes_none") }}</i>
+            <i>{{ t('location_hub.product.admin_notes_none') }}</i>
           </span>
         </div>
 
         <ReservationsBox
-          :title="t('reservations')"
+          :title="t('location_hub.product.reservations')"
           :reservations="reservations"
           class="upcoming-reservations"
         />
@@ -82,7 +78,7 @@
           data-testid="reserve-button"
           @click.prevent="handleReserveButonClick"
         >
-          {{ t("reserve_button") }}
+          {{ t('location_hub.product.reserve_button') }}
         </Button>
       </div>
     </section>
@@ -106,7 +102,7 @@ import ReservationsBox from "@/components/ReservationsBox.vue";
 import { getLocationBySlug } from "@/composables/location";
 import { Lock } from "@iconoir/vue";
 
-const { t } = useI18n({ useScope: "local" });
+const { t } = useI18n();
 const config = useRuntimeConfig();
 const {
   product: { thumbs },
@@ -178,9 +174,7 @@ useHead({
     {
       property: "og:image",
       content:
-        product.value?.images && product.value?.images.length > 0
-          ? `${config.public.pocketbase.clientBaseUrl}/api/files/products/${product.value.id}/${product.value.images[0]}${thumbs.lg}`
-          : "",
+        getProductImageUrl(product.value?.id, product.value?.images?.[0], thumbs.lg) || "",
     },
   ].filter((m) => !!m.content),
 });
@@ -313,24 +307,3 @@ section {
   }
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "deposit": "Deposit",
-    "admin_notes": "Admin notes",
-    "admin_notes_none": "None",
-    "admin_notes_tooltip": "Only visible for admin users",
-    "reservations": "Reservations",
-    "reserve_button": "Reserve"
-  },
-  "de": {
-    "deposit": "Pfand",
-    "admin_notes": "Admin Notiz",
-    "admin_notes_none": "Keine",
-    "admin_notes_tooltip": "Nur sichtbar für Admin-Benutzer",
-    "reservations": "Reservierungen",
-    "reserve_button": "Reservieren"
-  }
-}
-</i18n>

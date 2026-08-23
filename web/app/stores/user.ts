@@ -36,12 +36,16 @@ export const useUserStore = defineStore("user", {
     },
   },
   actions: {
-    login({ user }: { user: User }) {
+    async login({ user }: { user?: User | RecordModel | null }) {
       // Store user data
-      this.name = user.name;
-      this.role = user.role;
+      this.name = user?.name || null;
+      this.role = (user?.role as any) || "user";
       // Fetch other initial data
-      return this.fetchInitialData();
+      try {
+        await this.fetchInitialData();
+      } catch (err) {
+        console.warn("fetchInitialData failed:", err);
+      }
     },
     logout() {
       this.name = null;
@@ -49,18 +53,23 @@ export const useUserStore = defineStore("user", {
       this.clearAuthenticationIntent();
     },
     async fetchInitialData() {
-      await Promise.all([this.fetchUserReservations()]);
+      await Promise.allSettled([this.fetchUserReservations()]);
       this.hasInitialData = true;
     },
     async fetchUserReservations() {
-      const { pb } = usePocketbase();
-      if (pb.authStore?.model?.id) {
-        const reservations = await pb.collection("reservations").getFullList({
-          filter: pb.filter("user = {:user}", {
-            user: pb.authStore?.record?.id,
-          }),
-        });
-        this.reservations = reservations;
+      try {
+        const { pb } = usePocketbase();
+        if (pb?.authStore?.record?.id) {
+          const reservations = await pb.collection("reservations").getFullList({
+            filter: pb.filter("user = {:user}", {
+              user: pb.authStore.record.id,
+            }),
+          });
+          this.reservations = reservations;
+        }
+      } catch (err) {
+        console.warn("fetchUserReservations error:", err);
+        this.reservations = [];
       }
     },
     setAuthenticationIntent(intent: null | "reservation", path: string) {

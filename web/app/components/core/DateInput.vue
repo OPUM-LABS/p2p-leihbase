@@ -23,8 +23,8 @@
             :data-testid="`${dataTestid}-calendar`"
             @change="handleDateChange"
           >
-            <ArrowLeft slot="previous" :title="t('previous_month')" />
-            <ArrowRight slot="next" :title="t('next_month')" />
+            <ArrowLeft slot="previous" :title="t('common.previous_month')" />
+            <ArrowRight slot="next" :title="t('common.next_month')" />
             <calendar-month></calendar-month>
           </calendar-date>
         </ClientOnly>
@@ -128,16 +128,3 @@ calendar-month::part(outside) {
   cursor: pointer;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "next_month": "Next month",
-    "previous_month": "Previous month"
-  },
-  "de": {
-    "next_month": "Nächster Monat",
-    "previous_month": "Voriger Monat"
-  }
-}
-</i18n>

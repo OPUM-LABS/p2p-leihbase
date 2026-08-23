@@ -4,14 +4,14 @@
     <Card class="lb-stack">
       <!-- Title -->
       <Heading is="h1" size="xl" cap>
-        {{ t("change_password") }}
+        {{ t('profile.change_password.change_password') }}
       </Heading>
       <!-- Form -->
       <form @submit.prevent="handleSubmit" class="lb-stack">
         <!-- Current password -->
         <Input
           id="profile-edit-current-password-input"
-          :label="t('current_password')"
+          :label="t('profile.change_password.current_password')"
           name="oldPassword"
           type="password"
           :error="
@@ -25,7 +25,7 @@
         <!-- New password -->
         <Input
           id="profile-edit-new-password-input"
-          :label="t('new_password')"
+          :label="t('profile.change_password.new_password')"
           name="password"
           type="password"
           :error="
@@ -36,7 +36,7 @@
         <!-- Confirm new password -->
         <Input
           id="profile-edit-confirm-password-input"
-          :label="t('confirm_password')"
+          :label="t('profile.change_password.confirm_password')"
           name="passwordConfirm"
           type="password"
           :error="
@@ -49,10 +49,10 @@
         <!-- Buttons -->
         <div class="button-row">
           <Button to="/profile" variant="secondary">
-            {{ t("cancel") }}
+            {{ t('profile.change_password.cancel') }}
           </Button>
           <Button type="submit" :loading="loading" class="save-button">
-            {{ t("save") }}
+            {{ t('profile.change_password.save') }}
           </Button>
         </div>
       </form>
@@ -78,12 +78,10 @@ const { t } = useI18n({
 });
 
 useHead({
-  title: t("change_password"),
+  title: t("profile.change_password.change_password"),
 });
 
-if (!isValid.value || !user.value) {
-  logout();
-  userStore.logout();
+if (!isValid.value) {
   navigateTo("/login");
 }
 
@@ -111,24 +109,3 @@ async function handleSubmit(e: SubmitEvent) {
   gap: 1rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "change_password": "Change password",
-    "current_password": "Current password",
-    "new_password": "New password",
-    "confirm_password": "Confirm new password",
-    "cancel": "Cancel",
-    "save": "Save"
-  },
-  "de": {
-    "change_password": "Passwort ändern",
-    "current_password": "Aktuelles Passwort",
-    "new_password": "Neues Passwort",
-    "confirm_password": "Neues Passwort bestätigen",
-    "cancel": "Annulieren",
-    "save": "Speichern"
-  }
-}
-</i18n>

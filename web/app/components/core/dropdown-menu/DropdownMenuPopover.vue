@@ -39,7 +39,7 @@ watch(
     if (isOpen) {
       // When opening, focus first popover entry
       nextTick(() => {
-        div.value.querySelector("a").focus();
+        div.value?.querySelector("a, button, [tabindex]")?.focus();
       });
       div.value.addEventListener("focusout", handleFocusout);
       document.addEventListener("keyup", handleDocumentKeyUp);

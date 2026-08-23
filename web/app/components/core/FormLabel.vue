@@ -1,7 +1,7 @@
 <template>
   <component :is="is" class="label" :for="for">
     <slot />
-    <span v-if="!required && !hideRequired"> ({{ t("optional") }})</span>
+    <span v-if="!required && !hideRequired"> ({{ t('common.optional') }})</span>
   </component>
 </template>
 
@@ -35,14 +35,3 @@ const { t } = useI18n({
   color: var(--text-color-light);
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "optional": "optional"
-  },
-  "de": {
-    "optional": "optional"
-  }
-}
-</i18n>

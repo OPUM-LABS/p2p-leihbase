@@ -2,11 +2,11 @@
   <Container width="sm" centered>
     <Card class="card lb-stack">
       <Heading is="h1" size="xl" cap data-testid="login-h1">
-        {{ t("title") }}
+        {{ t('auth.login.title') }}
       </Heading>
-      <i18n-t keypath="text" tag="p" for="signup_text">
+      <i18n-t keypath="auth.login.text" tag="p" for="signup_text">
         <NuxtLink to="/signup" data-testid="signup-link">
-          {{ t("signup_text") }}
+          {{ t('auth.login.signup_text') }}
         </NuxtLink>
       </i18n-t>
       <form @submit.prevent="onLogin">
@@ -20,7 +20,7 @@
           v-model="email"
         />
         <Input
-          :label="t('password')"
+          :label="t('auth.login.password')"
           type="password"
           id="password"
           name="password"
@@ -35,8 +35,8 @@
           class="error"
           data-testid="login-error"
         >
-          <i18n-t keypath="error" tag="span" for="error_signup">
-            <NuxtLink to="/signup">{{ t("error_signup") }}</NuxtLink>
+          <i18n-t keypath="auth.login.error" tag="span" for="error_signup">
+            <NuxtLink to="/signup">{{ t('auth.login.error_signup') }}</NuxtLink>
           </i18n-t>
         </Alert>
         <Button
@@ -45,14 +45,14 @@
           type="submit"
           data-testid="submit-button"
         >
-          {{ t("submit") }}
+          {{ t('auth.login.submit') }}
         </Button>
       </form>
     </Card>
     <footer>
-      <a href="/signup">{{ t("signup") }}</a>
+      <a href="/signup">{{ t('auth.login.signup') }}</a>
       •
-      <a href="/reset-password">{{ t("forgot_password") }}</a>
+      <a href="/reset-password">{{ t('auth.login.forgot_password') }}</a>
     </footer>
   </Container>
 </template>
@@ -71,7 +71,7 @@ useHead({
   title: `Login`,
 });
 
-const { t } = useI18n({ useScope: "local" });
+const { t } = useI18n();
 
 const route = useRoute();
 const userStore = useUserStore();
@@ -145,30 +145,3 @@ footer {
   font-size: var(--font-size-sm);
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "title": "Log in",
-    "text": "No account yet? {0}, to create an account.",
-    "signup_text": "Sign up",
-    "password": "Password",
-    "error": "Log in not successful, please review your account details, or {0} to create an account",
-    "error_signup": "sign up",
-    "submit": "Log in",
-    "signup": "Sign up",
-    "forgot_password": "Forgot password?"
-  },
-  "de": {
-    "title": "Einloggen",
-    "text": "Noch kein Konto? {0}, um ein Konto zu erstellen.",
-    "signup_text": "Registriere dich",
-    "password": "Passwort",
-    "error": "Einloggen nicht erfolgreich, bitte überprüfe deine Kontodaten, oder {0} um ein Konto zu erstellen",
-    "error_signup": "melde dich an",
-    "submit": "Einloggen",
-    "signup": "Registrieren",
-    "forgot_password": "Passwort vergessen?"
-  }
-}
-</i18n>

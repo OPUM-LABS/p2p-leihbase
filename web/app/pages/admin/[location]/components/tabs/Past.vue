@@ -1,5 +1,5 @@
 <template>
-  <TabHeader :title="t('past_title')" />
+  <TabHeader :title="t('admin.tabs.past.past_title')" />
   <LoadingSpinner v-if="status === 'pending'" />
   <AdminReservationTable
     v-else-if="pastReservations?.items && pastReservations.items.length > 0"
@@ -9,7 +9,7 @@
   />
   <p v-else>
     <i>
-      {{ t("no_past_reservations") }}
+      {{ t('admin.tabs.past.no_past_reservations') }}
     </i>
   </p>
 </template>
@@ -56,16 +56,3 @@ const {
   { lazy: true }
 );
 </script>
-
-<i18n lang="json">
-{
-  "en": {
-    "past_title": "Past Reservations (last 50)",
-    "no_past_reservations": "No past reservations"
-  },
-  "de": {
-    "past_title": "Vergangene Reservierungen (letzte 50)",
-    "no_past_reservations": "Keine vergangene Reservierungen"
-  }
-}
-</i18n>

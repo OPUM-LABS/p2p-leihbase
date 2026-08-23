@@ -3,7 +3,7 @@
     <!-- Header -->
     <header>
       <Heading is="h2" size="lg">{{
-        state === "new" ? t("new") : t("edit")
+        state === "new" ? t('admin.product_drawer.new') : t('admin.product_drawer.edit')
       }}</Heading>
       <div class="buttons">
         <Button
@@ -11,7 +11,7 @@
           :href="`/link/product/${product?.id}`"
           target="_blank"
           variant="secondary"
-          :title="t('open_product_page')"
+          :title="t('admin.product_drawer.open_product_page')"
           circle
         >
           <Eye />
@@ -32,25 +32,25 @@
 
     <!-- Inactive product warning -->
     <Alert v-if="state === 'edit' && !props.product?.active" variant="warning">
-      {{ t("product_is_inactive") }}
+      {{ t('admin.product_drawer.product_is_inactive') }}
     </Alert>
 
     <!-- Form -->
     <form @submit.prevent="handleSubmit">
       <Switch
         id="product-drawer-active"
-        :label="t('active')"
+        :label="t('admin.product_drawer.active')"
         v-model="active"
       />
       <Input
         id="product-drawer-name-input"
-        :label="t('name')"
+        :label="t('admin.product_drawer.name')"
         v-model="name"
         required
       />
       <RecordPickerInput
         id="product-drawer-categories-input"
-        :label="t('categories')"
+        :label="t('admin.product_drawer.categories')"
         collection="categories"
         :columns="['name_' + locale]"
         v-model="categories"
@@ -59,13 +59,13 @@
       <Input
         id="product-drawer-deposit-input"
         type="number"
-        :label="t('deposit')"
+        :label="t('admin.product_drawer.deposit')"
         v-model="deposit"
       >
         <template #prefix>€</template>
       </Input>
       <ImageInput
-        :label="t('images')"
+        :label="t('admin.product_drawer.images')"
         :recordId="product?.id"
         collection="products"
         v-model:images="images"
@@ -73,27 +73,27 @@
       />
       <RichTextarea
         id="product-drawer-description-input"
-        :label="t('description')"
+        :label="t('admin.product_drawer.description')"
         v-model="description"
       />
       <RichTextarea
         id="product-drawer-notes-input"
-        :label="t('notes')"
+        :label="t('admin.product_drawer.notes')"
         v-model="notes"
       />
       <RecordPickerInput
         id="product-drawer-user-input"
-        :label="t('user')"
+        :label="t('admin.product_drawer.user')"
         collection="users"
         :columns="['name', 'email']"
         v-model="user"
-        :description="t('user_description')"
+        :description="t('admin.product_drawer.user_description')"
       />
       <Alert v-if="error" variant="error">{{ error }}</Alert>
       <footer>
-        <Button :loading="isSubmitting" type="submit">{{ t("save") }}</Button>
+        <Button :loading="isSubmitting" type="submit">{{ t('admin.product_drawer.save') }}</Button>
         <Button variant="secondary" @click="handleCancelClick">{{
-          t("cancel")
+          t('admin.product_drawer.cancel')
         }}</Button>
       </footer>
     </form>
@@ -103,15 +103,15 @@
   <Dialog
     v-model:open="removeDialogOpen"
     inset
-    :title="t('remove_dialog.title')"
+    :title="t('admin.product_drawer.remove_dialog.title')"
   >
-    <p class="remove-dialog-text">{{ t("remove_dialog.text") }}</p>
+    <p class="remove-dialog-text">{{ t('admin.product_drawer.remove_dialog.text') }}</p>
     <footer>
       <Button :loading="isRemoving" @click="handleRemoveDialogConfirmClick">
-        {{ t("remove_dialog.confirm") }}
+        {{ t('admin.product_drawer.remove_dialog.confirm') }}
       </Button>
       <Button variant="secondary" @click="handleRemoveDialogCancelClick">
-        {{ t("remove_dialog.cancel") }}
+        {{ t('admin.product_drawer.remove_dialog.cancel') }}
       </Button>
     </footer>
   </Dialog>
@@ -206,13 +206,13 @@ async function handleSubmit() {
     if (err instanceof Error) {
       switch (err?.message) {
         case "Overlapping_reservation.":
-          error.value = t("errors.overlapping_reservation");
+          error.value = t("admin.product_drawer.errors.overlapping_reservation");
           break;
         default:
-          error.value = t("errors.general");
+          error.value = t("admin.product_drawer.errors.general");
       }
     } else {
-      error.value = t("errors.general");
+      error.value = t("admin.product_drawer.errors.general");
     }
   }
 }
@@ -276,62 +276,3 @@ footer {
   margin-bottom: 1.666rem;
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "new": "New Product",
-    "edit": "Edit Product",
-    "open_product_page": "Open product page",
-    "product_is_inactive": "This product is inactive.",
-    "active": "Active",
-    "name": "Name",
-    "categories": "Categories",
-    "deposit": "Deposit",
-    "images": "Images",
-    "description": "Description",
-    "notes": "Admin note",
-    "user": "User",
-    "user_description": "User to whom diese product belongs, in case of long term lending.",
-    "save": "Save",
-    "cancel": "Cancel",
-    "remove_dialog": {
-      "title": "Remove product",
-      "text": "Are you sure you want to remove this product? There is no way to undo this.",
-      "confirm": "Remove product",
-      "cancel": "Cancel"
-    },
-    "errors": {
-      "overlapping_reservation": "There is already a reservation for this product during the given period.",
-      "general": "Something went wrong while saving the product, please try again."
-    }
-  },
-  "de": {
-    "new": "Neue Gegenstand",
-    "edit": "Gegenstand bearbeiten",
-    "open_product_page": "Gegenstandseite anzeigen",
-    "product_is_inactive": "Dieses Gegenstand is gerade inaktiv.",
-    "active": "Aktiv",
-    "name": "Name",
-    "categories": "Kategorien",
-    "deposit": "Pfand",
-    "images": "Bilder",
-    "description": "Beschreibung",
-    "notes": "Admin Notiz",
-    "user": "Nutzer:in",
-    "user_description": "Nutzer:in zu wem dieses Gegenstand gehört, im Fall von dauerausleihe.",
-    "save": "Speichern",
-    "cancel": "Abbrechen",
-    "remove_dialog": {
-      "title": "Gegenstand entfernen",
-      "text": "Bist du sicher, dass du diese Gegenstand endgültig entfernen möchtest?",
-      "confirm": "Gegenstand entfernen",
-      "cancel": "Annulieren"
-    },
-    "errors": {
-      "end_before_start": "Ende kann nicht vor Beginn der Reservierung liegen.",
-      "general": "Beim speichern deiner Gegenstand ist ein Fehler aufgetreten, bitte versuche es erneut."
-    }
-  }
-}
-</i18n>

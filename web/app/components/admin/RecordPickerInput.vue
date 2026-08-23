@@ -13,7 +13,7 @@
         :class="{ 'lb-input': true }"
       />
       <button @click.prevent="showRecordPicker = true">
-        {{ t("select") }}
+        {{ t('admin.record_picker_input.select') }}
       </button>
     </div>
     <p v-if="description">
@@ -78,9 +78,9 @@ const value = computed(() => {
 
 const placeholder = computed(() => {
   if (isLoading.value) {
-    return t("loading");
+    return t("admin.record_picker_input.loading");
   }
-  return t("none");
+  return t("admin.record_picker_input.none");
 });
 
 /**
@@ -166,18 +166,3 @@ button {
   }
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "loading": "Loading...",
-    "select": "Select",
-    "none": "None"
-  },
-  "de": {
-    "loading": "Laden...",
-    "select": "Auswählen",
-    "none": "Keine"
-  }
-}
-</i18n>

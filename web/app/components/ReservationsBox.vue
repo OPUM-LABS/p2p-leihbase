@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Heading is="h3" size="md" class="heading">{{ title }}</Heading>
+    <Heading is="h3" size="md" class="heading">{{ title || t('reservations.box.title') }}</Heading>
     <ul v-if="reservations && reservations.length > 0">
       <li
         v-for="reservation in reservations"
@@ -15,11 +15,11 @@
           v-if="userReservationIds.includes(reservation.id)"
           class="user me"
         >
-          <UserIcon class="user-icon" /> Du
+          <UserIcon class="user-icon" /> {{ t('reservations.box.you') }}
         </span>
       </li>
     </ul>
-    <p v-else><i>Keine kommenden Reservierungen</i></p>
+    <p v-else><i>{{ t('reservations.box.no_reservations') }}</i></p>
   </div>
 </template>
 
@@ -30,12 +30,12 @@ import { User as UserIcon } from "@iconoir/vue";
 import { DateTime } from "luxon";
 import Heading from "./core/Heading.vue";
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 defineProps({
   title: {
     type: String,
-    default: "Reservations",
+    default: "",
   },
   reservations: {
     type: Array,

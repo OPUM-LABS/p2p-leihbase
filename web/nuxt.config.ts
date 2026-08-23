@@ -5,6 +5,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      appName: "Leihbase", // NUXT_PUBLIC_APP_NAME
+      appLogo: "", // NUXT_PUBLIC_APP_LOGO
       plausibleTrackingDomain: "", // NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN
       ci: "", // NUXT_PUBLIC_CI
       locale: "", // NUXT_PUBLIC_LOCALE
@@ -55,8 +57,19 @@ export default defineNuxtConfig({
   modules: ["@pinia/nuxt", "./modules/pocketbase", "@nuxtjs/i18n"],
 
   i18n: {
+    locales: [
+      { code: "en", language: "en-US", name: "English" },
+      { code: "de", language: "de-DE", name: "Deutsch" },
+    ],
+    defaultLocale: "en",
     strategy: "no_prefix",
-    detectBrowserLanguage: false,
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: "i18n_redirected",
+      redirectOn: "root",
+      alwaysRedirect: false,
+      fallbackLocale: "en",
+    },
     bundle: {
       optimizeTranslationDirective: false,
     },

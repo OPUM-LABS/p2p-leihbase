@@ -1,5 +1,5 @@
 <template>
-  <TabHeader :title="t('title')" />
+  <TabHeader :title="t('admin.tabs.overdue.title')" />
   <LoadingSpinner v-if="status === 'pending'" />
   <AdminReservationTable
     v-else-if="reservations && reservations.length > 0"
@@ -10,7 +10,7 @@
   />
   <p v-else>
     <i>
-      {{ t("no_reservations") }}
+      {{ t('admin.tabs.overdue.no_reservations') }}
     </i>
   </p>
 </template>
@@ -50,16 +50,3 @@ const {
   { lazy: true }
 );
 </script>
-
-<i18n lang="json">
-{
-  "en": {
-    "title": "Overdue reservations",
-    "no_reservations": "No overdue reservations..."
-  },
-  "de": {
-    "title": "Überfälligen Reservierungen",
-    "no_reservations": "Keine überfälligen Reservierungen..."
-  }
-}
-</i18n>

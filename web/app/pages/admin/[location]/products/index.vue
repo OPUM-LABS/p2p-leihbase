@@ -4,9 +4,9 @@
 
     <!-- Header -->
     <AdminNav v-if="location" :location="location" />
-    <AdminHeader v-if="location" :title="t('title')" :location="location">
+    <AdminHeader v-if="location" :title="t('admin.products.title')" :location="location">
       <Button @click="handleNewProductClick">
-        {{ t("new_product") }}
+        {{ t('admin.products.new_product') }}
       </Button>
     </AdminHeader>
 
@@ -20,7 +20,7 @@
 
     <!-- Number of results text / loading state -->
     <div v-if="location && products" class="results">
-      <p>{{ products.length }} {{ t("results", products.length) }}</p>
+      <p>{{ products.length }} {{ t('admin.products.results', products.length) }}</p>
       <LoadingSpinner size="sm" v-show="fetchStatus === 'pending'" />
     </div>
 
@@ -36,7 +36,7 @@
       >
         <template #image-overlay>
           <Badge v-if="!product.active" variant="error">
-            {{ t("inactive") }}
+            {{ t('admin.products.inactive') }}
           </Badge>
         </template>
         <p class="description">
@@ -201,18 +201,3 @@ function handleProductUpdate() {
   }
 }
 </style>
-
-<i18n lang="json">
-{
-  "en": {
-    "title": "Products",
-    "results": "result | results",
-    "new_product": "New product"
-  },
-  "de": {
-    "title": "Gegenständen",
-    "results": "Ergebnis | Ergebnisse",
-    "new_product": "Neues Gegenstand"
-  }
-}
-</i18n>
