@@ -9,7 +9,7 @@
 
 ## 🌟 Overview
 
-**P2P Leihbase** is a modern, lightweight web application designed to empower circular economy sharing within local communities and neighborhoods. 
+**P2P Leihbase** is a modern, lightweight web application designed to empower circular economy sharing within local communities, neighborhoods, and lending stores (*Leihladen*). 
 
 Users can list their own items, browse borrowable tools, kitchen appliances, electronics, or outdoor gear, request loans, coordinate handover and return appointments interactively, and manage the entire lending lifecycle.
 
@@ -29,7 +29,7 @@ Users can list their own items, browse borrowable tools, kitchen appliances, ele
 - **Calendar Integration:** Automated `.ics` calendar file attachments and direct **Google Calendar** / **Apple / Outlook** links sent in confirmation emails.
 
 ### 🌐 Multilingual (i18n)
-- Seamless support for **German (`de`)** and **English (`en`)**. (at the moment)
+- Seamless support for **German (`de`)** and **English (`en`)**.
 - In-app language switcher in navbar and footer.
 - User profile language preferences with automatic localization for transactional emails and notifications.
 
@@ -49,39 +49,86 @@ Users can list their own items, browse borrowable tools, kitchen appliances, ele
 
 ---
 
-## 🛠️ Tech Stack
+## 📦 Docker Images (GitHub Container Registry)
 
-- **Frontend:** [Nuxt 3](https://nuxt.com/) (Vue 3, TypeScript, Nuxt i18n, Pinia, SCSS)
-- **Backend & Database:** [PocketBase](https://pocketbase.io/) (Go / SQLite with custom JavaScript hooks and migrations)
-- **Deployment:** Docker & Docker Compose
+Pre-built Docker images are published automatically to **GitHub Container Registry (GHCR)**:
+
+| Component | Image |
+| :--- | :--- |
+| **Nuxt Web Frontend** | `ghcr.io/opum-labs/p2p-leihbase-web:latest` |
+| **PocketBase Backend** | `ghcr.io/opum-labs/p2p-leihbase-pb:latest` |
+
+You can pull them directly via:
+```bash
+docker pull ghcr.io/opum-labs/p2p-leihbase-web:latest
+docker pull ghcr.io/opum-labs/p2p-leihbase-pb:latest
+```
 
 ---
 
-## 🚀 Quick Start (Docker)
+## 🚀 Deployment & Quick Start
 
-### 1. Clone & Configure Environment
+### Option A: Using Pre-Built Images from GHCR
 
-Clone the repository and create your local `.env` configuration from the provided template:
+Create a `docker-compose.yml` on your server and point to the pre-built GHCR images:
 
-```bash
-git clone https://github.com/OPUM-LABS/p2p-leihbase.git
-cd p2p-leihbase
+```yaml
+services:
+  web:
+    image: ghcr.io/opum-labs/p2p-leihbase-web:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NUXT_PUBLIC_LOCALE: "${NUXT_PUBLIC_LOCALE:-de}"
+      NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: "${NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL:-http://pocketbase:8090}"
+      NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: "${NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL:-http://localhost:8090}"
+    networks:
+      - leihbar
 
-# Copy template to .env
-cp .env.example .env
+  pocketbase:
+    image: ghcr.io/opum-labs/p2p-leihbase-pb:latest
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      CONFIG_LOCALE: "${CONFIG_LOCALE:-de}"
+      CONFIG_APP_NAME: "${CONFIG_APP_NAME:-Leihbase}"
+      CONFIG_APP_URL: "${CONFIG_APP_URL:-http://localhost:3000}"
+      CONFIG_SMTP_ENABLED: "${CONFIG_SMTP_ENABLED:-false}"
+      CONFIG_SMTP_HOST: "${CONFIG_SMTP_HOST:-}"
+      CONFIG_SMTP_PORT: "${CONFIG_SMTP_PORT:-587}"
+      CONFIG_SMTP_USERNAME: "${CONFIG_SMTP_USERNAME:-}"
+      CONFIG_SMTP_PASSWORD: "${CONFIG_SMTP_PASSWORD:-}"
+      CONFIG_SMTP_SENDER_ADDRESS: "${CONFIG_SMTP_SENDER_ADDRESS:-}"
+    volumes:
+      - ./pb_data:/pb/pb_data
+    networks:
+      - leihbar
+
+networks:
+  leihbar:
 ```
 
-Open `.env` in your editor and adjust the settings (SMTP mail server, public domain/URL, branding).
+### Option B: Building from Source (Local Development)
 
-### 2. Start the Application
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/OPUM-LABS/p2p-leihbase.git
+   cd p2p-leihbase
+   ```
 
-Run with Docker Compose:
+2. Create your `.env` file:
+   ```bash
+   cp .env.example .env
+   ```
 
-```bash
-docker compose up -d --build
-```
+3. Build and run:
+   ```bash
+   docker compose up -d --build
+   ```
 
-### 3. Access Services
+### Accessing the Platform
 
 - **Web Frontend:** [http://localhost:3000](http://localhost:3000)
 - **PocketBase Admin UI:** [http://localhost:8090/_/](http://localhost:8090/_/)
