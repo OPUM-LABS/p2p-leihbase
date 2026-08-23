@@ -1,197 +1,156 @@
-# Leihbase
+# 🌱 P2P Leihbase
 
-Web application to manage Leihladen, also known as Borrow Stores.
+**Open-source Peer-to-Peer (P2P) and Community Lending Platform** — Share, borrow, and lend everyday items in your neighborhood or community ("Library of Things" / *Leihen statt Kaufen*).
 
-> [!IMPORTANT]  
-> This software is still in active development. It is being used in production
-> for the [Leihbar in Cologne](https://leihbar-koeln.de/), but might be lacking
-> some (for you) critical features.
+> [!NOTE]
+> This project is a specialized fork of the original [leihbase/leihbase](https://github.com/leihbase/leihbase), extending it with direct Peer-to-Peer (P2P) neighbor lending, interactive timeslot coordination, 1-click action email tokens, and enhanced localization.
 
-## Features
+---
 
-- 🏪 A webshop front-end showing borrowable products
-- 🏙️ Manage multiple borrow locations
-- 🏷️ Product category filtering
-- 🧑‍🤝‍🧑 User sign-up/login
-- 🎫 Product reservations
-- 👷 A back-end to manage products & reservations
-- 📧 Product pickup and return e-mail reminders
-- 🎨 Themeable
+## 🌟 Overview
 
-## Screenshots
+**P2P Leihbase** is a modern, lightweight web application designed to empower circular economy sharing within local communities, neighborhoods, and lending stores (*Leihladen*). 
 
-<img src="./screenshots/screenshot-index-page.png" width="49%" /><img src="./screenshots/screenshot-product-page.png" width="49%" /><img src="./screenshots/screenshot-reservation-dialog.png" width="49%" /><img src="./screenshots/screenshot-admin-page.png" width="49%" /><img src="./screenshots/screenshot-admin-reservation-drawer.png" width="49%" /><img src="./screenshots/screenshot-statistics-page.png" width="49%" />
+Users can list their own items, browse borrowable tools, kitchen appliances, electronics, or outdoor gear, request loans, coordinate handover and return appointments interactively, and manage the entire lending lifecycle.
 
-## Tech
+---
 
-- Back-end and API using [PocketBase](https://pocketbase.io/)
-- Front-end with server-side rendering using [NuxtJS](https://nuxt.com/)
+## ✨ Features
 
-## Deployment
+### 🤝 Peer-to-Peer & Community Lending
+- **User Item Listings:** Community members can publish items with photos, descriptions, deposit amounts, borrow limits, and locations.
+- **Lending Request Workflow:** Borrowers can submit booking requests with custom messages.
+- **1-Click Email Actions:** Lenders can accept or decline requests directly from transactional emails via secure one-time action tokens.
+- **Status Lifecycle:** Clear stages from `pending` ➔ `accepted` ➔ `handover` ➔ `started` ➔ `returned` / `ended`.
 
-### Docker
+### 📅 Interactive Timeslot Coordination
+- **Appointment Scheduling:** Both lenders and borrowers can propose multiple handover and return timeslots.
+- **1-Click Slot Confirmation:** Confirm convenient meeting times with a single tap.
+- **Calendar Integration:** Automated `.ics` calendar file attachments and direct **Google Calendar** / **Apple / Outlook** links sent in confirmation emails.
 
-Leihbase has two Docker Images available which are both required to set up the application:
+### 🌐 Multilingual (i18n)
+- Seamless support for **German (`de`)** and **English (`en`)**.
+- In-app language switcher in navbar and footer.
+- User profile language preferences with automatic localization for transactional emails and notifications.
 
-- [leihbase-webapp](https://hub.docker.com/r/lumocra/leihbase-webapp)
-- [leihbase-pb](https://hub.docker.com/r/lumocra/leihbase-pb)
+### 📧 Unified Transactional Email Engine
+- Responsive, mobile-friendly HTML email layouts for:
+  - Lending requests & confirmations
+  - Handover and return timeslot proposals
+  - Calendar appointment confirmations
+  - Pickup & return reminder notifications
+- Configurable SMTP settings (Microsoft 365, Google Workspace, Mailgun, SendGrid, etc.).
 
-Use the following docker-compose.yml as a base to deploy Leihbase using Docker:
+### 🔒 Privacy, Security & Administration
+- **Authentication:** User signup, email verification, and password reset flows.
+- **Bot Protection (Optional):** Integration with privacy-friendly [Cap](https://trycap.dev/) CAPTCHA for signup protection.
+- **Privacy Analytics (Optional):** Cookie-free analytics via [Plausible](https://plausible.io/).
+- **Admin Dashboard:** Built-in [PocketBase](https://pocketbase.io/) interface for managing users, categories, products, reservations, and global settings.
 
-```yaml
-services:
-  leihbase-webapp:
-    image: lumocra/leihbase-webapp:v2.3.0
-    container_name: leihbase-webapp
-    environment:
-      NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL: http://leihbase-pb:8080
-      NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL: <leihbase-pb public url>
-      # Plausible settings (https://plausible.io/)
-      NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN: ""
-      # Captcha settings (https://trycap.dev)
-      NUXT_PUBLIC_CAP_INSTANCE_HOST: ""
-      NUXT_PUBLIC_CAP_SITE_KEY: ""
+---
 
-  leihbase-pb:
-    image: lumocra/leihbase-pb:v2.3.0
-    container_name: leihbase-pb
-    environment:
-      CONFIG_LOCALE: "en"
-      # If a reservation (created in the admin section) is required to have a user
-      CONFIG_RESERVATION_REQUIRE_USER: "false"
-      CONFIG_LENDING_CONDITIONS_LINK: "https://example.com/borrow-conditions"
-      # Captcha settings (https://trycap.dev)
-      CONFIG_CAP_INSTANCE_HOST: ""
-      CONFIG_CAP_SITE_KEY: ""
-      CONFIG_CAP_SECRET_KEY: ""
-    volumes:
-      - ./pb_data:/pb/pb_data
-```
+## 🛠️ Tech Stack
 
-### Fly.io
+- **Frontend:** [Nuxt 3](https://nuxt.com/) (Vue 3, TypeScript, Nuxt i18n, Pinia, SCSS)
+- **Backend & Database:** [PocketBase](https://pocketbase.io/) (Go / SQLite with custom JavaScript hooks and migrations)
+- **Deployment:** Docker & Docker Compose
 
-The repository contains [fly.toml](https://fly.io/docs/reference/configuration/)
-files to deploy the service as [fly.io](https://fly.io) applications.
+---
 
-## Development
+## 🚀 Quick Start (Docker)
 
-### Setup
+### 1. Clone & Configure Environment
 
-Requirements: [Mise](https://mise.jdx.dev)
+Clone the repository and create your local `.env` configuration from the provided template:
 
 ```bash
-# Install repository tools (mailpit, pocketbase)
-$ mise install
-# Setup project
-$ mise run //...:setup
+git clone https://github.com/<your-user>/p2p-leihbase.git
+cd p2p-leihbase
+
+# Copy template to .env
+cp .env.example .env
 ```
 
-### Run
+Open `.env` in your editor and adjust the settings (SMTP mail server, public domain/URL, branding).
+
+### 2. Start the Application
+
+Run with Docker Compose:
 
 ```bash
-# Enable mise monorepo support
-$ export MISE_EXPERIMENTAL=1
-# Run services
-$ mise run //...:dev
+docker compose up -d --build
 ```
 
-### Initial content
+### 3. Access Services
 
-After starting the service using the setup steps above. Enter some initial data
-to be able to use the application:
+- **Web Frontend:** [http://localhost:3000](http://localhost:3000)
+- **PocketBase Admin UI:** [http://localhost:8090/_/](http://localhost:8090/_/)
 
-1. Browse to [localhost:8080/\_/](http://localhost:8080/_/) to visit the Pocketbase
-   admin interface
-1. Create an admin account
-1. Create a record in the leihbase collection, containing some configuration
-   settings for the instance
-1. Create a location in the locations collection (make sure to set the location
-   to as 'active')
-1. Create a product in the products collection (make sure to set the product to
-   as 'active')
-1. Now you should be able to visit [localhost:3000](http://localhost:3000) to
-   visit the front-end
+---
 
-### E-mail
+## ⚙️ Configuration & Environment Variables
 
-When starting the services, [mailpit](https://github.com/axllent/mailpit) also
-starts. In Pocketbase ([localhost:8080/\_/](http://localhost:8080/_/) >
-Settings > Mail settings) the following SMTP values can be configured:
+All settings are configured through the `.env` file (see [`.env.example`](./.env.example)):
 
-- SMTP server host: localhost
-- Port: 1025
-- Username: _\<empty>_
-- Password: _\<empty>_
+| Variable | Description | Default |
+| :--- | :--- | :--- |
+| `NUXT_PUBLIC_LOCALE` | Default frontend language (`de` or `en`) | `de` |
+| `CONFIG_LOCALE` | Default backend email language (`de` or `en`) | `de` |
+| `CONFIG_APP_NAME` | Platform brand name (e.g. `Leihbase`, `P2Prêt`) | `Leihbase` |
+| `CONFIG_APP_URL` | Public base URL of your web application | `http://localhost:3000` |
+| `CONFIG_SMTP_ENABLED` | Enable transactional emails | `false` |
+| `CONFIG_SMTP_HOST` | SMTP server hostname | `smtp.example.com` |
+| `CONFIG_SMTP_PORT` | SMTP port (e.g. `587` or `465`) | `587` |
+| `CONFIG_SMTP_USERNAME` | SMTP authentication username / email | — |
+| `CONFIG_SMTP_PASSWORD` | SMTP authentication password | — |
+| `CONFIG_SMTP_SENDER_ADDRESS` | From-address for outgoing emails | `info@example.com` |
+| `CONFIG_SMTP_SENDER_NAME` | Sender display name | `Leihbase` |
+| `NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN` | *(Optional)* Plausible Analytics domain | `""` |
+| `CONFIG_CAP_INSTANCE_HOST` | *(Optional)* Cap CAPTCHA instance host | `""` |
+| `CONFIG_CAP_SITE_KEY` | *(Optional)* Cap CAPTCHA site key | `""` |
+| `CONFIG_CAP_SECRET_KEY` | *(Optional)* Cap CAPTCHA secret key | `""` |
 
-Any sent e-mail can then be viewed in the mailpit web interface at
-[localhost:8025](http://localhost:8025).
+---
 
-## Tests
+## 💻 Local Development
 
-Tests are configured and run using [Playwright](https://playwright.dev/), as the
-tests includes visual snapshots tests they are executed
-in a docker environment.
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v20+) & [pnpm](https://pnpm.io/)
+- [Mise](https://mise.jdx.dev) (optional, for toolchain management)
 
-### Run tests
+### Running Locally without Docker
 
 ```bash
-# Run e2e tests
-mise run test:e2e
-# Run e2e tests, and update visual snapshots
-mise run test:e2e
+# 1. Install dependencies
+pnpm install
+
+# 2. Run PocketBase backend (in /pocketbase)
+./pocketbase/pocketbase serve --http=0.0.0.0:8090
+
+# 3. Run Nuxt frontend (in /web)
+cd web
+pnpm dev
 ```
 
-## Configuration
+---
 
-### Pocketbase Admin
+## 🧪 Testing
 
-### Location
+To run the end-to-end test suite:
 
-#### Notifications
-
-Using the following JSON format the e-mail addresses which should receives
-notifications of this location can be configured:
-
-```json
-["example@example.com", "sarah@example.com"]
+```bash
+# Run Playwright tests
+pnpm --filter @leihbase/web test:e2e
 ```
 
-#### Links
+---
 
-Links shown on the location page.
+## 🙏 Credits & Upstream
 
-```json
-[
-  {
-    "text": "Leihbar Website",
-    "link": "https://leihbar-koeln.de"
-  }
-]
-```
+This project is a fork of [leihbase/leihbase](https://github.com/leihbase/leihbase), originally created for the [Leihbar in Cologne](https://leihbar-koeln.de/). We are deeply grateful to the original authors and contributors.
 
-#### Opening Hours
+---
 
-Using the following JSON format the opening hours of a location can be
-configured:
+## 📄 License
 
-```json
-{
-  "days": {
-    "tuesday": [
-      {
-        "from": "18:00",
-        "to": "19:00"
-      }
-    ],
-    "friday": [
-      {
-        "from": "17:00",
-        "to": "19:00"
-      }
-    ]
-  },
-  "except": {
-    "dates": ["2024-12-25", "2024-12-26", "2024-12-31", "2025-01-01"]
-  }
-}
-```
+This project is licensed under the **GNU Affero General Public License v3.0 (GNU AGPLv3)** — see the [LICENSE](LICENSE) file for details.
