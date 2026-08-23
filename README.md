@@ -147,7 +147,8 @@ pnpm --filter @leihbase/web test:e2e
 
 ## 🙏 Credits & Upstream
 
-This project is a fork of [leihbase/leihbase](https://github.com/leihbase/leihbase), originally created for the [Leihbar in Cologne](https://leihbar-koeln.de/). We are deeply grateful to the original authors and contributors.
+- **Upstream:** This project is a fork of [leihbase/leihbase](https://github.com/leihbase/leihbase), originally created for the [Leihbar in Cologne](https://leihbar-koeln.de/). We are deeply grateful to the original authors and contributors.
+- **AI-Assisted Development:** The P2P extensions, appointment scheduling system, multilingual email engine, and related architectural enhancements were realized with the assistance of AI (Google Antigravity / Gemini).
 
 ---
 

@@ -9,7 +9,7 @@
       </NuxtLink>
       <span>—</span>
     </template>
-    <NuxtLink target="_blank" href="https://github.com/ArcoMul/leihbase">
+    <NuxtLink target="_blank" href="https://github.com/OPUM-LABS/p2p-leihbase">
       Open-Source
     </NuxtLink>
     <span v-if="leihbase?.contact_link">—</span>
